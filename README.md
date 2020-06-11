@@ -1,2 +1,2 @@
 # Calculo UTN FRP
- Software de Calculo y Detallado UTN FRP
+ Software de cálculo y detallado UTN FRP

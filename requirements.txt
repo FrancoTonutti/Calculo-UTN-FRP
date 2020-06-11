@@ -1,0 +1,8 @@
+Kivy>=1.11.1
+panda3d==1.10.6
+Pillow>=7.1.2
+panda3d_kivy>=0.1.2
+kivy-deps.glew>=0.2.0
+kivy-deps.sdl2>=0.2.0
+pywin32>=227
+

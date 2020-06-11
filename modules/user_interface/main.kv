@@ -1,0 +1,80 @@
+<WidMain>:
+    orientation:'vertical'
+    canvas:
+        Color:
+            rgba: 1,1,1,0
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<WidOptions>:
+    orientation: 'vertical'
+    canvas:
+        Color:
+            rgb: self.color_title_bar
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    size_hint: 1,None
+    height:125
+    padding: [0, 0, 0, 2]
+
+<WidTabNameBar>:
+    canvas:
+        Color:
+            rgb: self.color_title_bar
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    size_hint: 1,None
+    height: 25
+    spacing: 5
+    padding: [0, 5, 0, 0]
+
+<WidTabContentBar>:
+    canvas:
+        Color:
+            rgb: self.color_options_bar
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+
+
+<WidTitleBar>:
+    canvas:
+        Color:
+            rgb: self.color_title_bar
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    size_hint: 1,None
+    height:'35dp'
+
+
+
+
+<WidButton>:
+    font_name: 'Arial'
+    background_color: 0,0,0,0
+    canvas.before:
+        Color:
+            rgba: self.background_color
+        Rectangle:
+            size: self.size # choose a value of a which fit the most with your button
+            pos: self.pos
+    size_hint: 1,1
+    size: self.texture_size[0]+30,self.texture_size[1]+10
+
+
+
+
+    Image:
+        source: self.parent.image_path
+
+        y: self.parent.pos[1]+self.parent.size[1]/2-+self.texture_size[1]/2
+        x: self.parent.pos[0]+self.parent.size[0]/2-+self.texture_size[0]/2
+
+        size: self.texture_size
+

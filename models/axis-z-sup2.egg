@@ -1,0 +1,109 @@
+<CoordinateSystem> { Z-up } 
+<Material> default.003 {
+  <Scalar> baser { 0.0 }
+  <Scalar> baseg { 0.0 }
+  <Scalar> baseb { 1.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 0.9882349967956543 }
+  <Scalar> baseg { 0.9882349967956543 }
+  <Scalar> baseb { 0.9882349967956543 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 1.0 }
+  <Scalar> baseg { 0.0 }
+  <Scalar> baseb { 0.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 0.0 }
+  <Scalar> baseg { 1.0 }
+  <Scalar> baseb { 0.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+}
+
+<Material> default.001 {
+  <Scalar> baser { 0.0 }
+  <Scalar> baseg { 0.0 }
+  <Scalar> baseb { 1.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 0.9882349967956543 }
+  <Scalar> baseg { 0.9882349967956543 }
+  <Scalar> baseb { 0.9882349967956543 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 1.0 }
+  <Scalar> baseg { 0.0 }
+  <Scalar> baseb { 0.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 0.0 }
+  <Scalar> baseg { 1.0 }
+  <Scalar> baseb { 0.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+}
+
+<Material> default {
+  <Scalar> baser { 0.0 }
+  <Scalar> baseg { 0.0 }
+  <Scalar> baseb { 1.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 0.9882349967956543 }
+  <Scalar> baseg { 0.9882349967956543 }
+  <Scalar> baseb { 0.9882349967956543 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 1.0 }
+  <Scalar> baseg { 0.0 }
+  <Scalar> baseb { 0.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 0.0 }
+  <Scalar> baseg { 1.0 }
+  <Scalar> baseb { 0.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+}
+
+<Material> default.002 {
+  <Scalar> baser { 0.0 }
+  <Scalar> baseg { 0.0 }
+  <Scalar> baseb { 1.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 0.9882349967956543 }
+  <Scalar> baseg { 0.9882349967956543 }
+  <Scalar> baseb { 0.9882349967956543 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 1.0 }
+  <Scalar> baseg { 0.0 }
+  <Scalar> baseb { 0.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+  <Scalar> baser { 0.0 }
+  <Scalar> baseg { 1.0 }
+  <Scalar> baseb { 0.0 }
+  <Scalar> roughness { 1.0 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> local { 0 }
+}
+
