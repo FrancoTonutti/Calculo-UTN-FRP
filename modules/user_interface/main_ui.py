@@ -17,6 +17,8 @@ class WidMain(BoxLayout):
         # Agrega la cinta de opciones a la interfaz
         cinta = option_bar.WidOptions()
         self.add_widget(cinta)
+
+        # Agrega un widget que delimita el espacio de trabajo del modelo 3d
         self.add_widget(widgets.WidWorkspace())
 
         # Agrega una lista con todos los botones de la interfaz
