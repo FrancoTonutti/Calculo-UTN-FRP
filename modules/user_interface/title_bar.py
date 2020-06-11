@@ -7,7 +7,13 @@ from kivy.uix.label import Label
 import ctypes, win32gui, win32con
 from pandac.PandaModules import WindowProperties
 
+"""
 
+Este modulo no es usado actualmente y posiblemente sea eliminado en el futuro.
+
+Se deja unicamete como referencia a las funciones win32 necesarias para el control de la ventana
+
+"""
 
 
 class WidTitleBar(BoxLayout, PaletteColor):

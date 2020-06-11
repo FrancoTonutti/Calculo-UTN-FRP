@@ -1,5 +1,14 @@
 from panda3d.core import Point3, OrthographicLens, PerspectiveLens, NodePath
 
+"""
+
+Éste archivo debe ser reorganizado para mayor claridad
+
+Controla todos los comportamientos de la camra en el modelo 3d, el paneo, rotación y zoom
+
+"""
+
+
 
 class Base:
     show_base = None
