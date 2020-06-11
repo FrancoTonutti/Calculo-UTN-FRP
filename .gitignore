@@ -1,3 +1,10 @@
 venv/
 .vscode/
 .idea/
+
+.*.sw*
+*.pyc
+__pycache__/
+build/
+dist/
+*.egg-info/
