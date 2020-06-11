@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def get_mouse_3d_coords_task(task, pandapp=None):
     # Obtenemos la ubicación absoluta de la camara y su dirección
     if pandapp.mouseWatcherNode.has_mouse():
@@ -21,11 +22,11 @@ def get_mouse_3d_coords_task(task, pandapp=None):
         cursor_x = (mouse_pos[0] - width / 2) / 100
         cursor_y = (height / 2 - mouse_pos[1]) / 100
 
-        cursor = pandapp.cursor.set_pos(cursor_x, 2, cursor_y)
+        pandapp.cursor.set_pos(cursor_x, 2, cursor_y)
         cursor_pos = pandapp.cursor.get_pos(pandapp.render)
 
         """
-        El siguiente códico calcula la intersección entre el plano de trabajo y la recta de acción del mouse
+        El siguiente código calcula la intersección entre el plano de trabajo y la recta de acción del mouse
         
         from https://stackoverflow.com/a/39424162
         
@@ -41,14 +42,14 @@ def get_mouse_3d_coords_task(task, pandapp=None):
 
         ndotu = plane_normal.dot(ray_direction)
         if abs(ndotu) < epsilon:
-            print("no intersection or line is within plane")
+            # No se encuentra intersección
+            pandapp.work_plane_mouse = [None, None, None]
+        else:
+            # Se encuentra intersección
+            w = ray_point - plane_point
+            si = -plane_normal.dot(w) / ndotu
+            psi = w + si * ray_direction + plane_point
 
-        w = ray_point - plane_point
-        si = -plane_normal.dot(w) / ndotu
-        psi = w + si * ray_direction + plane_point
-
-        pandapp.work_plane_mouse = psi
-
-        # print("intersection at", psi)
+            pandapp.work_plane_mouse = psi
 
     return task.cont
