@@ -13,13 +13,16 @@ class WidMain(BoxLayout):
 
         # Almacena en la clase una referencia al modelo en panda3d
         self.panda3D = panda_app
+        self.panda3D.kyvi_main_widet = self
 
         # Agrega la cinta de opciones a la interfaz
         cinta = option_bar.WidOptions()
         self.add_widget(cinta)
 
         # Agrega un widget que delimita el espacio de trabajo del modelo 3d
-        self.add_widget(widgets.WidWorkspace())
+        workspace = widgets.WidWorkspace()
+        self.panda3D.kyvi_workspace = workspace
+        self.add_widget(workspace)
 
         # Agrega una lista con todos los botones de la interfaz
         self.button_data = list()
