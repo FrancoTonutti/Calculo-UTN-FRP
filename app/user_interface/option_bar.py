@@ -2,8 +2,11 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.stacklayout import StackLayout
 
-from modules.user_interface.colors import PaletteColor
-from modules.user_interface.widgets import WidButton
+from kivy.app import App
+
+from app.user_interface.colors import PaletteColor
+from app.user_interface.widgets import WidButton
+from app.controller import bar, calculate
 
 
 class WidOptions(BoxLayout, PaletteColor):
@@ -27,9 +30,10 @@ class WidTabNameBar(BoxLayout, PaletteColor):
         super(WidTabNameBar, self).__init__(**kwargs)
 
         # Agrega el botón de cada pestaña
-        self.add_tab("Nodos")
+
         self.add_tab("Barras")
         self.add_tab("Materiales")
+        self.add_tab("Secciones")
 
         self.set_active_tab(0)
 
@@ -65,6 +69,18 @@ class WidTabContentBar(BoxLayout, PaletteColor):
     def __init__(self, **kwargs):
         super(WidTabContentBar, self).__init__(**kwargs)
 
+        btn = WidTabButton("Crear Nueva Barra", call=bar.create_bar)
+        btn.color_normal = self.get_rgba("color_options_bar")
+        btn.color_pressed = self.get_rgba("color_options_bar_dark")
+        btn.color = (0, 0, 0, 1)
+        self.add_widget(btn)
+
+        btn = WidTabButton("Iniciar Cálculo", call=calculate.start_analysis)
+        btn.color_normal = self.get_rgba("color_options_bar")
+        btn.color_pressed = self.get_rgba("color_options_bar_dark")
+        btn.color = (0, 0, 0, 1)
+        self.add_widget(btn)
+
 
 class WidTabButton(WidButton):
     # Definimos un botón que hereda propiedades de "WidButton" y lo adaptamos en tamaño
@@ -74,3 +90,13 @@ class WidTabButton(WidButton):
         self.color_normal = self.get_rgba("color_title_bar")
         self.text = text
         self.fit_to_text_width()
+
+
+class WidTabSection(BoxLayout, PaletteColor):
+    # Almacenará los botones de cada pestaña en distintas secciones
+    name = ""
+
+    def __init__(self, name, **kwargs):
+        super(WidTabSection, self).__init__(**kwargs)
+        self.name = name
+

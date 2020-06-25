@@ -1,12 +1,16 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import loadPrcFile, LineSegs, NodePath, WindowProperties
 
-from modules.user_interface import camera
-from modules.user_interface.main_ui import MainApp
-from modules import panda_tasks
+from app.user_interface import camera
+from app.user_interface.main_ui import MainApp
+from app import panda_tasks
+
+from kivy.config import Config
+Config.set('kivy', 'exit_on_escape', '0')
 
 # Carga las configuraciones para la pantalla de panda3d
-loadPrcFile("config/config.prc")
+loadPrcFile("data/config/config.prc")
+
 
 
 class MyProgram(ShowBase):
@@ -32,11 +36,12 @@ class MyProgram(ShowBase):
         self.work_plane_point = (0, 0, 0)
         self.work_plane_mouse = (0, 0, 0)
 
+        # Creamos una variable que almacenará el registro de todos los elementos del modelo
+        self.model_reg = dict()
+
         # Crea un objecto cursor que se ubica según la posición de la camara
 
-
         self.cursor = self.render.attach_new_node("cursor_pos")
-        #self.cursor = self.loader.loadModel("models/box")
         scale = 0.1
         self.cursor.setScale(scale, scale, scale)
         self.cursor.setPos(0, 10, 0)
@@ -48,15 +53,16 @@ class MyProgram(ShowBase):
         self.task_mgr.add(lambda task: panda_tasks.get_mouse_3d_coords_task(task, self), "get_mouse_3d_coords_task")
 
         # Agrega un indicador de ejes en el centro del modelo
-        box = self.loader.loadModel("models/custom-axis")
+        box = self.loader.loadModel("data/geom/custom-axis")
         box.setPos(0, 0, 0)
         box.setScale(0.1, 0.1, 0.1)
         box.reparentTo(self.render)
 
-        self.accept("escape", self.userExit)
+        # self.accept("escape", self.userExit)
 
 
 # Inicia el programa
 if __name__ == "__main__":
     program = MyProgram()
+
     program.run()

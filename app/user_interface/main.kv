@@ -40,6 +40,16 @@
             pos: self.pos
 
 
+<WidLeftPanel>:
+    canvas:
+        Color:
+            rgb: self.color_title_bar
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    size_hint: None,1
+    width: 300
+
 
 
 <WidTitleBar>:
@@ -53,7 +63,35 @@
     height:'35dp'
 
 
+<WidTitleBar>:
+    canvas:
+        Color:
+            rgb: self.color_title_bar
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    size_hint: 1,None
+    height:'35dp'
 
+<WidStateBarTop>:
+    canvas:
+        Color:
+            rgb: self.color_title_bar
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    size_hint: 1,None
+    height:'22dp'
+
+<WidStateBarBot>:
+    canvas:
+        Color:
+            rgb: self.color_title_bar
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    size_hint: 1,None
+    height:'24dp'
 
 <WidButton>:
     font_name: 'Arial'

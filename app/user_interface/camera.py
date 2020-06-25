@@ -8,6 +8,7 @@ class CameraControl:
         # Inicialización de variables
         self.winsize = [0, 0]
         self.panda3d = panda3d
+        self.panda3d.mouse_on_workspace = False
 
         # Desabilita el comportamiento por defecto de la camara
         self.panda3d.disable_mouse()
@@ -128,6 +129,8 @@ class CameraControl:
 
             if overmouse_x and overmouse_y:
                 is_over = True
+
+        self.panda3d.mouse_on_workspace = is_over
 
         return is_over
 
@@ -276,7 +279,7 @@ class CameraControl:
         scale = 0.08
         corner = self.panda3d.camera.attachNewNode("corner of screen")
         corner.setPos(-12.8 / 2 + 10 * scale, 5, -7.2 / 2 + 10 * scale)
-        axis = self.panda3d.loader.loadModel("models/custom-axis")
+        axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
 
         # Dibujar por encima de todos los objetos
         axis.setBin("fixed", 0)
@@ -304,12 +307,12 @@ class CameraControl:
         """
         Función de prueba, coloca cubos en la ubicación del cursor
         """
-
-        print("add_cube")
-        pos = self.panda3d.work_plane_mouse
-        cube = self.panda3d.loader.loadModel("models/box")
-        # Reparent the model to render.
-        cube.reparentTo(self.panda3d.render)
-        # Apply scale and position transforms on the model.
-        cube.setScale(0.25, 0.25, 0.25)
-        cube.setPos(pos[0], pos[1], pos[2])
+        if self.panda3d.mouse_on_workspace:
+            print("add_cube")
+            pos = self.panda3d.work_plane_mouse
+            cube = self.panda3d.loader.loadModel("models/box")
+            # Reparent the model to render.
+            cube.reparentTo(self.panda3d.render)
+            # Apply scale and position transforms on the model.
+            cube.setScale(0.25, 0.25, 0.25)
+            cube.setPos(pos[0], pos[1], pos[2])

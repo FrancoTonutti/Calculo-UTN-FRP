@@ -16,6 +16,7 @@ class PaletteColor:
         self.color_title_bar = rgb(30, 136, 229)  # Blue 600
         self.color_title_bar_light = rgb(33, 150, 243)  # Blue 500
         self.color_options_bar = rgb(250, 250, 250)  # Grey 50
+        self.color_options_bar_dark = rgb(224, 224, 224)  # Grey 50
 
     def get_rgba(self, name):
         col = getattr(self, name).copy()
