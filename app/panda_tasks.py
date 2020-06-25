@@ -3,6 +3,7 @@ import numpy as np
 
 def get_mouse_3d_coords_task(task, pandapp=None):
     # Obtenemos la ubicación absoluta de la camara y su dirección
+
     if pandapp.mouseWatcherNode.has_mouse():
         camera_vect = pandapp.camera.getQuat(pandapp.render).getForward()
         camera_pos = pandapp.camera.get_pos(pandapp.render)

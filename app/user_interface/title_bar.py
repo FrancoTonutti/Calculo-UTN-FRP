@@ -1,7 +1,7 @@
 from kivy.uix.boxlayout import BoxLayout
-from modules.user_interface.colors import PaletteColor
+from app.user_interface.colors import PaletteColor
 
-from modules.user_interface import widgets
+from app.user_interface import widgets
 
 from kivy.uix.label import Label
 import ctypes, win32gui, win32con

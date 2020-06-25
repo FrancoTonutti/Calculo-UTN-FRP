@@ -1,11 +1,41 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from modules.user_interface.colors import PaletteColor
+from app.user_interface.colors import PaletteColor
 from kivy.properties import StringProperty
+
+
+# Se ubica por deabjo de la cinta de opciones y contendrá al espacio de trabajo y al panel lateral
+class WidContentArea(BoxLayout):
+    def __init__(self, panda_app):
+        super(WidContentArea, self).__init__()
+
+        left_panel = WidLeftPanel()
+        self.add_widget(left_panel)
+
+        workspace = WidWorkspace()
+        panda_app.kyvi_workspace = workspace
+        self.add_widget(workspace)
+
+
+# Panel lateral izquierdo
+class WidLeftPanel(BoxLayout, PaletteColor):
+    pass
+
 
 # Widget del espacio de trabajo donde se muestra el modelo
 class WidWorkspace(BoxLayout):
     pass
+
+
+# Barra de estado inferior
+class WidStateBarTop(BoxLayout, PaletteColor):
+    pass
+
+
+# Barra de estado inferior
+class WidStateBarBot(BoxLayout, PaletteColor):
+    pass
+
 
 # Widget de botón base para el proyecto
 class WidButton(Button, PaletteColor):
@@ -14,7 +44,7 @@ class WidButton(Button, PaletteColor):
     active_btn = False
     wid_main = None
 
-    def __init__(self, img_dir="img/blank.png", call=None, **kwargs):
+    def __init__(self, img_dir="data/img/blank.png", call=None, **kwargs):
         super(WidButton, self).__init__(**kwargs)
 
         # Se definen los colores que tendrá el botón en los diferentes estados
