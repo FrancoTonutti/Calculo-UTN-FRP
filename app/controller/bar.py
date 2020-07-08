@@ -3,12 +3,15 @@ from direct.task.Task import TaskManager
 from kivy.app import App
 
 from panda3d.core import LineSegs, NodePath
+import numpy as np
 
+from app.controller.commands import command
 # Creamos una variable global coredata que almacenará información sobre el modulo
 
 coredata = dict()
 
 
+@command(name="barra", shortcut="b")
 def create_bar():
     global coredata
     # Agrega una tarea al TaskManager para dibujar la barra a crear
@@ -39,7 +42,7 @@ def bar_task(task):
     panda3d = app.root.panda3D
 
     watcher = panda3d.mouseWatcherNode
-
+    box_input = panda3d.kyvi_workspace.box_input
     if coredata["start"] is not None and coredata["end"] is not None:
         # Una vez que se tiene un inicio y un fin creamos los nodos y la barra en el modelo
         x0, y0, z0 = coredata["start"]
@@ -56,33 +59,63 @@ def bar_task(task):
 
     if panda3d.mouse_on_workspace:
 
+        if box_input is None:
+            panda3d.kyvi_workspace.show_text_input()
+            box_input = panda3d.kyvi_workspace.box_input
+
+
+
         if watcher.isButtonDown("mouse1"):
             if coredata["start"] is None and not coredata["press"]:
                 # Almacena el valor de inicio del segmento de linea
                 coredata["start"] = panda3d.work_plane_mouse
                 coredata["press"] = True
-                print(coredata)
+                print("start")
+                #print(coredata)
                 create_line_seg(panda3d)
 
             elif coredata["end"] is None and not coredata["press"]:
                 # Almacena el valor final del segmento de linea
-                coredata["end"] = panda3d.work_plane_mouse
+                #coredata["end"] = panda3d.work_plane_mouse
+                line = coredata["line"]
+                coredata["end"] = line.getVertex(1)
                 coredata["press"] = True
-                print(coredata)
+                print("end")
+                #print(coredata)
         else:
             if coredata["press"]:
                 # Resetea una variable que permite detectar el momento en que se empieza a presionar el mouse
                 coredata["press"] = False
 
         if coredata["start"] is not None and coredata["line"] is not None:
-            # Actualiza la posición final de la línea a la ubicación del cursor, dejando dijo el origen
+            # Actualiza la posición final de la línea a la ubicación del cursor, dejando fijo el origen
             line = coredata["line"]
+            x0, y0, z0 = coredata["start"]
             x1, y1, z1 = panda3d.work_plane_mouse
+            bar_vect = np.array([x1-x0, y1-y0, z1-z0])
+            bar_len = np.linalg.norm(bar_vect)
+
+            if box_input.focused is True:
+                input_len = box_input.text
+                if input_len is not "":
+                    try:
+                        input_len = float(input_len)
+                    except Exception as ex:
+                        input_len = 0
+                else:
+                    input_len = 0
+                if bar_len is 0:
+                    bar_len = 1
+                bar_vect = input_len*(bar_vect/bar_len)
+                x1, y1, z1 = coredata["start"]+bar_vect
+            else:
+                # Mostrar la longitud de la barra en pantalla
+                box_input.text = "{}".format(bar_len)
             line.setVertex(1, x1, y1, z1)
 
     if watcher.has_mouse() and watcher.isButtonDown("escape"):
         # Detiene la cración de la linea y resetea las variables
-
+        box_input.text = ""
         coredata["start"] = None
         coredata["end"] = None
         coredata["press"] = False

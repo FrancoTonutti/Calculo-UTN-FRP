@@ -3,7 +3,7 @@ from kivy.config import Config
 from kivy.uix.boxlayout import BoxLayout
 from app.user_interface.widgets import WidButton
 
-from app.user_interface import widgets, option_bar
+from app.user_interface import widgets, option_bar, workspace
 
 
 # El widget princpal abarca todos los elementos de la interzas
@@ -24,7 +24,7 @@ class WidMain(BoxLayout):
         self.add_widget(statebar_top)
 
         # Agrega un widget que delimita el espacio de trabajo del modelo 3d
-        content = widgets.WidContentArea(panda_app)
+        content = workspace.WidContentArea(panda_app)
         self.add_widget(content)
 
         # Agrega la barra de estado inferior
@@ -85,6 +85,5 @@ class MainApp(App):
     def __init__(self, panda_app, **kwargs):
         super().__init__(panda_app, **kwargs)
         self.panda3D = self.panda_app
-
     def build(self):
         return WidMain(self.panda3D)

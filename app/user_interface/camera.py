@@ -55,7 +55,7 @@ class CameraControl:
         self.panda3d.accept("wheel_down", self.zoom_out)
 
         # Una fución de prueba para comprobar la posición del mouse en el modelo 3d
-        self.panda3d.accept("mouse1", self.add_cube)
+        # self.panda3d.accept("mouse1", self.add_cube)
 
         # Se establece la lente ortografica en lugar de la perspectiva
         self.lens_type = "OrthographicLens"
@@ -115,17 +115,20 @@ class CameraControl:
         is_over = False
         workspace = self.panda3d.kyvi_workspace
 
-        if self.panda3d.mouseWatcherNode.has_mouse() and workspace is not None:
+        if self.panda3d.mouseWatcherNode.has_mouse() and workspace is not None and workspace.active:
             pos = workspace.pos
             size = workspace.size
+            offset_left, offset_top, offset_right, offset_bottom = workspace.offset
+
+            offset = [0, 0, 0, 0]
 
             height = self.panda3d.win.getYSize()
 
             mouse_data = self.panda3d.win.getPointer(0)
             mouse_pos = mouse_data.getX(), height - mouse_data.getY()
 
-            overmouse_x = (pos[0] <= mouse_pos[0] <= pos[0] + size[0])
-            overmouse_y = (pos[1] <= mouse_pos[1] <= pos[1] + size[1])
+            overmouse_x = (pos[0]+offset_left <= mouse_pos[0] <= pos[0]-offset_right + size[0])
+            overmouse_y = (pos[1]+offset_bottom <= mouse_pos[1] <= pos[1]-offset_top + size[1])
 
             if overmouse_x and overmouse_y:
                 is_over = True
@@ -141,6 +144,9 @@ class CameraControl:
 
         # El codigo se ejecuta si el mouse está dentro del espacio de trabajo o si ya se está realizando alguna acción
         if self.mouse_is_over_workspace() or self.camera_active:
+            # Desactivamos el espacio de trabajo
+            self.panda3d.kyvi_workspace.active = False
+
             # El nodo mouseWatcherNode permite recibir la entrada de mouse y teclado
             btn = self.panda3d.mouseWatcherNode
 
@@ -181,6 +187,8 @@ class CameraControl:
             # Si la combinación de teclas no coincide con niguna acción se establece la camara como inactiva
             if cam_task is 0:
                 self.camera_active = False
+                # Se reactiva el espacio de trabajo
+                self.panda3d.kyvi_workspace.active = True
 
             # Se coloca la camra en determinadas vistas (frontal, lateral, superior, etc) al apretar el teclado numérico
             # Lista de teclas http://www.kbdedit.com/manual/low_level_vk_list.html
