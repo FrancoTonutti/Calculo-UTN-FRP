@@ -5,6 +5,8 @@ from app.user_interface import camera
 from app.user_interface.main_ui import MainApp
 from app import panda_tasks
 
+from app.controller.commands import command_list
+
 from kivy.config import Config
 Config.set('kivy', 'exit_on_escape', '0')
 
@@ -16,7 +18,7 @@ loadPrcFile("data/config/config.prc")
 class MyProgram(ShowBase):
     def __init__(self):
         super().__init__()
-
+        print("panda3d start")
         # Inicia la interfaz de usuario en Kivy
         self.kyvi_main_widet = None
         self.kyvi_workspace = None
@@ -38,6 +40,7 @@ class MyProgram(ShowBase):
 
         # Creamos una variable que almacenará el registro de todos los elementos del modelo
         self.model_reg = dict()
+        self.commands = command_list
 
         # Crea un objecto cursor que se ubica según la posición de la camara
 

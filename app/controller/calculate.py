@@ -1,6 +1,8 @@
 from kivy.app import App
+from app.controller.commands import command
 
 
+@command(name="calcular", shortcut="c")
 def start_analysis():
     print("----------------------------------------------------")
     print("start_analysis()")

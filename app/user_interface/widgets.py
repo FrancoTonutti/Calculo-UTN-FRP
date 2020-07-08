@@ -1,30 +1,11 @@
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from app.user_interface.colors import PaletteColor
 from kivy.properties import StringProperty
 
 
-# Se ubica por deabjo de la cinta de opciones y contendrá al espacio de trabajo y al panel lateral
-class WidContentArea(BoxLayout):
-    def __init__(self, panda_app):
-        super(WidContentArea, self).__init__()
 
-        left_panel = WidLeftPanel()
-        self.add_widget(left_panel)
-
-        workspace = WidWorkspace()
-        panda_app.kyvi_workspace = workspace
-        self.add_widget(workspace)
-
-
-# Panel lateral izquierdo
-class WidLeftPanel(BoxLayout, PaletteColor):
-    pass
-
-
-# Widget del espacio de trabajo donde se muestra el modelo
-class WidWorkspace(BoxLayout):
-    pass
 
 
 # Barra de estado inferior
