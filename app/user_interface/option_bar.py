@@ -1,12 +1,8 @@
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
-from kivy.uix.stacklayout import StackLayout
-
-from kivy.app import App
 
 from app.user_interface.colors import PaletteColor
 from app.user_interface.widgets import WidButton
-from app.controller import bar, calculate
+from app.controller.commands import bar, calculate
 
 
 class WidOptions(BoxLayout, PaletteColor):

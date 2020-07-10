@@ -1,11 +1,11 @@
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import loadPrcFile, LineSegs, NodePath, WindowProperties
+from panda3d.core import loadPrcFile
 
 from app.user_interface import camera
 from app.user_interface.main_ui import MainApp
 from app import panda_tasks
 
-from app.controller.commands import command_list
+from app.controller.console import command_list
 
 from kivy.config import Config
 Config.set('kivy', 'exit_on_escape', '0')
