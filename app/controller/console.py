@@ -11,7 +11,7 @@ def command(name, shortcut=None):
 
     def wrapper(function):
         global command_list
-
+        print("comand_register: {} ({})".format(name, function.__name__))
         command_list.update({name: {"name": name, "shortcut": shortcut, "command": function}})
 
         return function

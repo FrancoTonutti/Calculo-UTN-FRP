@@ -1,4 +1,4 @@
-from panda3d.core import Point3, OrthographicLens, PerspectiveLens
+from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode
 import math
 import win32api
 import win32con
@@ -55,7 +55,7 @@ class CameraControl:
         self.panda3d.accept("wheel_down", self.zoom_out)
 
         # Una fución de prueba para comprobar la posición del mouse en el modelo 3d
-        # self.panda3d.accept("mouse1", self.add_cube)
+        self.panda3d.accept("mouse1", self.entity_select)
 
         # Se establece la lente ortografica en lugar de la perspectiva
         self.lens_type = "OrthographicLens"
@@ -63,6 +63,22 @@ class CameraControl:
 
         # Agrega un indicador de ejes en la esquina inferior izquierda
         self.show_view_cube()
+
+        # Agregamos una luz puntual en la ubicación de la camara
+        plight = PointLight("camera_light")
+        plight.setColor((1, 1, 1, 1))
+        plight.setAttenuation((1, 0, 0))
+        print("getMaxDistance {}".format(plight.getMaxDistance()))
+        self.panda3d.plight_node = self.panda3d.render.attach_new_node(plight)
+        self.panda3d.plight_node.setPos(0, -50, 0)
+        self.panda3d.render.setLight(self.panda3d.plight_node)
+
+        # Agregamos luz ambiental que disminuya las zonas oscuras
+        alight = AmbientLight('alight')
+        alight.setColor((0.3, 0.3, 0.3, 1))
+
+        alnp = self.panda3d.render.attachNewNode(alight)
+        self.panda3d.render.setLight(alnp)
 
     def set_lens(self, lens_type="OrthographicLens"):
         """
@@ -189,6 +205,10 @@ class CameraControl:
                 self.camera_active = False
                 # Se reactiva el espacio de trabajo
                 self.panda3d.kyvi_workspace.active = True
+            else:
+                # Actualizamos la posición de la luz puntual
+                cam = self.panda3d.camera
+                self.panda3d.plight_node.setPos(cam.get_pos(self.panda3d.render))
 
             # Se coloca la camra en determinadas vistas (frontal, lateral, superior, etc) al apretar el teclado numérico
             # Lista de teclas http://www.kbdedit.com/manual/low_level_vk_list.html
@@ -324,3 +344,61 @@ class CameraControl:
             # Apply scale and position transforms on the model.
             cube.setScale(0.25, 0.25, 0.25)
             cube.setPos(pos[0], pos[1], pos[2])
+
+    def myFunction(self):
+        "Returns a collision entry for the closest object colliding with the ray."
+
+        traverser = CollisionTraverser("")
+        chq = CollisionHandlerQueue()
+        rayNode = CollisionNode("")
+        pickerRay = CollisionRay()
+
+
+        # Make a collision node with one collision ray.
+        ray.setOrigin(origin)
+        ray.setDirection(dir)
+        rayNode.addSolid(ray)
+
+        # Attach the collision node to the provided node path.
+        rayNP = rootNP.attachNewNode(rayNode)
+
+        # This will let the ray detect collisions with normal geometry.
+        rayNode.setFromCollideMask(GeomNode.getDefaultCollideMask())
+
+        # Add the queue to a traverser, which will do the traversal
+        # on the provided root node path.
+        traverser.addCollider(rayNP, chq)
+        traverser.traverse(rootNP)
+
+        # Get the first node path in the sorted queue and discard the rest.
+        if chq.getNumEntries() < 1:
+            return None
+        chq.sortEntries()
+        return chq.getEntry(0)
+
+    def entity_select(self):
+        traverser = CollisionTraverser("")
+        picker_ray = CollisionRay()
+        handler = CollisionHandlerQueue()
+
+        picker_node = CollisionNode('mouseRay')
+        picker_np = self.panda3d.camera.attachNewNode(picker_node)
+        picker_node.setFromCollideMask(GeomNode.getDefaultCollideMask())
+        picker_ray = CollisionRay()
+        picker_node.addSolid(picker_ray)
+        traverser.addCollider(picker_np, handler)
+
+        mpos = self.panda3d.mouseWatcherNode.getMouse()
+        picker_ray.setFromLens(self.panda3d.camNode, mpos.getX(), mpos.getY())
+        traverser.traverse(self.panda3d.render)
+        # Assume for simplicity's sake that myHandler is a CollisionHandlerQueue.
+
+        if handler.getNumEntries() > 0:
+            # This is so we get the closest object.
+            handler.sortEntries()
+
+            entity = handler.getEntry(0).getIntoNodePath()
+            entity = entity.findNetTag('entity_id')
+            if not entity.isEmpty():
+
+                print("entity selected: {}".format(entity.getTag("entity_id")))

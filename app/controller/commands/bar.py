@@ -1,11 +1,11 @@
-from app.model.core import Node, Bar
+from app.model.core import Node, Bar, Section
 from direct.task.Task import TaskManager
 from kivy.app import App
 
 from panda3d.core import LineSegs, NodePath
 import numpy as np
 
-from app.controller.commands import command
+from app.controller.console import command
 # Creamos una variable global coredata que almacenará información sobre el modulo
 
 coredata = dict()
@@ -50,7 +50,8 @@ def bar_task(task):
 
         start_node = Node(x0, y0, z0)
         end_node = Node(x1, y1, z1)
-        Bar(start_node, end_node)
+        section = Section(0.2, 0.3)
+        Bar(start_node, end_node, section)
 
         # Se crea una nueva linea para dibujar
         coredata["start"] = coredata["end"]
