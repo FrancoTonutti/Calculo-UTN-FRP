@@ -105,6 +105,10 @@ def bar_task(task):
                         input_len = 0
                 else:
                     input_len = 0
+
+                if input_len is None:
+                    input_len = 0
+
                 if bar_len is 0:
                     bar_len = 1
                 bar_vect = input_len*(bar_vect/bar_len)

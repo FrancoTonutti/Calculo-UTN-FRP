@@ -28,7 +28,7 @@ def start_analysis():
     for bar in bar_list:
         print("Barra {}".format(i))
         start = bar.start.position[0], bar.start.position[1]
-        end = bar.start.position[0], bar.start.position[1]
+        end = bar.end.position[0], bar.end.position[1]
         if start not in puntos:
             puntos.append(start)
         if end not in puntos:
@@ -40,18 +40,25 @@ def start_analysis():
 
         i += 1
 
+    i = 1
+    mcb = []
+    for bar in bar_list:
+        start = bar.start.position[0], bar.start.position[1]
+        end = bar.end.position[0], bar.end.position[1]
+
+        start_index = puntos.index(start)
+        end_index = puntos.index(end)
+        mcb.append([start_index, end_index])
+
+
     puntos = array(puntos)
     areas = array(areas)
     inercias = array(inercias)
-
+    mcb = array(mcb)
+    print(mcb)
     # Elasticidad una sola prefijada
     elasticidad = 1007
-    # Matriz de conectividad de baras (fila 1=barra 1, pos 1: Punto a, pos 2: Punto B)
-    mcb = array(([[0, 1], [1, 2], [2, 3], [0, 2]]))
     print(mcb)
-    # Matriz de conectividad
-    tc = Matrizconectividad(mcb)
-    print(tc)
 
     R = MatizGlobalEnsambalda(puntos, areas, inercias, elasticidad, mcb)
     print(R)
