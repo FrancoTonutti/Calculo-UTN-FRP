@@ -1,6 +1,7 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from app.user_interface.colors import PaletteColor
+from app.controller import console
 
 
 # Se ubica por deabjo de la cinta de opciones y contendrá al espacio de trabajo y al panel lateral
@@ -63,12 +64,7 @@ class WidWorkspace(BoxLayout):
         return task.cont
 
     def console_enter(self):
-        data = self.panda3d.commands.get(self.box_input.text, None)
-        if data is not None:
-            cmd = data['command']
-            cmd()
-        else:
-            print("Comando no encontrado")
+        console.execute(self.box_input.text)
 
 
 class BoxInput(TextInput):

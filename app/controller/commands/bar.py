@@ -5,7 +5,8 @@ from kivy.app import App
 from panda3d.core import LineSegs, NodePath
 import numpy as np
 
-from app.controller.console import command
+from app.controller.console import command, execute
+
 # Creamos una variable global coredata que almacenará información sobre el modulo
 
 coredata = dict()
@@ -57,6 +58,8 @@ def bar_task(task):
         coredata["start"] = coredata["end"]
         create_line_seg(panda3d)
         coredata["end"] = None
+
+        execute("regen")
 
     if panda3d.mouse_on_workspace:
 
