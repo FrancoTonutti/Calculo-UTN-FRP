@@ -1,4 +1,19 @@
 import numpy as np
+from kivy.app import App
+from app.model.entity import View
+
+
+def on_complete_load_task(task):
+    app = App.get_running_app()
+    if app.root:
+        print("on_complete_load")
+        panda3d = app.root.panda3D
+
+        panda3d.view_entity = View()
+
+        panda3d.task_mgr.remove("on_complete_load_task")
+
+    return task.cont
 
 
 def get_mouse_3d_coords_task(task, pandapp=None):

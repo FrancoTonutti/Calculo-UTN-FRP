@@ -10,25 +10,35 @@ def regen():
     panda3d = app.root.panda3D
     # Obtenemos el registro del modelo
     model_register = panda3d.model_reg
-
+    print(model_register)
+    print(model_register.get("Node", dict()).items())
+    print("-----t----")
     # Recorre todos los nodos del modelo y coloca una esfera en el punto correspondiente
-    for node in model_register.get("Node", []):
+    entities_dict = model_register.get("Node", dict())
+    for entity_id in entities_dict:
+        node = entities_dict[entity_id]
         # Si no hay una geometría asignada, la carga y la asgina a la entidad
         if node.geom is None:
             node.geom = panda3d.loader.loadModel("data/geom/node")
 
         geom = node.geom
+        geom.setTag('entity_type', type(node).__name__)
+        geom.setTag('entity_id', node.entity_id)
         x, y, z = node.position
         geom.setPos(x, y, z)
         geom.reparentTo(panda3d.render)
 
-    for bar in model_register.get("Bar", []):
+    entities_dict = model_register.get("Bar", dict())
+    for entity_id in entities_dict:
+        bar = entities_dict[entity_id]
         # Si no hay una geometría asignada, la carga y la asgina a la entidad
+
         if bar.geom is None:
             bar.geom = panda3d.loader.loadModel("data/geom/beam")
 
         geom = bar.geom
-        geom.setTag('entity_id', bar.id)
+        geom.setTag('entity_type', type(bar).__name__)
+        geom.setTag('entity_id', bar.entity_id)
 
         # Ubica un cubo de 1x1x1 [m] en la posición inicial de la barra
         x0, y0, z0 = bar.start.position
@@ -42,19 +52,6 @@ def regen():
         z = z1-z0
         vector = [x, y, z]
         norm = np.linalg.norm(vector)
-        geom.setScale(norm, b, h)
-
-        # Orientamos la geometría para que se oriente hacia el punto final
-        angle_xz = np.arctan(z/x)*(180/np.pi)
-        if x < 0:
-            angle_xz = angle_xz+180
-
-        angle_yz = np.arctan(y / x) * (180 / np.pi)
-        if y < 0:
-            angle_xz = angle_yz + 180
-
-        geom.setHpr(0, -angle_yz, -angle_xz)
+        geom.setScale(b, norm, h)
+        geom.lookAt(bar.end.geom)
         geom.reparentTo(panda3d.render)
-
-
-
