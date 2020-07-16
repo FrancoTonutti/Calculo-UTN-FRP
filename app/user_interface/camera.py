@@ -295,18 +295,20 @@ class CameraControl:
         target.setScale(new_scale, new_scale, new_scale)
 
     def zoom_in(self):
-        target = self.panda3d.cam_target
-        old_scale = target.getScale()[0]
-        new_scale = old_scale - 0.1 * old_scale
-        new_scale = max(new_scale, self.min_zoom)
-        target.setScale(new_scale, new_scale, new_scale)
+        if self.mouse_is_over_workspace():
+            target = self.panda3d.cam_target
+            old_scale = target.getScale()[0]
+            new_scale = old_scale - 0.1 * old_scale
+            new_scale = max(new_scale, self.min_zoom)
+            target.setScale(new_scale, new_scale, new_scale)
 
     def zoom_out(self):
-        target = self.panda3d.cam_target
-        old_scale = target.getScale()[0]
-        new_scale = old_scale + 0.1 * old_scale
-        new_scale = min(new_scale, self.max_zoom)
-        target.setScale(new_scale, new_scale, new_scale)
+        if self.mouse_is_over_workspace():
+            target = self.panda3d.cam_target
+            old_scale = target.getScale()[0]
+            new_scale = old_scale + 0.1 * old_scale
+            new_scale = min(new_scale, self.max_zoom)
+            target.setScale(new_scale, new_scale, new_scale)
 
     def show_view_cube(self):
         """
@@ -410,3 +412,22 @@ class CameraControl:
             if not entity.isEmpty():
 
                 print("entity selected: {}".format(entity.getTag("entity_id")))
+
+                entity_id = entity.getTag("entity_id")
+                entity_type = entity.getTag("entity_type")
+                print(entity_type)
+                model = self.panda3d.model_reg
+
+                category_type = model.get(entity_type, dict())
+                entity = category_type.get(entity_id, None)
+                widget = self.panda3d.kyvy_wid_properties
+                print(entity)
+                widget.entity_read(entity)
+        else:
+
+            entity = self.panda3d.view_entity
+            widget = self.panda3d.kyvy_wid_properties
+            widget.entity_read(entity)
+
+
+

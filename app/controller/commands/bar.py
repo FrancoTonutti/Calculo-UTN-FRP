@@ -1,4 +1,4 @@
-from app.model.core import Node, Bar, Section
+from app.model.entity import Node, Bar, Section
 from direct.task.Task import TaskManager
 from kivy.app import App
 
@@ -30,6 +30,7 @@ def create_bar():
     coredata["press"] = False
     coredata["line"] = None
     coredata["line_node"] = None
+    coredata["last_node"] = None
 
     del man
 
@@ -49,14 +50,18 @@ def bar_task(task):
         x0, y0, z0 = coredata["start"]
         x1, y1, z1 = coredata["end"]
 
-        start_node = Node(x0, y0, z0)
+        if coredata["last_node"] is None:
+            start_node = Node(x0, y0, z0)
+        else:
+            start_node = coredata["last_node"]
         end_node = Node(x1, y1, z1)
         section = Section(0.2, 0.3)
         Bar(start_node, end_node, section)
+        coredata["last_node"] = end_node
 
         # Se crea una nueva linea para dibujar
         coredata["start"] = coredata["end"]
-        create_line_seg(panda3d)
+        coredata["line"].setVertex(0, x1, y1, z1)
         coredata["end"] = None
 
         execute("regen")
@@ -75,6 +80,7 @@ def bar_task(task):
                 coredata["start"] = panda3d.work_plane_mouse
                 coredata["press"] = True
                 print("start")
+
                 #print(coredata)
                 create_line_seg(panda3d)
 
@@ -145,6 +151,8 @@ def create_line_seg(panda3d):
     line = LineSegs()
     print(LineSegs)
     line.setThickness(4)
+
+    print(coredata["start"])
 
     x0, y0, z0 = coredata["start"]
     x1, y1, z1 = panda3d.work_plane_mouse

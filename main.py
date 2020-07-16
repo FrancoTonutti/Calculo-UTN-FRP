@@ -22,6 +22,7 @@ class MyProgram(ShowBase):
         # Inicia la interfaz de usuario en Kivy
         self.kyvi_main_widet = None
         self.kyvi_workspace = None
+        self.kyvi_focused_ti = None
         self.kivy_app = kivy_app = MainApp(self)
         kivy_app.run()
 
@@ -42,7 +43,8 @@ class MyProgram(ShowBase):
         self.model_reg = dict()
         self.commands = command_list
 
-        # Crea un objecto cursor que se ubica según la posición de la camara
+        # Crea un objeto cursor que se ubica en un punto del espacio relativo a la cámara, según la posición del cursor
+        # en la ventana, será usado para determinar la ubicación del mouse dentro del espacio de trabajo
 
         self.cursor = self.render.attach_new_node("cursor_pos")
         scale = 0.1
@@ -54,6 +56,9 @@ class MyProgram(ShowBase):
         # para determinar la posición del mouse en el plano de coordenadas
 
         self.task_mgr.add(lambda task: panda_tasks.get_mouse_3d_coords_task(task, self), "get_mouse_3d_coords_task")
+
+        self.task_mgr.add(panda_tasks.on_complete_load_task, "on_complete_load_task")
+
 
         # Agrega un indicador de ejes en el centro del modelo
         box = self.loader.loadModel("data/geom/custom-axis")
