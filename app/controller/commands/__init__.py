@@ -1,9 +1,11 @@
-import importlib
+from app.controller.commands import bar, calculate, render
+
+"""import importlib
 import os
 for module in os.listdir(os.path.dirname(__file__)):
     if module == '__init__.py' or module[-3:] != '.py':
         continue
     importlib.import_module("app.controller.commands."+module[:-3])
-del module
+del module"""
 
 print("-- All commands loaded --")

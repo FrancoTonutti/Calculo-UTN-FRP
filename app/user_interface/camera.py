@@ -1,10 +1,10 @@
 from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode
 import math
 import os
-if os.name == 'nt':
+"""if os.name == 'nt':
     # Importar solo en windows
     import win32api
-    import win32con
+    import win32con"""
 
 
 class CameraControl:
@@ -215,7 +215,7 @@ class CameraControl:
                 self.panda3d.plight_node.setPos(cam.get_pos(self.panda3d.render))
 
             # Ejecutar  solo en windows
-            if os.name == 'nt':
+            """if os.name == 'nt':
                 # Se coloca la camra en determinadas vistas (frontal, lateral, superior, etc) al apretar el
                 # teclado numérico
 
@@ -227,7 +227,7 @@ class CameraControl:
                 elif win32api.GetAsyncKeyState(win32con.VK_NUMPAD3):
                     target.set_hpr(90, 0, 0.)
                 elif win32api.GetAsyncKeyState(win32con.VK_NUMPAD7):
-                    target.set_hpr(0, -90, 0.)
+                    target.set_hpr(0, -90, 0.)"""
 
         return task.cont
 
