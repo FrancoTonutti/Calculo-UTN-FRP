@@ -13,6 +13,7 @@ setup(
                 'CalculoUTN': 'main.py',
             },
             'platforms': [
+                'win_amd64',
                 'win32',
             ],
             'log_filename': '$USER_APPDATA/CalculoUTN/output.log',
