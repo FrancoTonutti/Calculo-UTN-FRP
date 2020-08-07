@@ -8,13 +8,3 @@ Software de cálculo y detallado UTN FRP
 
 Este proyecto surge bajo la modalidad de beca de servicio en la Universidad Tecnológica Nacional, Facultad Regional Paraná con el objetivo de desarrollar un software de cálculo y detallado de estructuras de hormigón armando. 
 
-
-<h2>Instalación</h2>
-Librerías utilizadas:
-<br>
-```bash
-panda3d==1.10.6
-numpy>=1.19.0
-Pillow>=7.1.2
-```
-
