@@ -1,6 +1,6 @@
 from app.model.entity import Node, Bar, Section
 from direct.task.Task import TaskManager
-from kivy.app import App
+from app import app
 
 from panda3d.core import LineSegs, NodePath
 import numpy as np
@@ -39,12 +39,13 @@ def bar_task(task):
     # Establece coredata como variable global
     global coredata
 
+
     # Accede a la interfaz de kivy para obtener la información de panda3d
-    app = App.get_running_app()
-    panda3d = app.root.panda3D
+
+    panda3d = app.get_show_base()
 
     watcher = panda3d.mouseWatcherNode
-    box_input = panda3d.kyvi_workspace.box_input
+    box_input = app.console_input
     if coredata["start"] is not None and coredata["end"] is not None:
         # Una vez que se tiene un inicio y un fin creamos los nodos y la barra en el modelo
         x0, y0, z0 = coredata["start"]
@@ -66,18 +67,12 @@ def bar_task(task):
 
         execute("regen")
 
-    if panda3d.mouse_on_workspace:
-
-        if box_input is None:
-            panda3d.kyvi_workspace.show_text_input()
-            box_input = panda3d.kyvi_workspace.box_input
-
-
+    if app.mouse_on_workspace:
 
         if watcher.isButtonDown("mouse1"):
             if coredata["start"] is None and not coredata["press"]:
                 # Almacena el valor de inicio del segmento de linea
-                coredata["start"] = panda3d.work_plane_mouse
+                coredata["start"] = app.work_plane_mouse
                 coredata["press"] = True
                 print("start")
 
@@ -101,12 +96,13 @@ def bar_task(task):
             # Actualiza la posición final de la línea a la ubicación del cursor, dejando fijo el origen
             line = coredata["line"]
             x0, y0, z0 = coredata["start"]
-            x1, y1, z1 = panda3d.work_plane_mouse
+            x1, y1, z1 = app.work_plane_mouse
             bar_vect = np.array([x1-x0, y1-y0, z1-z0])
             bar_len = np.linalg.norm(bar_vect)
 
-            if box_input.focused is True:
-                input_len = box_input.text
+            if box_input["focus"] is True:
+                print("focused")
+                input_len = box_input.get()
                 if input_len is not "":
                     try:
                         input_len = float(input_len)
@@ -124,12 +120,12 @@ def bar_task(task):
                 x1, y1, z1 = coredata["start"]+bar_vect
             else:
                 # Mostrar la longitud de la barra en pantalla
-                box_input.text = "{}".format(bar_len)
+                box_input.enterText("{}".format(bar_len))
             line.setVertex(1, x1, y1, z1)
 
     if watcher.has_mouse() and watcher.isButtonDown("escape"):
         # Detiene la cración de la linea y resetea las variables
-        box_input.text = ""
+        box_input.enterText("")
         coredata["start"] = None
         coredata["end"] = None
         coredata["press"] = False
@@ -155,7 +151,7 @@ def create_line_seg(panda3d):
     print(coredata["start"])
 
     x0, y0, z0 = coredata["start"]
-    x1, y1, z1 = panda3d.work_plane_mouse
+    x1, y1, z1 = app.work_plane_mouse
 
     line.setColor(1.0, 0.0, 0.0, 1.0)
     line.moveTo(x0, y0, z0)

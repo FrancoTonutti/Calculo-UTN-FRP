@@ -1,41 +1,36 @@
 from setuptools import setup
-import kivy.tools.packaging.pyinstaller_hooks as kivy_hooks
+
+"""
+Comando para compilar:
+
+python setup.py bdist_apps
+"""
 
 setup(
-    name="CalculoUTN",
+    name="CalculoUTN_testgui",
     options={
         'build_apps': {
             'include_patterns': [
                 '**/*.png',
                 '**/*.jpg',
                 '**/*.egg',
+                '**/*.prc',
+                '**/*.ttf',
             ],
-            'console_apps': {
-                'CalculoUTN': 'main.py',
+            'gui_apps': {
+                'CalculoUTN_testgui': 'main.py',
             },
             'platforms': [
                 'win_amd64'
             ],
-            'log_filename': '$USER_APPDATA/CalculoUTN/output.log',
+            'log_filename': '$USER_APPDATA/CalculoUTN_testgui/output.log',
             'log_append': False,
             'plugins': [
                 'pandagl',
-                'Kivy',
                 'Pillow',
-                'panda3d_kivy',
-                'Kivy-Garden',
-                'kivy-deps.glew',
-                'kivy-deps.sdl2',
-                'pywin32',
                 'numpy',
-                'kivy._clock',
-                'kivy.weakmethod'
 
             ],
-            'include_modules': [] + kivy_hooks.get_deps_all()['hiddenimports'] + list(set(
-                kivy_hooks.get_factory_modules() + kivy_hooks.kivy_modules
-
-                ))
         }
     }
 )

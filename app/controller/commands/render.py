@@ -1,15 +1,14 @@
 from app.controller.console import command
-from kivy.app import App
+from app import app
 import numpy as np
 
 @command("regen")
 def regen():
     print("regen")
     # Accede a la interfaz de kivy para obtener la información de panda3d
-    app = App.get_running_app()
-    panda3d = app.root.panda3D
+    panda3d = app.get_show_base()
     # Obtenemos el registro del modelo
-    model_register = panda3d.model_reg
+    model_register = app.model_reg
     print(model_register)
     print(model_register.get("Node", dict()).items())
     print("-----t----")

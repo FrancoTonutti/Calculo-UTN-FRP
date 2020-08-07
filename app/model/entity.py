@@ -1,4 +1,4 @@
-from kivy.app import App
+from app import app
 import uuid
 
 LANG = {
@@ -87,9 +87,8 @@ class Entity:
 
 
 def register(entity):
-    app = App.get_running_app()
-    model_reg = app.root.panda3D.model_reg
 
+    model_reg = app.model_reg
     name = type(entity).__name__
 
     category_dict = model_reg.get(name, None)
@@ -104,9 +103,6 @@ class View(Entity):
     def __init__(self):
         super().__init__()
 
-        app = App.get_running_app()
-        self.panda3d = app.root.panda3D
-
         self.hide_properties("panda3d")
         self.set_prop_name(work_plane_vect="Plano de Trabajo", worl_plane_height="Altura")
         self.show_properties("work_plane_vect", "work_plane_height")
@@ -114,7 +110,7 @@ class View(Entity):
 
     @property
     def work_plane_vect(self):
-        x, y, z = self.panda3d.work_plane_vect
+        x, y, z = app.work_plane_vect
         x = round(x, 2)
         y = round(y, 2)
         z = round(z, 2)
@@ -129,11 +125,11 @@ class View(Entity):
             x = float(x)
             y = float(y)
             z = float(z)
-            self.panda3d.work_plane_vect = [x, y, z]
+            app.work_plane_vect = [x, y, z]
 
     @property
     def work_plane_height(self):
-        x, y, z = self.panda3d.work_plane_point
+        x, y, z = app.work_plane_point
         z = str(round(z, 2))
         return z
 
@@ -141,7 +137,7 @@ class View(Entity):
     def work_plane_height(self, value: str):
         try:
             z = float(value)
-            self.panda3d.work_plane_point = (0, 0, z)
+            app.work_plane_point = (0, 0, z)
         except Exception as ex:
             print(ex)
 

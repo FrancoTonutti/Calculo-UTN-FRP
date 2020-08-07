@@ -1,5 +1,8 @@
 from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode
 import math
+from app import app
+from direct.showbase.DirectObject import DirectObject
+import numpy as np
 import os
 """if os.name == 'nt':
     # Importar solo en windows
@@ -7,7 +10,7 @@ import os
     import win32con"""
 
 
-class CameraControl:
+class CameraControl(DirectObject):
     def __init__(self, panda3d):
         # Inicialización de variables
         self.winsize = [0, 0]
@@ -18,8 +21,8 @@ class CameraControl:
         self.panda3d.disable_mouse()
 
         # Llama a la función self.window_rezise_event cuando la ventana cambia de tamaño
-        self.panda3d.accept('window-event', self.window_rezise_event)
-
+        self.accept('window-event', self.window_rezise_event)
+        # self.panda3d.accept('aspectRatioChanged', lambda: print("ss"))
         # Creamos el punto donde se centrará la cámara
         target_pos = Point3(0., 0., 0.)
 
@@ -66,6 +69,8 @@ class CameraControl:
         self.set_lens(self.lens_type)
 
         # Agrega un indicador de ejes en la esquina inferior izquierda
+        self.corner = self.panda3d.camera.attachNewNode("corner of screen")
+        self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
         self.show_view_cube()
 
         # Agregamos una luz puntual en la ubicación de la camara
@@ -125,6 +130,7 @@ class CameraControl:
             if self.winsize != newsize:
                 self.winsize = newsize
                 self.set_lens()
+                self.show_view_cube()
 
     def mouse_is_over_workspace(self):
         """
@@ -132,7 +138,46 @@ class CameraControl:
 
         :return: True/False
         """
+        gui_objects = app.gui_objects
         is_over = False
+
+        if self.panda3d.mouseWatcherNode.has_mouse() and app.workspace_active:
+            is_over = True
+            mouse_data = self.panda3d.win.getPointer(0)
+            mouse_x, mouse_y = mouse_data.getX(), mouse_data.getY()
+
+            for name, gui_obj in gui_objects.items():
+                #print("check mouse over {}".format(name))
+                pos = gui_obj.getPos()
+                frame_size = list(gui_obj["frameSize"])
+
+                x0 = pos[0] + frame_size[0]
+                x1 = pos[0] + frame_size[1]
+                y0 = -pos[2] - frame_size[2]
+                y1 = -pos[2] - frame_size[3]
+
+                x_left = min(x0, x1)
+                x_right = max(x0, x1)
+                y_top = min(y0, y1)
+                y_bottom = max(y0, y1)
+
+                #if name is "status_bar":
+                #print(pos)
+                #print("{} {} / {} {}".format(x_left, x_right, y_top, y_bottom))
+
+                overmouse_x = (x_left <= mouse_x <= x_right)
+                overmouse_y = (y_top <= mouse_y <= y_bottom)
+
+                if overmouse_x and overmouse_y:
+                    #print(is_over)
+                    is_over = False
+                    break
+
+        app.mouse_on_workspace = is_over
+        if is_over:
+            get_mouse_3d_coords_task()
+
+        """
         workspace = self.panda3d.kyvi_workspace
 
         if self.panda3d.mouseWatcherNode.has_mouse() and workspace is not None and workspace.active:
@@ -153,7 +198,7 @@ class CameraControl:
             if overmouse_x and overmouse_y:
                 is_over = True
 
-        self.panda3d.mouse_on_workspace = is_over
+        self.panda3d.mouse_on_workspace = is_over"""
 
         return is_over
 
@@ -165,7 +210,7 @@ class CameraControl:
         # El codigo se ejecuta si el mouse está dentro del espacio de trabajo o si ya se está realizando alguna acción
         if self.mouse_is_over_workspace() or self.camera_active:
             # Desactivamos el espacio de trabajo
-            self.panda3d.kyvi_workspace.active = False
+            app.workspace_active = False
 
             # El nodo mouseWatcherNode permite recibir la entrada de mouse y teclado
             btn = self.panda3d.mouseWatcherNode
@@ -208,7 +253,7 @@ class CameraControl:
             if cam_task is 0:
                 self.camera_active = False
                 # Se reactiva el espacio de trabajo
-                self.panda3d.kyvi_workspace.active = True
+                app.workspace_active = True
             else:
                 # Actualizamos la posición de la luz puntual
                 cam = self.panda3d.camera
@@ -315,12 +360,14 @@ class CameraControl:
         Agrega un indicador de ejes en la esquina inferior izquierda
         """
         scale = 0.08
-        corner = self.panda3d.camera.attachNewNode("corner of screen")
-        corner.setPos(-12.8 / 2 + 10 * scale, 5, -7.2 / 2 + 10 * scale)
-        axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
+        width = self.panda3d.win.getXSize()/100
+        height = self.panda3d.win.getYSize()/100
+
+        self.corner.setPos(width / 2 - 10 * scale, 5, height / 2 - 28 * scale)
+
 
         # Dibujar por encima de todos los objetos
-        axis.setBin("fixed", 0)
+        self.axis.setBin("fixed", 0)
 
         """
         Tarea pendiente:
@@ -335,11 +382,11 @@ class CameraControl:
         https://discourse.panda3d.org/t/model-always-on-screen/8135/5
         """
 
-        axis.setScale(scale)
+        self.axis.setScale(scale)
         # axis.setScale(1)
-        axis.reparentTo(corner)
-        axis.setPos(-5 * scale, -5 * scale, -5 * scale)
-        axis.setCompass()
+        self.axis.reparentTo(self.corner)
+        self.axis.setPos(-5 * scale, -5 * scale, -5 * scale)
+        self.axis.setCompass()
 
     def add_cube(self):
         """
@@ -416,7 +463,7 @@ class CameraControl:
                 entity_id = entity.getTag("entity_id")
                 entity_type = entity.getTag("entity_type")
                 print(entity_type)
-                model = self.panda3d.model_reg
+                model = app.model_reg
 
                 category_type = model.get(entity_type, dict())
                 entity = category_type.get(entity_id, None)
@@ -424,10 +471,63 @@ class CameraControl:
                 print(entity)
                 widget.entity_read(entity)
         else:
+            pass
+            #entity = self.panda3d.view_entity
+            #widget = self.panda3d.kyvy_wid_properties
+            #widget.entity_read(entity)
 
-            entity = self.panda3d.view_entity
-            widget = self.panda3d.kyvy_wid_properties
-            widget.entity_read(entity)
 
+def get_mouse_3d_coords_task():
+    # Obtenemos la ubicación absoluta de la camara y su dirección
+    base = app.get_show_base()
 
+    if base.mouseWatcherNode.has_mouse():
+        camera_vect = base.camera.getQuat(base.render).getForward()
+        camera_pos = base.camera.get_pos(base.render)
 
+        """
+
+        Para determinar la posición origen del rayo se mueve un objeto cursor enparentado a la camara, 
+        estableciendo su posición realtiva a esta en funcion de la ubicacion del mouse
+
+        """
+        width = base.win.getXSize()
+        height = base.win.getYSize()
+
+        mouse_data = base.win.getPointer(0)
+        mouse_pos = mouse_data.getX(), mouse_data.getY()
+
+        cursor_x = (mouse_pos[0] - width / 2) / 100
+        cursor_y = (height / 2 - mouse_pos[1]) / 100
+
+        app.cursor.set_pos(cursor_x, 2, cursor_y)
+        cursor_pos = app.cursor.get_pos(base.render)
+
+        """
+        El siguiente código calcula la intersección entre el plano de trabajo y la recta de acción del mouse
+
+        from https://stackoverflow.com/a/39424162
+
+        """
+        epsilon = 1e-6
+        # Define plane
+        plane_normal = np.array(app.work_plane_vect)
+        plane_point = np.array(app.work_plane_point)  # Any point on the plane
+
+        # Define ray
+        ray_direction = np.array(camera_vect)
+        ray_point = np.array(cursor_pos)  # Any point along the ray
+
+        ndotu = plane_normal.dot(ray_direction)
+        if abs(ndotu) < epsilon:
+            # No se encuentra intersección
+            app.work_plane_mouse = [None, None, None]
+        else:
+            # Se encuentra intersección
+            w = ray_point - plane_point
+            si = -plane_normal.dot(w) / ndotu
+            psi = w + si * ray_direction + plane_point
+
+            app.work_plane_mouse = psi
+
+    return app.work_plane_mouse
