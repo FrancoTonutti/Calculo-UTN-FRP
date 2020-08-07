@@ -1,37 +1,36 @@
 from setuptools import setup
 
+"""
+Comando para compilar:
+
+python setup.py bdist_apps
+"""
+
 setup(
-    name="CalculoUTN",
+    name="CalculoUTN_testgui",
     options={
         'build_apps': {
             'include_patterns': [
                 '**/*.png',
                 '**/*.jpg',
                 '**/*.egg',
+                '**/*.prc',
+                '**/*.ttf',
             ],
             'gui_apps': {
-                'CalculoUTN': 'main.py',
+                'CalculoUTN_testgui': 'main.py',
             },
             'platforms': [
-                'win_amd64',
-                'win32',
+                'win_amd64'
             ],
-            'log_filename': '$USER_APPDATA/CalculoUTN/output.log',
+            'log_filename': '$USER_APPDATA/CalculoUTN_testgui/output.log',
             'log_append': False,
             'plugins': [
                 'pandagl',
-                'Kivy',
                 'Pillow',
-                'panda3d_kivy',
-                'Kivy-Garden',
-                'kivy-deps.glew',
-                'kivy-deps.sdl2',
-                'pywin32',
                 'numpy',
-            ]
+
+            ],
         }
-    },
-    dependency_links=[
-                'https://pypi.org/project/kivy-garden/'
-            ]
+    }
 )

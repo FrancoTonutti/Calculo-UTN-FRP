@@ -1,4 +1,5 @@
-from kivy.app import App
+#from kivy.app import App
+from app import app
 from app.controller.console import command
 
 import math
@@ -13,20 +14,22 @@ def start_analysis():
     print("start_analysis()")
 
     # Accede a la interfaz de kivy para obtener la información de panda3d
-    app = App.get_running_app()
-    panda3d = app.root.panda3D
+
+    panda3d = app.get_show_base()
     # Obtenemos el registro del modelo
-    model_reg = panda3d.model_reg
+    model_reg = app.model_reg
 
     puntos = []
     areas = []
     inercias = []
 
     # Recorremos la lista de barras e imprimimos en consola las posiciones de inicio y fin de cada barra
-    bar_list = model_reg.get("Bar", [])
+    print("model_reg", model_reg)
+    bar_list = model_reg.get("Bar", {})
     i = 1
-    for bar in bar_list:
+    for entity_id, bar in bar_list.items():
         print("Barra {}".format(i))
+        print(bar)
         start = bar.start.position[0], bar.start.position[1]
         end = bar.end.position[0], bar.end.position[1]
         if start not in puntos:
@@ -42,7 +45,7 @@ def start_analysis():
 
     i = 1
     mcb = []
-    for bar in bar_list:
+    for entity_id, bar in bar_list.items():
         start = bar.start.position[0], bar.start.position[1]
         end = bar.end.position[0], bar.end.position[1]
 
