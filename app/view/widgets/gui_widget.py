@@ -6,6 +6,7 @@ class GuiWidget:
     def __init__(self):
         self.initialized = False
 
+
     def mergeoptions(self, optiondefs):
         optiondefs_base = (
             # Define type of DirectGuiWidget
@@ -39,19 +40,39 @@ class GuiWidget:
         print(col)
         self["frameColor"] = col
 
-    def setPosition(self):
+    def get_parent_size(self):
         if self.parent == pixel2d:
+            parent_width = app.get_show_base().win.getXSize()
+            parent_height = app.get_show_base().win.getYSize()
+        else:
+
+            if self.parent_gui is not None:
+                size = self.parent_gui["frameSize"]
+                parent_width = size[1] - size[0]
+                parent_height = size[3] - size[2]
+            else:
+                parent_width = 0
+                parent_height = 0
+
+        return parent_width, parent_height
+
+    def setPosition(self):
+
+        """if self.parent == pixel2d:
             frame_width = app.get_show_base().win.getXSize()
             frame_height = app.get_show_base().win.getYSize()
 
         else:
+
             size = self.parent["frameSize"]
             if size is not None:
                 frame_width = size[1] - size[0]
                 frame_height = size[3] - size[2]
             else:
                 frame_width = 0
-                frame_height = 0
+                frame_height = 0"""
+
+        frame_width, frame_height = self.get_parent_size()
 
         x0, y0 = 0, 0
         x, y = self["position"]
