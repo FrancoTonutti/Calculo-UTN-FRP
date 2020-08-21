@@ -1,4 +1,4 @@
-from app.controller.commands import bar, calculate, render
+from app.controller.commands import bar, calculate, render, regen_ui
 
 """import importlib
 import os

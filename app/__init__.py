@@ -39,7 +39,7 @@ class App:
     def get_show_base(self) -> PandaApp:
         return self.base
 
-    def add_gui_region(self, name, direct_gui_object):
+    def add_gui_region(self, name: str, direct_gui_object) -> None:
         self.gui_objects.update({name: direct_gui_object})
 
 

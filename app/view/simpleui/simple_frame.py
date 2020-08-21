@@ -35,9 +35,26 @@ else:
 
 
 class SimpleFrame(DirectGuiWidget):
+    """
+
+    ('frameColor', "C_CARROT", self.setFrameColor),
+    ('position', [0, 0], self.set_position),
+    ('size', [None, None], self.set_size),
+    ('orginV', "top", self.set_position),
+    ('orginH', "left", self.set_position),
+    ('sizeHint', [None, None], self.set_size)
+
+    """
     DefDynGroups = ('text', 'geom', 'image')
 
     def __init__(self, parent=None, **kw):
+
+        if isinstance(parent, SimpleFrame):
+            self.parent_gui = parent
+        else:
+            self.parent_gui = None
+
+        self.layout_size_hint = [None, None]
 
         # Inherits from DirectGuiWidget
         optiondefs = (
@@ -60,7 +77,11 @@ class SimpleFrame(DirectGuiWidget):
             ('size', [None, None], self.set_size),
             ('orginV', "top", self.set_position),
             ('orginH', "left", self.set_position),
-            ('sizeHint', [None, None], self.set_size)
+            ('sizeHint', [None, None], self.set_size),
+            ('alpha', 255, self.setFrameColor),
+            ('padding', [0, 0, 0, 0], self.set_size),
+            ('layout', "FloatLayout", None),
+            ('frameSize', (0, 32, -32, 0), self.setFrameSize),
         )
         # Merge keyword options with default options
         self.defineoptions(kw, optiondefs,
@@ -71,6 +92,8 @@ class SimpleFrame(DirectGuiWidget):
             parent = pixel2d
 
         DirectGuiWidget.__init__(self, parent)
+
+        self.setPythonTag('simple_gui', self)
 
         # Call option initialization functions
         self.initialiseoptions(SimpleFrame)
@@ -83,23 +106,37 @@ class SimpleFrame(DirectGuiWidget):
             self.setPos(0, 0, 0)
         self.flattenLight()
         self.set_position()
+        self.parent_width, self.parent_height = self.get_parent_size()
 
     def set_size(self):
+
+        pad = self["padding"]
+        pad_x = pad[0] + pad[1]
+        pad_y = pad[2] + pad[3]
+
+        width, height = self.box_size()
+
+        width = max(width - pad_x, 0)
+        height = max(height - pad_y, 0)
+
+        self["frameSize"] = (0, width, -height, 0)
+
+        self.update_text_pos()
+        self.set_position()
+
+    def box_size(self):
         width, height = self["size"]
         hint_x, hint_y = self["sizeHint"]
 
-        if self.parent == pixel2d:
-            parent_width = app.get_show_base().win.getXSize()
-            parent_height = app.get_show_base().win.getYSize()
-        else:
-            #size = self.parent["frameSize"]
-            size = None
-            if size is not None:
-                parent_width = size[1] - size[0]
-                parent_height = size[3] - size[2]
-            else:
-                parent_width = 0
-                parent_height = 0
+        if hint_x is None and hint_y is None:
+            hint_x, hint_y = self.layout_size_hint
+
+        if width is None:
+            width = 0
+        if height is None:
+            height = 0
+
+        parent_width, parent_height = self.get_parent_size()
 
         if hint_x is not None:
             width = parent_width * hint_x
@@ -107,7 +144,29 @@ class SimpleFrame(DirectGuiWidget):
         if hint_y is not None:
             height = parent_height * hint_y
 
-        self["frameSize"] = (0, width, -height, 0)
+        return [width, height]
+
+    def get_parent_size(self):
+        if self.parent == pixel2d:
+            parent_width = app.get_show_base().win.getXSize()
+            parent_height = app.get_show_base().win.getYSize()
+        else:
+
+            if self.parent_gui is not None:
+                size = self.parent_gui["frameSize"]
+                parent_width = size[1] - size[0]
+                parent_height = size[3] - size[2]
+            else:
+                parent_width = 0
+                parent_height = 0
+
+        return parent_width, parent_height
+
+    def update_text_pos(self):
+
+        size = self["frameSize"]
+        width = size[1]
+        height = -size[2]
 
         if hasattr(self, "text_pos"):
             txt_x, txt_y = self["text_pos"]
@@ -118,49 +177,91 @@ class SimpleFrame(DirectGuiWidget):
                 txt_y = -(height / 2 + size_y / 2)
             self["text_pos"] = (txt_x, txt_y)
 
-    def set_position(self):
-        if self.parent == pixel2d:
-            frame_width = app.get_show_base().win.getXSize()
-            frame_height = app.get_show_base().win.getYSize()
+    def get_gui_childrens(self) -> list:
+        childs = self.children
+        for child in childs:
+            child_gui = child.getPythonTag("simple_gui")
+            if child_gui is not None:
+                yield child_gui
 
-        else:
-            print("self", type(self))
-            print("parent", type(self.getParent()))
-            print("children", type(self.parent.children.getPaths()[0]))
-            #size = self.parent["frameSize"]
-            #size = getattr(self.parent, "frameSize")
-            size = None
-            if size is not None:
-                frame_width = size[1] - size[0]
-                frame_height = size[3] - size[2]
-            else:
-                frame_width = 0
-                frame_height = 0
+    def set_position(self):
+
+        if self["layout"].startswith("BoxLayout"):
+            orientation = 0
+            if self["layout"].endswith(".X"):
+                orientation = 0
+            elif self["layout"].endswith(".Y"):
+                orientation = 1
+
+
+            size = self["frameSize"]
+            frame_size = [size[1] - size[0], size[3] - size[2]]
+            total_len = frame_size[orientation]
+
+            free_size_widgets = list()
+
+            frame_pos = 0
+            for child in self.get_gui_childrens():
+                size = child.box_size()
+
+
+                if child["size"] == [None, None] and child["sizeHint"] == [None, None]:
+                    print("free_size_widgets")
+                    free_size_widgets.append(child)
+                else:
+                    frame_pos += size[orientation]
+
+            free_space = max(total_len - frame_pos, 0) / max(len(free_size_widgets), 1)
+            print(total_len, frame_pos, free_space)
+            #if free_space > 0:
+
+            free_space_hint = free_space / total_len
+            for child in free_size_widgets:
+                if orientation == 0:
+                    child.layout_size_hint = [free_space_hint, 1]
+                else:
+                    child.layout_size_hint = [1, free_space_hint]
+
+            frame_pos = 0
+            for child in self.get_gui_childrens():
+                size = child.box_size()
+                pos = child["position"]
+                if orientation == 0:
+                    child["position"] = [frame_pos, pos[1]]
+                else:
+                    child["position"] = [pos[0], frame_pos]
+                frame_pos += size[orientation]
 
         x0, y0 = 0, 0
         x, y = self["position"]
 
-        if self["orginH"] is "left":
-            x0 = 0
-        elif self["orginH"] is "center":
-            x0 = frame_width / 2
-        elif self["orginH"] is "right":
-            x0 = frame_width
+        if self.parent_gui is None or self.parent_gui["layout"] == "FloatLayout":
 
-        if self["orginV"] is "top":
-            y0 = 0
-        elif self["orginV"] is "middle":
-            y0 = -frame_height / 2
-        elif self["orginV"] is "bottom":
-            y0 = -frame_height
+            parent_width, parent_height = self.get_parent_size()
 
-        self.setPos(x0 + x, 0, y0 - y)
+            if self["orginH"] is "left":
+                x0 = 0
+            elif self["orginH"] is "center":
+                x0 = parent_width / 2
+            elif self["orginH"] is "right":
+                x0 = parent_width
+
+            if self["orginV"] is "top":
+                y0 = 0
+            elif self["orginV"] is "middle":
+                y0 = -parent_height / 2
+            elif self["orginV"] is "bottom":
+                y0 = -parent_height
+
+        padding = self["padding"]
+
+        self.setPos(x0 + x + padding[0], 0, y0 - y - padding[3])
         # height = h2-h1
         # self["frameSize"] = (0, win_width, 0, -height)
 
     def set_color_string(self):
         col = draw.get_color(self["colorString"], color_format="rgba", alpha=self["alpha"])
-        print("set_color_string",col)
+        print("set_color_string", col)
         self["frameColor"] = col
 
     """ DEFAULT METHODS"""
@@ -170,10 +271,10 @@ class SimpleFrame(DirectGuiWidget):
         colors = self['frameColor']
         if isinstance(colors, str):
             print("COLORS STRIGGG")
-            colors = draw.get_color(colors, color_format="rgba")
+            colors = draw.get_color(colors, color_format="rgba", alpha=self["alpha"])
         elif isinstance(colors[0], str):
             for index, color in enumerate(colors):
-                colors[index] = draw.get_color(color, color_format="rgba")
+                colors[index] = draw.get_color(color, color_format="rgba", alpha=self["alpha"])
 
         if type(colors[0]) == int or \
                 type(colors[0]) == float:
@@ -340,5 +441,3 @@ class SimpleFrame(DirectGuiWidget):
                         (), parent=self.stateNodePath[i],
                         image=image, scale=1,
                         sort=DGG.IMAGE_SORT_INDEX)
-
-

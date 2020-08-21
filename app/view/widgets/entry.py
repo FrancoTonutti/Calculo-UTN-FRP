@@ -4,6 +4,7 @@ from app import app
 from direct.showbase.DirectObject import DirectObject
 from app.view.widgets.gui_widget import GuiWidget
 from direct.task.Task import TaskManager
+from app.view.simpleui.simple_frame import SimpleFrame
 
 from panda3d.core import MouseWatcher
 task_manager = TaskManager()
@@ -13,6 +14,12 @@ class Entry(DirectEntry, DirectObject, GuiWidget):
     def __init__(self, parent=None, **kw):
         self.textures = ()
         self.initialized = False
+
+        if isinstance(parent, SimpleFrame):
+            self.parent_gui = parent
+        else:
+            self.parent_gui = None
+
         optiondefs = (
             # Define type of DirectGuiWidget
             ('frameColor', (0, 0, 0, 1), self.setFrameColor),

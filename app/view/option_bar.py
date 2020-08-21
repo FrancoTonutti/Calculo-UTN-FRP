@@ -4,6 +4,7 @@ from app.view.widgets.button import CustomButton
 from app.view.widgets.wideFrame import WideFrame
 from app.view.widgets.entry import Entry
 from app.controller.console import execute
+from app.view.simpleui.simple_frame import SimpleFrame
 
 
 # Soporte para funcionalidad de traducción en un futuro
@@ -63,8 +64,7 @@ def new_button(text, x, y, colors=None, command=None, args=None, parent=None, si
     return btn
 
 
-def execute_console(cmd):
-    execute(cmd)
+
 
 
 class OptionBar:
@@ -77,28 +77,9 @@ class OptionBar:
         self.status_bar = WideFrame(position=[0, -25], colorString="C_NEPHRITIS", orginV="bottom")
         app.add_gui_region("status_bar", self.status_bar)
 
-        entry = Entry(
-            text_fg=(1, 1, 1, 1),
-            orginH="center",
-            orginV="bottom",
-            position=[-10*15, -45],
-            text_scale=(14, 14),
-            width=20,
-            colorString="C_DKGRAY",
-            label="Ingrese un comando",
-            align="center",
-            command=execute_console
+        workspace = SimpleFrame(position=[0, 0], sizeHint=[1, 1], alpha=0, padding=[250, 0, 25, 150])
 
-            )
-        app.console_input = entry
-        app.add_gui_region("console_input", entry)
 
-        entry.setColorScale(1, 1, 1, 1)
-
-        c = draw.draw_cicle(0, 9, 9, "C_DKGRAY", entry)
-        c.setBin("fixed", 0)
-        c = draw.draw_cicle(20*14, 9, 9, "C_DKGRAY", entry)
-        c.setBin("fixed", 0)
 
         self.tab_btn = []
         self.tab_frames = []
