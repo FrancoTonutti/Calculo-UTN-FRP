@@ -7,6 +7,7 @@ from direct.showbase import ShowBaseGlobal
 from app.view import draw
 from app import app
 
+
 class Frame(DirectFrame, DirectObject):
     """
     Crea un Frame que abarca el ancho de la pantalla

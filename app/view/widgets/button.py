@@ -4,7 +4,7 @@ from direct.gui.DirectButton import *
 #from direct.gui import DirectFrame, DirectButton
 from direct.showbase import ShowBaseGlobal
 from app.view import draw
-
+from app.view.simpleui import window
 
 class CustomButton(DirectButton):
     def __init__(self, parent=None, **kw):
@@ -44,6 +44,20 @@ class CustomButton(DirectButton):
         self.flattenLight()
         self.setPosition()
         self.set_size()
+
+        self.bind(DGG.ENTER, self.on_enter)
+        self.bind(DGG.EXIT, self.on_leave)
+
+    def on_enter(self, event):
+        #draw.change_cursor("/c/Windows/Cursors/no_rm.cur")
+        #draw.change_cursor("/d/Bibliotecas/Documentos/Python 3/UTN/Calculo-UTN-FRP/data/cursors/cursor-link.cur")
+        #draw.change_cursor("data/cursors/link.cur")
+        window.set_cursor(window.cr_link)
+
+    def on_leave(self, event):
+        #draw.change_cursor("/c/Windows/Cursors/aero_arrow.cur")
+        #draw.change_cursor("/d/Bibliotecas/Documentos/Python 3/UTN/Calculo-UTN-FRP/data/cursors/arrow.cur")
+        window.set_cursor(window.cr_arrow)
 
     def setColorNames(self):
         if self["colorList"] is not None:

@@ -1,6 +1,6 @@
 from app import app
 from PIL import ImageFont
-from panda3d.core import DynamicTextFont, TextNode, LineSegs, NodePath
+from panda3d.core import DynamicTextFont, TextNode, LineSegs, NodePath, WindowProperties, Filename
 from typing import Type
 import builtins
 from direct.showbase.Loader import Loader
@@ -39,6 +39,7 @@ def draw_get_font(font_name: str = None, font_size: int = None) -> (Type[Dynamic
     if font_name not in fonts:
         loader = app.get_show_base().loader
         font_panda3d = loader.loadFont("data/fonts/{}.ttf".format(font_name))
+        font_panda3d.setPixelSize(40)
         font_pil = ImageFont.truetype("data/fonts/{}.ttf".format(font_name), font_size)
         fonts[font_name] = {"panda3d": font_panda3d, "pil{}".format(font_size): font_pil}
 
@@ -215,3 +216,11 @@ def draw_cicle(x, y, r, col=None, parent=None):
 
     return model
 
+
+def change_cursor(cursor_file):
+    winprops = WindowProperties()
+    filename = Filename.binaryFilename(cursor_file)
+    print("filename", filename.exists())
+    winprops.setCursorFilename(filename)
+    base = app.get_show_base()
+    base.win.requestProperties(winprops)

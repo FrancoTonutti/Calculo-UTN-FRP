@@ -7,7 +7,7 @@ python setup.py bdist_apps
 """
 
 setup(
-    name="CalculoUTN_testgui",
+    name="CalculoUTN",
     options={
         'build_apps': {
             'include_patterns': [
@@ -16,6 +16,7 @@ setup(
                 '**/*.egg',
                 '**/*.prc',
                 '**/*.ttf',
+                '**/*.cur',
             ],
             'gui_apps': {
                 'CalculoUTN_testgui': 'main.py',

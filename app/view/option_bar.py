@@ -64,11 +64,9 @@ def new_button(text, x, y, colors=None, command=None, args=None, parent=None, si
     return btn
 
 
-
-
-
 class OptionBar:
     def __init__(self):
+
         self.panda3d = app.get_show_base()
 
         self.options_frame = WideFrame(position=[0, 150], colorString="C_NEPHRITIS")
