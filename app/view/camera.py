@@ -3,6 +3,7 @@ import math
 from app import app
 from direct.showbase.DirectObject import DirectObject
 import numpy as np
+from app.model.entity import View
 import os
 """if os.name == 'nt':
     # Importar solo en windows
@@ -446,14 +447,22 @@ class CameraControl(DirectObject):
 
                 category_type = model.get(entity_type, dict())
                 entity = category_type.get(entity_id, None)
-                widget = self.panda3d.kyvy_wid_properties
+
+                prop_editor = app.main_ui.prop_editor
                 print(entity)
-                widget.entity_read(entity)
+                prop_editor.entity_read(entity)
         else:
-            pass
-            #entity = self.panda3d.view_entity
-            #widget = self.panda3d.kyvy_wid_properties
-            #widget.entity_read(entity)
+            entities = app.model_reg.get("View")
+
+            if entities is None or len(entities) is 0:
+                View()
+
+            entities = app.model_reg.get("View")
+            entity = list(entities.values())[0]
+            prop_editor = app.main_ui.prop_editor
+            prop_editor.entity_read(entity)
+
+
 
 
 def get_mouse_3d_coords_task():

@@ -87,15 +87,19 @@ class Entity:
 
 
 def register(entity):
-
+    # Obtenemos el registro del modelo
     model_reg = app.model_reg
+
+    # Leemos el nombre de la clase
     name = type(entity).__name__
 
+    # Extraemos el diccionario con todos los elementos de la categoría, si no existe lo creamos
     category_dict = model_reg.get(name, None)
     if category_dict is None:
         category_dict = dict()
         model_reg.update({name: category_dict})
 
+    # Agregamos el modelo al diccionario
     category_dict.update({entity.entity_id: entity})
 
 

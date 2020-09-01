@@ -151,9 +151,7 @@ class SimpleFrame(DirectFrame):
                 size = self.parent_gui["frameSize"]
                 if hasattr(self.parent_gui, "getCanvas"):
                     size = self.parent_gui["canvasSize"]
-                    print("canvasSize!!!!!!!!!!!!!", size)
-                else:
-                    print("no canvasSize!!!!!!!!!!!!!", self.parent_gui)
+
                 parent_width = size[1] - size[0]
                 parent_height = size[3] - size[2]
             else:
@@ -263,13 +261,13 @@ class SimpleFrame(DirectFrame):
         ('rowsMinimum', {}, None),"""
 
         orientation = 0
-        limit = 1
+        index_one_limit = 1
         if self["layoutDir"].upper() == "X":
             orientation = 0
-            limit = self["gridCols"]
+            index_one_limit = self["gridCols"]
         elif self["layoutDir"].upper() == "Y":
             orientation = 1
-            limit = self["gridRows"]
+            index_one_limit = self["gridRows"]
 
         size = self["frameSize"]
         if hasattr(self, "getCanvas"):
@@ -284,28 +282,40 @@ class SimpleFrame(DirectFrame):
         row_min_height = self["rowsMinimum"]
 
         # Determina el tamaño que debe tener como mínimo cada fila y cada columna
-        index = 0
+        index_h = 0
+        index_v = 0
+
         for child in self.get_gui_childrens():
             size = child.box_size()
 
             if child["size"] == [None, None] and child["sizeHint"] == [None, None]:
-                print("free_size_widgets")
+                # Si el elemento hijo no tiene un tamaño predefinido, lo agrega a la lista de elementos con tamaño libre
                 free_size_widgets.append(child)
                 size = [0, 0]
-            else:
-                frame_pos += size[orientation]
 
-            max_width = cols_min_width.get(index, 0)
+            # Busca el elemento de mayor ancho en cada columna para determinar
+            # el menor ancho que podrá contener a todos los elementos
+            max_width = cols_min_width.get(index_h, 0)
             max_width = max(max_width, size[0])
-            cols_min_width.update({index: max_width})
+            cols_min_width.update({index_h: max_width})
 
-            max_height = row_min_height.get(index, 0)
+            # Busca el elemento de mayor altura en cada fila para determinar
+            # la menor altura que podrá contener a todos los elementos
+            max_height = row_min_height.get(index_v, 0)
             max_height = max(max_height, size[1])
-            row_min_height.update({index: max_height})
+            row_min_height.update({index_v: max_height})
 
-            index += 1
-            if index >= limit:
-                index = 0
+            # Incrementa los índices horizontal y vertical según la orientacion de la grilla
+            if orientation is 0:
+                index_h += 1
+                if index_h >= index_one_limit:
+                    index_h = 0
+                    index_v += 1
+            elif orientation is 1:
+                index_v += 1
+                if index_v >= index_one_limit:
+                    index_v = 0
+                    index_h += 1
 
         width_filled = sum(cols_min_width.values())
         height_filled = sum(row_min_height.values())
@@ -348,7 +358,7 @@ class SimpleFrame(DirectFrame):
                 frame_pos_a += cols_min_width.get(index_a, 0)
 
                 index_a += 1
-                if index_a >= limit:
+                if index_a >= index_one_limit:
                     index_a = 0
                     frame_pos_a = 0
                     frame_pos_b += row_min_height.get(index_b, 0)
@@ -359,7 +369,7 @@ class SimpleFrame(DirectFrame):
                 frame_pos_a += row_min_height.get(index_a, 0)
 
                 index_a += 1
-                if index_a >= limit:
+                if index_a >= index_one_limit:
                     index_a = 0
                     frame_pos_a = 0
                     frame_pos_b += cols_min_width.get(index_b, 0)
@@ -373,7 +383,6 @@ class SimpleFrame(DirectFrame):
         # this might be a single color or a list of colors
         colors = self['frameColor']
         if isinstance(colors, str):
-            print("COLORS STRIGGG")
             colors = draw.get_color(colors, color_format="rgba", alpha=self["alpha"])
         elif isinstance(colors[0], str):
             for index, color in enumerate(colors):
@@ -388,6 +397,5 @@ class SimpleFrame(DirectFrame):
                 color = colors[-1]
             else:
                 color = colors[i]
-            print("color", color)
             self.frameStyle[i].setColor(color[0], color[1], color[2], color[3])
         self.updateFrameStyle()

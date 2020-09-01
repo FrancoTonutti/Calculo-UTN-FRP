@@ -2,7 +2,7 @@ from direct.gui.DirectEntry import *
 from direct.task.Task import TaskManager
 from app.view.simpleui.simple_frame import SimpleFrame
 from app.view.widgets.gui_widget import GuiWidget
-from panda3d.core import MouseWatcher
+from panda3d.core import MouseWatcher, PGEntry
 task_manager = TaskManager()
 mouse_watcher = MouseWatcher()
 from app import app
@@ -12,20 +12,21 @@ from app.view import draw
 from direct.gui import DirectGuiGlobals as DGG
 from app.view.simpleui import window
 
+
 class SimpleEntry(DirectEntry, SimpleFrame):
     def __init__(self, parent=None, **kw):
-
-
+        # ('focusInCommand', self.on_focus, None),
+        # ('focusOutCommand', self.on_defocus, None),
         optiondefs = (
             # Define type of DirectGuiWidget
             ('label', "None", None),
-            ('focusInCommand', self.on_focus, None),
+
             ('focusInExtraArgs', [], None),
-            ('focusOutCommand', self.on_defocus, None),
+
             ('focusOutExtraArgs', [], None),
             ('textCenterX', True, self.update_text_pos),
             ('textCenterY', True, self.update_text_pos),
-            ('align', "center", self.set_align)
+            ('align', "center", self.set_align),
         )
         # Merge keyword options with default options
         self.defineoptions(kw, optiondefs)
@@ -38,27 +39,14 @@ class SimpleEntry(DirectEntry, SimpleFrame):
 
         self["text_font"] = draw.draw_get_font()[0]
 
-        # Call option initialization functions
-        print("initialiseoptions START !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        # Call option initialization functionsprint("initialiseoptions START !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         self.initialiseoptions(SimpleEntry)
-        print("initialiseoptions END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-
-        """size = self['frameSize']
-        if size is None:
-            size = self["text_scale"][1]
-            self.setPos(0, 0, -size)
-        else:
-            self.setPos(-size[0], 0, -size[3])
-        """
-        #self.flattenLight()
-        #self.setPosition()
         self.set_position()
 
         self.initialized = True
 
         if self["size"] == [None, None]:
-            print("FONT SIZE FIX")
             font_size = self["text_scale"][1]
             self["size"] = [font_size*self["width"], font_size*self["numLines"]+4]
 
@@ -70,6 +58,11 @@ class SimpleEntry(DirectEntry, SimpleFrame):
         #task_manager.add(self.focus_task, "entry_focus_task")
         self.bind(DGG.ENTER, self.on_enter)
         self.bind(DGG.EXIT, self.on_leave)
+
+        self.accept(self.guiItem.getFocusInEvent(), self.on_focus)
+        self.accept(self.guiItem.getFocusOutEvent(), self.on_defocus)
+
+
 
     def on_enter(self, event):
         # draw.change_cursor("/c/Windows/Cursors/no_rm.cur")
@@ -96,15 +89,16 @@ class SimpleEntry(DirectEntry, SimpleFrame):
 
         return task.cont
 
-
-    def on_focus(self, *args):
+    def on_focus(self, event=None):
+        self.focusInCommandFunc()
         self["focus"] = True
         print("on_focus", self["focus"])
         if self.get() == self["label"]:
             self.enterText("")
         task_manager.add(self.focus_task, "entry_focus_task")
 
-    def on_defocus(self):
+    def on_defocus(self, event=None):
+        self.focusOutCommandFunc()
         self["focus"] = False
         if self["label"] is not None and self.get() is "":
             self.enterText(self["label"])
@@ -118,6 +112,10 @@ class SimpleEntry(DirectEntry, SimpleFrame):
         if btn.isButtonDown("mouse1"):
             mouse_data = panda3d.win.getPointer(0)
             mouse_x, mouse_y = mouse_data.getX(), mouse_data.getY()
+
+            if str(self) == "**removed**":
+                task_manager.remove(task)
+                return task.cont
 
             frame_size = self["frameSize"]
             if frame_size is None:
@@ -143,11 +141,12 @@ class SimpleEntry(DirectEntry, SimpleFrame):
             if not overmouse_x or not overmouse_y:
                 task_manager.remove(task)
                 self["focus"] = False
-
         return task.cont
 
     def defocus(self):
         self["focus"] = False
+        self.on_defocus()
+        PGEntry.setFocus(self.guiItem, self['focus'])
 
     def update_text_pos(self):
 
@@ -170,3 +169,17 @@ class SimpleEntry(DirectEntry, SimpleFrame):
                 self["text_align"] = TextProperties.A_center
             elif self["align"] is "right":
                 self["text_align"] = TextProperties.A_right
+
+    def focusInCommandFunc(self):
+        if self['focusInCommand']:
+            self['focusInCommand'](*[self.get()] + self['focusInExtraArgs'])
+        if self['autoCapitalize']:
+            self.accept(self.guiItem.getTypeEvent(), self._handleTyping)
+            self.accept(self.guiItem.getEraseEvent(), self._handleErasing)
+
+    def focusOutCommandFunc(self):
+        if self['focusOutCommand']:
+            self['focusOutCommand'](*[self.get()] + self['focusOutExtraArgs'])
+        if self['autoCapitalize']:
+            self.ignore(self.guiItem.getTypeEvent())
+            self.ignore(self.guiItem.getEraseEvent())
