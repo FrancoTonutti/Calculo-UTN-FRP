@@ -48,4 +48,12 @@ def set_cursor(cursor: str):
     base.win.requestProperties(winprops)
 
 
+def set_window_icon(file: str):
+    winprops = WindowProperties()
+    winprops.setIconFilename(file)
+
+    base = app.get_show_base()
+    base.win.requestProperties(winprops)
+
+
 

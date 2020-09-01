@@ -5,3 +5,4 @@ show-frame-rate-meter False
 undecorated False
 
 gl-debug True
+icon-filename data/icons/icon.ico
