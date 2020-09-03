@@ -3,6 +3,8 @@ from .layout_controller import Layout
 from direct.showbase.DirectObject import DirectObject
 from app.view import draw
 from app.view.widgets.entry import Entry
+from app.view.simpleui.simple_entry import SimpleEntry
+
 from app.controller.console import execute
 
 
@@ -14,14 +16,14 @@ class ConsoleUI(DirectObject):
     def __init__(self, layout: Layout):
         self.frame = layout.work_area
 
-        entry = Entry(
+        entry = SimpleEntry(
             text_fg=(1, 1, 1, 1),
             orginH="center",
             orginV="bottom",
             position=[-10 * 15, -25],
             text_scale=(14, 14),
             width=20,
-            colorString="C_DKGRAY",
+            frameColor="C_DKGRAY",
             label="Ingrese un comando",
             align="center",
             command=execute_console,

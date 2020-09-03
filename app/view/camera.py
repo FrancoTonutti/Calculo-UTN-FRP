@@ -3,6 +3,7 @@ import math
 from app import app
 from direct.showbase.DirectObject import DirectObject
 import numpy as np
+from app.model.entity import View
 import os
 """if os.name == 'nt':
     # Importar solo en windows
@@ -139,16 +140,16 @@ class CameraControl(DirectObject):
         :return: True/False
         """
         gui_objects = app.gui_objects
-        is_over = False
+        is_over_workspace = False
 
         if self.panda3d.mouseWatcherNode.has_mouse() and app.workspace_active:
-            is_over = True
+            is_over_workspace = True
             mouse_data = self.panda3d.win.getPointer(0)
             mouse_x, mouse_y = mouse_data.getX(), mouse_data.getY()
 
             for name, gui_obj in gui_objects.items():
-                #print("check mouse over {}".format(name))
-                pos = gui_obj.getPos()
+
+                pos = gui_obj.getPos(pixel2d)
                 frame_size = list(gui_obj["frameSize"])
 
                 x0 = pos[0] + frame_size[0]
@@ -168,39 +169,18 @@ class CameraControl(DirectObject):
                 overmouse_x = (x_left <= mouse_x <= x_right)
                 overmouse_y = (y_top <= mouse_y <= y_bottom)
 
+                # Revisa si el mouse se encuentra sobre un elemento de interfaz
                 if overmouse_x and overmouse_y:
-                    #print(is_over)
-                    is_over = False
+
+                    # print("mouse is over {}".format(name))
+                    is_over_workspace = False
                     break
 
-        app.mouse_on_workspace = is_over
-        if is_over:
+        app.mouse_on_workspace = is_over_workspace
+        if is_over_workspace:
             get_mouse_3d_coords_task()
 
-        """
-        workspace = self.panda3d.kyvi_workspace
-
-        if self.panda3d.mouseWatcherNode.has_mouse() and workspace is not None and workspace.active:
-            pos = workspace.pos
-            size = workspace.size
-            offset_left, offset_top, offset_right, offset_bottom = workspace.offset
-
-            offset = [0, 0, 0, 0]
-
-            height = self.panda3d.win.getYSize()
-
-            mouse_data = self.panda3d.win.getPointer(0)
-            mouse_pos = mouse_data.getX(), height - mouse_data.getY()
-
-            overmouse_x = (pos[0]+offset_left <= mouse_pos[0] <= pos[0]-offset_right + size[0])
-            overmouse_y = (pos[1]+offset_bottom <= mouse_pos[1] <= pos[1]-offset_top + size[1])
-
-            if overmouse_x and overmouse_y:
-                is_over = True
-
-        self.panda3d.mouse_on_workspace = is_over"""
-
-        return is_over
+        return is_over_workspace
 
     def camera_control_task(self, task):
         """
@@ -467,14 +447,22 @@ class CameraControl(DirectObject):
 
                 category_type = model.get(entity_type, dict())
                 entity = category_type.get(entity_id, None)
-                widget = self.panda3d.kyvy_wid_properties
+
+                prop_editor = app.main_ui.prop_editor
                 print(entity)
-                widget.entity_read(entity)
+                prop_editor.entity_read(entity)
         else:
-            pass
-            #entity = self.panda3d.view_entity
-            #widget = self.panda3d.kyvy_wid_properties
-            #widget.entity_read(entity)
+            entities = app.model_reg.get("View")
+
+            if entities is None or len(entities) is 0:
+                View()
+
+            entities = app.model_reg.get("View")
+            entity = list(entities.values())[0]
+            prop_editor = app.main_ui.prop_editor
+            prop_editor.entity_read(entity)
+
+
 
 
 def get_mouse_3d_coords_task():

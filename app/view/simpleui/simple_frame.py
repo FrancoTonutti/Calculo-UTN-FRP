@@ -18,15 +18,10 @@ explanation and an example of how to use this class.
 
 __all__ = ['SimpleFrame']
 
-from panda3d.core import *
-from direct.gui import DirectGuiGlobals as DGG
-from direct.gui.DirectGuiBase import *
-from direct.gui.OnscreenImage import OnscreenImage
-from direct.gui.OnscreenGeom import OnscreenGeom
-from direct import directtools
 from app.view import draw
 from app import app
 import sys
+from direct.gui.DirectFrame import *
 
 if sys.version_info >= (3, 0):
     stringType = str
@@ -34,44 +29,38 @@ else:
     stringType = basestring
 
 
-class SimpleFrame(DirectGuiWidget):
+class SimpleFrame(DirectFrame):
+    """
+    Crea un Frame que abarca el ancho de la pantalla
+
+    Argumentos
+
+    position -- Lista con las alturas inicial y final del marco, desde arriba hacia abajo (default: [0, 10])
+    Ademas todos los parametros heredados de DirectFrame
     """
 
-    ('frameColor', "C_CARROT", self.setFrameColor),
-    ('position', [0, 0], self.set_position),
-    ('size', [None, None], self.set_size),
-    ('orginV', "top", self.set_position),
-    ('orginH', "left", self.set_position),
-    ('sizeHint', [None, None], self.set_size)
-
-    """
-    DefDynGroups = ('text', 'geom', 'image')
-
-    def __init__(self, parent=None, **kw):
+    def __init__(self, parent=None, override_default=False, **kw):
 
         if isinstance(parent, SimpleFrame):
             self.parent_gui = parent
         else:
             self.parent_gui = None
 
+            #
+            if parent is not None:
+                if parent.hasPythonTag('simple_gui'):
+                    self.parent_gui = parent.getPythonTag("simple_gui")
+
+            """if parent is not None:
+                if str(parent).endswith("/canvas"):
+                    obj = parent.parent.parent
+                    if obj.hasPythonTag('simple_gui'):
+                        self.parent_gui = obj.getPythonTag("simple_gui")"""
+
         self.layout_size_hint = [None, None]
 
-        # Inherits from DirectGuiWidget
         optiondefs = (
-            # Define type of DirectGuiWidget
-            ('pgFunc', PGItem, None),
-            ('numStates', 1, None),
-            ('state', self.inactiveInitState, None),
-            # Frame can have:
-            # A background texture
-            ('image', None, self.set_image),
-            # A midground geometry item
-            ('geom', None, self.set_geom),
-            # A foreground text node
-            ('text', None, self.set_text),
-            # Change default value of text mayChange flag from 0
-            # (OnscreenText.py) to 1
-            ('textMayChange', 1, None),
+
             ('frameColor', "C_CARROT", self.setFrameColor),
             ('position', [0, 0], self.set_position),
             ('size', [None, None], self.set_size),
@@ -81,17 +70,23 @@ class SimpleFrame(DirectGuiWidget):
             ('alpha', 255, self.setFrameColor),
             ('padding', [0, 0, 0, 0], self.set_size),
             ('layout', "FloatLayout", None),
+            ('layoutDir', "X", None),
+            ('gridCols', 1, None),
+            ('gridRows', 1, None),
+            ('rowDefaultHeight', None, None),
+            ('colDefaultWidth', None, None),
+            ('colsMinimum', {}, None),
+            ('rowsMinimum', {}, None),
             ('frameSize', (0, 32, -32, 0), self.setFrameSize),
         )
         # Merge keyword options with default options
-        self.defineoptions(kw, optiondefs,
-                           dynamicGroups=SimpleFrame.DefDynGroups)
+        self.defineoptions(kw, optiondefs)
 
-        # Initialize superclasses
         if parent is None:
             parent = pixel2d
 
-        DirectGuiWidget.__init__(self, parent)
+        if override_default is False:
+            DirectFrame.__init__(self, parent)
 
         self.setPythonTag('simple_gui', self)
 
@@ -154,6 +149,9 @@ class SimpleFrame(DirectGuiWidget):
 
             if self.parent_gui is not None:
                 size = self.parent_gui["frameSize"]
+                if hasattr(self.parent_gui, "getCanvas"):
+                    size = self.parent_gui["canvasSize"]
+
                 parent_width = size[1] - size[0]
                 parent_height = size[3] - size[2]
             else:
@@ -163,22 +161,13 @@ class SimpleFrame(DirectGuiWidget):
         return parent_width, parent_height
 
     def update_text_pos(self):
-
-        size = self["frameSize"]
-        width = size[1]
-        height = -size[2]
-
-        if hasattr(self, "text_pos"):
-            txt_x, txt_y = self["text_pos"]
-            size_x, size_y = self["text_scale"]
-            if self["textCenterX"]:
-                txt_x = width / 2
-            if self["textCenterY"]:
-                txt_y = -(height / 2 + size_y / 2)
-            self["text_pos"] = (txt_x, txt_y)
+        pass
 
     def get_gui_childrens(self) -> list:
         childs = self.children
+        if hasattr(self, "getCanvas"):
+            childs = self.getCanvas().children
+
         for child in childs:
             child_gui = child.getPythonTag("simple_gui")
             if child_gui is not None:
@@ -187,50 +176,9 @@ class SimpleFrame(DirectGuiWidget):
     def set_position(self):
 
         if self["layout"].startswith("BoxLayout"):
-            orientation = 0
-            if self["layout"].endswith(".X"):
-                orientation = 0
-            elif self["layout"].endswith(".Y"):
-                orientation = 1
-
-
-            size = self["frameSize"]
-            frame_size = [size[1] - size[0], size[3] - size[2]]
-            total_len = frame_size[orientation]
-
-            free_size_widgets = list()
-
-            frame_pos = 0
-            for child in self.get_gui_childrens():
-                size = child.box_size()
-
-
-                if child["size"] == [None, None] and child["sizeHint"] == [None, None]:
-                    print("free_size_widgets")
-                    free_size_widgets.append(child)
-                else:
-                    frame_pos += size[orientation]
-
-            free_space = max(total_len - frame_pos, 0) / max(len(free_size_widgets), 1)
-            print(total_len, frame_pos, free_space)
-            #if free_space > 0:
-
-            free_space_hint = free_space / total_len
-            for child in free_size_widgets:
-                if orientation == 0:
-                    child.layout_size_hint = [free_space_hint, 1]
-                else:
-                    child.layout_size_hint = [1, free_space_hint]
-
-            frame_pos = 0
-            for child in self.get_gui_childrens():
-                size = child.box_size()
-                pos = child["position"]
-                if orientation == 0:
-                    child["position"] = [frame_pos, pos[1]]
-                else:
-                    child["position"] = [pos[0], frame_pos]
-                frame_pos += size[orientation]
+            self.apply_box_layout()
+        elif self["layout"].startswith("GridLayout"):
+            self.apply_grid_layout()
 
         x0, y0 = 0, 0
         x, y = self["position"]
@@ -256,21 +204,185 @@ class SimpleFrame(DirectGuiWidget):
         padding = self["padding"]
 
         self.setPos(x0 + x + padding[0], 0, y0 - y - padding[3])
-        # height = h2-h1
-        # self["frameSize"] = (0, win_width, 0, -height)
+        self.update_text_pos()
 
-    def set_color_string(self):
-        col = draw.get_color(self["colorString"], color_format="rgba", alpha=self["alpha"])
-        print("set_color_string", col)
-        self["frameColor"] = col
+    def apply_box_layout(self):
+        orientation = 0
+        if self["layoutDir"].upper() == "X":
+            orientation = 0
+        elif self["layoutDir"].upper() == "Y":
+            orientation = 1
 
-    """ DEFAULT METHODS"""
+        size = self["frameSize"]
+        frame_size = [size[1] - size[0], size[3] - size[2]]
+        total_len = frame_size[orientation]
+
+        free_size_widgets = list()
+
+        frame_pos = 0
+        for child in self.get_gui_childrens():
+            size = child.box_size()
+
+            if child["size"] == [None, None] and child["sizeHint"] == [None, None]:
+                print("free_size_widgets")
+                free_size_widgets.append(child)
+            else:
+                frame_pos += size[orientation]
+
+        free_space = max(total_len - frame_pos, 0) / max(len(free_size_widgets), 1)
+        print(total_len, frame_pos, free_space)
+        # if free_space > 0:
+
+        free_space_hint = free_space / total_len
+        for child in free_size_widgets:
+            if orientation == 0:
+                child.layout_size_hint = [free_space_hint, 1]
+            else:
+                child.layout_size_hint = [1, free_space_hint]
+
+        frame_pos = 0
+        for child in self.get_gui_childrens():
+            size = child.box_size()
+            pos = child["position"]
+            if orientation == 0:
+                child["position"] = [frame_pos, pos[1]]
+            else:
+                child["position"] = [pos[0], frame_pos]
+            frame_pos += size[orientation]
+
+    def apply_grid_layout(self):
+
+        """('gridCols', 1, None),
+        ('gridRows', 1, None),
+        ('rowDefaultHeight', None, None),
+        ('colDefaultWidth', None, None),
+        ('colDefaultWidth', None, None),
+        ('colsMinimum', {}, None),
+        ('rowsMinimum', {}, None),"""
+
+        orientation = 0
+        index_one_limit = 1
+        if self["layoutDir"].upper() == "X":
+            orientation = 0
+            index_one_limit = self["gridCols"]
+        elif self["layoutDir"].upper() == "Y":
+            orientation = 1
+            index_one_limit = self["gridRows"]
+
+        size = self["frameSize"]
+        if hasattr(self, "getCanvas"):
+            size = self["canvasSize"]
+        frame_size = [size[1] - size[0], size[3] - size[2]]
+        total_len = frame_size[orientation]
+
+        free_size_widgets = list()
+        frame_pos = 0
+
+        cols_min_width = self["colsMinimum"]
+        row_min_height = self["rowsMinimum"]
+
+        # Determina el tamaño que debe tener como mínimo cada fila y cada columna
+        index_h = 0
+        index_v = 0
+
+        for child in self.get_gui_childrens():
+            size = child.box_size()
+
+            if child["size"] == [None, None] and child["sizeHint"] == [None, None]:
+                # Si el elemento hijo no tiene un tamaño predefinido, lo agrega a la lista de elementos con tamaño libre
+                free_size_widgets.append(child)
+                size = [0, 0]
+
+            # Busca el elemento de mayor ancho en cada columna para determinar
+            # el menor ancho que podrá contener a todos los elementos
+            max_width = cols_min_width.get(index_h, 0)
+            max_width = max(max_width, size[0])
+            cols_min_width.update({index_h: max_width})
+
+            # Busca el elemento de mayor altura en cada fila para determinar
+            # la menor altura que podrá contener a todos los elementos
+            max_height = row_min_height.get(index_v, 0)
+            max_height = max(max_height, size[1])
+            row_min_height.update({index_v: max_height})
+
+            # Incrementa los índices horizontal y vertical según la orientacion de la grilla
+            if orientation is 0:
+                index_h += 1
+                if index_h >= index_one_limit:
+                    index_h = 0
+                    index_v += 1
+            elif orientation is 1:
+                index_v += 1
+                if index_v >= index_one_limit:
+                    index_v = 0
+                    index_h += 1
+
+        width_filled = sum(cols_min_width.values())
+        height_filled = sum(row_min_height.values())
+        filled = [width_filled, height_filled][orientation]
+        order = [cols_min_width, row_min_height][orientation]
+
+        print("cols_min_width1", cols_min_width)
+        print("row_min_height1", row_min_height)
+
+        if order != {} and filled < total_len:
+            free_space = total_len - filled
+
+            count = list(order.values()).count(0)
+            if count == 0:
+                count = len(order.values())
+                free_space /= count
+
+                for index, value in order.items():
+                    order[index] += free_space
+            else:
+                free_space /= count
+                for index, value in order.items():
+                    if value == 0:
+                        order[index] += free_space
+
+        print("cols_min_width2", cols_min_width)
+        print("row_min_height2", row_min_height)
+
+
+
+        frame_pos_a = 0
+        frame_pos_b = 0
+        index_a = 0
+        index_b = 0
+        for child in self.get_gui_childrens():
+
+            if orientation == 0:
+
+                child["position"] = [frame_pos_a, frame_pos_b]
+                frame_pos_a += cols_min_width.get(index_a, 0)
+
+                index_a += 1
+                if index_a >= index_one_limit:
+                    index_a = 0
+                    frame_pos_a = 0
+                    frame_pos_b += row_min_height.get(index_b, 0)
+                    index_b += 1
+
+            else:
+                child["position"] = [frame_pos_b, frame_pos_a]
+                frame_pos_a += row_min_height.get(index_a, 0)
+
+                index_a += 1
+                if index_a >= index_one_limit:
+                    index_a = 0
+                    frame_pos_a = 0
+                    frame_pos_b += cols_min_width.get(index_b, 0)
+                    index_b += 1
+
+            frame_pos += size[orientation]
+
+
 
     def setFrameColor(self):
         # this might be a single color or a list of colors
         colors = self['frameColor']
         if isinstance(colors, str):
-            print("COLORS STRIGGG")
             colors = draw.get_color(colors, color_format="rgba", alpha=self["alpha"])
         elif isinstance(colors[0], str):
             for index, color in enumerate(colors):
@@ -285,159 +397,5 @@ class SimpleFrame(DirectGuiWidget):
                 color = colors[-1]
             else:
                 color = colors[i]
-            print("color", color)
             self.frameStyle[i].setColor(color[0], color[1], color[2], color[3])
         self.updateFrameStyle()
-
-    def destroy(self):
-        DirectGuiWidget.destroy(self)
-
-    def clear_text(self):
-        self['text'] = None
-        self.set_text()
-
-    def set_text(self, text=None):
-        if text is not None:
-            self['text'] = text
-
-        # Determine if user passed in single string or a sequence
-        if self['text'] is None:
-            text_list = (None,) * self['numStates']
-        elif isinstance(self['text'], stringType):
-            # If just passing in a single string, make a tuple out of it
-            text_list = (self['text'],) * self['numStates']
-        else:
-            # Otherwise, hope that the user has passed in a tuple/list
-            text_list = self['text']
-        # Create/destroy components
-        for i in range(self['numStates']):
-            component = 'text' + repr(i)
-            # If fewer items specified than numStates,
-            # just repeat last item
-            try:
-                text = text_list[i]
-            except IndexError:
-                text = text_list[-1]
-
-            if self.hascomponent(component):
-                if text is None:
-                    # Destroy component
-                    self.destroycomponent(component)
-                else:
-                    self[component + '_text'] = text
-            else:
-                if text is None:
-                    return
-                else:
-                    from direct.gui.OnscreenText import OnscreenText
-                    self.createcomponent(
-                        component, (), 'text',
-                        OnscreenText,
-                        (), parent=self.stateNodePath[i],
-                        text=text, scale=1, mayChange=self['textMayChange'],
-                        sort=DGG.TEXT_SORT_INDEX,
-                    )
-
-    def clear_geom(self):
-        self['geom'] = None
-        self.set_geom()
-
-    def set_geom(self, geom=None):
-        if geom is not None:
-            self['geom'] = geom
-
-        # Determine argument type
-        geom = self['geom']
-
-        if geom is None:
-            # Passed in None
-            geom_list = (None,) * self['numStates']
-        elif isinstance(geom, NodePath) or \
-                isinstance(geom, stringType):
-            # Passed in a single node path, make a tuple out of it
-            geom_list = (geom,) * self['numStates']
-        else:
-            # Otherwise, hope that the user has passed in a tuple/list
-            geom_list = geom
-
-        # Create/destroy components
-        for i in range(self['numStates']):
-            component = 'geom' + repr(i)
-            # If fewer items specified than numStates,
-            # just repeat last item
-            try:
-                geom = geom_list[i]
-            except IndexError:
-                geom = geom_list[-1]
-
-            if self.hascomponent(component):
-                if geom is None:
-                    # Destroy component
-                    self.destroycomponent(component)
-                else:
-                    self[component + '_geom'] = geom
-            else:
-                if geom is None:
-                    return
-                else:
-                    self.createcomponent(
-                        component, (), 'geom',
-                        OnscreenGeom,
-                        (), parent=self.stateNodePath[i],
-                        geom=geom, scale=1,
-                        sort=DGG.GEOM_SORT_INDEX)
-
-    def clear_image(self):
-        self['image'] = None
-        self.set_image()
-
-    def set_image(self, image=None):
-        if image is not None:
-            self['image'] = image
-
-        # Determine argument type
-        arg = self['image']
-        if arg is None:
-            # Passed in None
-            image_list = (None,) * self['numStates']
-        elif isinstance(arg, NodePath) or \
-                isinstance(arg, Texture) or \
-                isinstance(arg, stringType):
-            # Passed in a single node path, make a tuple out of it
-            image_list = (arg,) * self['numStates']
-        else:
-            # Otherwise, hope that the user has passed in a tuple/list
-            if ((len(arg) == 2) and
-                    isinstance(arg[0], stringType) and
-                    isinstance(arg[1], stringType)):
-                # Its a model/node pair of strings
-                image_list = (arg,) * self['numStates']
-            else:
-                # Assume its a list of node paths
-                image_list = arg
-        # Create/destroy components
-        for i in range(self['numStates']):
-            component = 'image' + repr(i)
-            # If fewer items specified than numStates,
-            # just repeat last item
-            try:
-                image = image_list[i]
-            except IndexError:
-                image = image_list[-1]
-
-            if self.hascomponent(component):
-                if image is None:
-                    # Destroy component
-                    self.destroycomponent(component)
-                else:
-                    self[component + '_image'] = image
-            else:
-                if image is None:
-                    return
-                else:
-                    self.createcomponent(
-                        component, (), 'image',
-                        OnscreenImage,
-                        (), parent=self.stateNodePath[i],
-                        image=image, scale=1,
-                        sort=DGG.IMAGE_SORT_INDEX)
