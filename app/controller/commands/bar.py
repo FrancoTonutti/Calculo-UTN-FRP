@@ -140,8 +140,8 @@ def bar_task(task):
                 box_input.enterText("{}".format(bar_len))
             line.setVertex(1, x1, y1, z1)
 
-    if watcher.has_mouse() and watcher.isButtonDown("escape"):
-        # Detiene la cración de la linea y resetea las variables
+    if watcher.has_mouse() and (watcher.isButtonDown("escape") or watcher.isButtonDown("mouse3")):
+        # Detiene la creación de la linea y resetea las variables
         box_input.enterText("")
         coredata["start"] = None
         coredata["end"] = None

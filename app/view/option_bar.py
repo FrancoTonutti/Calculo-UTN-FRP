@@ -32,6 +32,7 @@ INTERFACE = {
         },
         "Modelo": {
             "Regen": {"command": "regen"},
+            "Ver secciones": {"command": "wire"}
         },
     },
     _("Cálculo"): {

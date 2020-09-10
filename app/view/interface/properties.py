@@ -179,6 +179,13 @@ class PropertiesEditor(DirectObject):
 
         if new_value != "" and isinstance(old_value, float):
             new_value = float(new_value)
+
+        if isinstance(old_value, bool):
+            if new_value == "True":
+                new_value = True
+            else:
+                new_value = False
+
         if type(old_value) is type(new_value):
             if self.entity is not None:
                 print("atributo establecido")
@@ -194,14 +201,20 @@ class PropertiesEditor(DirectObject):
                     entry.defocus()
 
             if self.entity and self.entity.geom:
-                self.entity.geom.setTextureOff(0)
-                self.entity.geom.clearColorScale()
+                for geom in self.entity.geom:
+                    geom.setTextureOff(0)
+                    geom.clearColorScale()
 
             if entity:
                 self.entity = entity
-                if self.entity.geom:
-                    self.entity.geom.setTextureOff(1)
-                    self.entity.geom.setColorScale(1, 0, 0, 0.7)
+                if self.entity.geom is not None:
+                    for geom in self.entity.geom:
+                        geom.setTextureOff(1)
+                        geom.setColorScale(1, 0, 0, 0.7)
+                        if "render/lines" in str(geom):
+                            geom.setColor(1, 0, 0, 1)
+                            geom.setColorScale(1, 0, 0, 1)
+                        print("!!!!!!!!!!!!!!!!geom", geom, len(self.entity.geom))
 
             for label, entry in self.fields:
                 label.destroy()

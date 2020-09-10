@@ -157,6 +157,17 @@ class Node(Entity):
         self.hide_properties("position")
         self.set_prop_name(position_str="Posición")
         self.show_properties("name", "position_str")
+
+        self.fixed_ux = False
+        self.fixed_uy = False
+        self.fixed_uz = False
+
+        self.fixed_rx = False
+        self.fixed_ry = False
+        self.fixed_rz = False
+
+        self.show_properties("fixed_ux", "fixed_uz", "fixed_ry")
+
         register(self)
 
     def __str__(self):
@@ -184,6 +195,23 @@ class Node(Entity):
             y = float(y)
             z = float(z)
             self.position = [x, y, z]
+
+    def get_restrictions(self):
+        restrictions = [self.fixed_ux,
+                        self.fixed_uy,
+                        self.fixed_uz,
+                        self.fixed_rx,
+                        self.fixed_ry,
+                        self.fixed_rz]
+
+        return restrictions
+
+    def get_restrictions2d(self):
+        restrictions = [self.fixed_ux,
+                        self.fixed_uz,
+                        self.fixed_ry]
+
+        return restrictions
 
 
 class Bar(Entity):
@@ -236,14 +264,6 @@ class Bar(Entity):
 
     def __str__(self):
         return "<class 'app.model.core.Bar'>"
-
-
-
-
-
-
-
-
 
 
 class Section:

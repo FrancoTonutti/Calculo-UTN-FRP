@@ -202,6 +202,36 @@ def draw_line_2d(x1, y1, x2, y2, w=1, color=None, parent=None):
 
     return np
 
+def draw_line_3d(x1, y1, z1, x2, y2, z2, w=1, color=None, parent=None, dynamic=False):
+    """
+    Dibuja un segmento de linea, teniendo como origen de cordenadas la esquina superior izquierda de la pantalla
+    """
+
+    line = LineSegs()
+    line.setThickness(w)
+
+    color = draw_get_color(color, color_format="rgba")
+
+    line.setColor(color)
+    line.moveTo(x1, y1, z1)
+    line.drawTo(x2, y2, z2)
+
+    node = line.create(dynamic=dynamic)
+
+    print("draw_line_3d_1", node)
+    base = app.get_show_base()
+    if parent is None:
+        parent = base.render
+
+    np = NodePath(node)
+    print("draw_line_3d_2", np)
+    np.reparentTo(parent)
+
+    if dynamic:
+        return np, line
+    else:
+        return np
+
 def draw_cicle(x, y, r, col=None, parent=None):
     base = app.get_show_base()
     loader = Loader(base)

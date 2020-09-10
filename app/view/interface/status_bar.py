@@ -30,16 +30,28 @@ class StatusBar(DirectObject):
     def entity_read(self, entity=None):
 
         if self.entity_info != entity:
-
+            c_black = (0, 0, 0, 1)
             if self.entity_info and self.entity_info.geom:
-                self.entity_info.geom.setRenderModeFilled(1)
+                for geom in self.entity_info.geom:
+
+                    if "render/lines" in str(geom):
+                        geom.setRenderModeThickness(3)
+                        geom.setRenderModeFilled(1)
+                    else:
+                        geom.setRenderModeFilled(1)
 
             self.entity_info = entity
-            if entity is not None:
-                if self.entity_info.geom:
-                    c_black = (0, 0, 0, 1)
-                    self.entity_info.geom.setRenderModeFilledWireframe(c_black, 1)
-                    self.entity_info.geom.setRenderModeThickness(3)
+            if self.entity_info and self.entity_info.geom:
+
+                for geom in self.entity_info.geom:
+
+                    if "render/lines" in str(geom):
+                        geom.setRenderModeThickness(20)
+                        geom.setRenderModeFilled(1)
+                    else:
+                        geom.setRenderModeThickness(3)
+                        geom.setRenderModeFilledWireframe(c_black, 1)
+
 
             if entity is not None:
                 self.info_label.setText(str(entity))
