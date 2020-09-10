@@ -31,6 +31,7 @@ def create_bar():
     coredata["line"] = None
     coredata["line_node"] = None
     coredata["last_node"] = None
+    coredata["end_node"] = None
 
     del man
 
@@ -39,8 +40,7 @@ def bar_task(task):
     # Establece coredata como variable global
     global coredata
 
-
-    # Accede a la interfaz de kivy para obtener la información de panda3d
+    # Accede a la instancia base de la aplicación
 
     panda3d = app.get_show_base()
 
@@ -55,7 +55,12 @@ def bar_task(task):
             start_node = Node(x0, y0, z0)
         else:
             start_node = coredata["last_node"]
-        end_node = Node(x1, y1, z1)
+
+        if coredata["end_node"] is None:
+            end_node = Node(x1, y1, z1)
+        else:
+            end_node = coredata["end_node"]
+
         section = Section(0.2, 0.3)
         Bar(start_node, end_node, section)
         coredata["last_node"] = end_node
@@ -72,7 +77,13 @@ def bar_task(task):
         if watcher.isButtonDown("mouse1"):
             if coredata["start"] is None and not coredata["press"]:
                 # Almacena el valor de inicio del segmento de linea
-                coredata["start"] = app.work_plane_mouse
+
+                selection = app.main_ui.status_bar.entity_info
+                if isinstance(selection, Node):
+                    coredata["start"] = selection.position
+                    coredata["last_node"] = selection
+                else:
+                    coredata["start"] = app.work_plane_mouse
                 coredata["press"] = True
                 print("start")
 
@@ -81,9 +92,15 @@ def bar_task(task):
 
             elif coredata["end"] is None and not coredata["press"]:
                 # Almacena el valor final del segmento de linea
-                #coredata["end"] = panda3d.work_plane_mouse
-                line = coredata["line"]
-                coredata["end"] = line.getVertex(1)
+
+                selection = app.main_ui.status_bar.entity_info
+                if isinstance(selection, Node) and selection is not coredata["last_node"]:
+                    coredata["end"] = selection.position
+                    coredata["end_node"] = selection
+                else:
+                    coredata["end"] = app.work_plane_mouse
+
+                #coredata["end"] = app.work_plane_mouse
                 coredata["press"] = True
                 print("end")
                 #print(coredata)

@@ -29,7 +29,10 @@ INTERFACE = {
         "Circulación": {
             "Rampa": {},
             "Escalera": {},
-        }
+        },
+        "Modelo": {
+            "Regen": {"command": "regen"},
+        },
     },
     _("Cálculo"): {
         "Cálculo": {
