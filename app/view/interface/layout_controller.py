@@ -2,6 +2,7 @@ from app.view.simpleui.simple_frame import SimpleFrame
 from app import app
 from app.view import draw
 
+
 class Layout:
     def __init__(self):
         app.layout = self
@@ -22,6 +23,15 @@ class Layout:
                                       gridRows=2,
                                       parent=self.work_container)
 
+        app.add_gui_region("prop editor", self.prop_frame)
         self.work_area = SimpleFrame(alpha=0, parent=self.work_container)
 
-        app.add_gui_region("prop editor", self.prop_frame)
+        self.status_bar_frame = SimpleFrame(position=[0, -25],
+                                            size=[50, 25],
+                                            sizeHint=[1, None],
+                                            orginV="bottom",
+                                            layout="BoxLayout",
+                                            layoutDir="X",
+                                            frameColor="C_NEPHRITIS")
+
+        app.add_gui_region("status_bar", self.status_bar_frame)

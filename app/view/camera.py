@@ -63,7 +63,7 @@ class CameraControl(DirectObject):
         self.panda3d.accept("wheel_down", self.zoom_out)
 
         # Una fución de prueba para comprobar la posición del mouse en el modelo 3d
-        self.panda3d.accept("mouse1", self.entity_select)
+        # self.panda3d.accept("mouse1", self.entity_select)
 
         # Se establece la lente ortografica en lugar de la perspectiva
         self.lens_type = "OrthographicLens"
@@ -234,6 +234,7 @@ class CameraControl(DirectObject):
                 self.camera_active = False
                 # Se reactiva el espacio de trabajo
                 app.workspace_active = True
+                self.entity_select()
             else:
                 # Actualizamos la posición de la luz puntual
                 cam = self.panda3d.camera
@@ -382,36 +383,6 @@ class CameraControl(DirectObject):
             cube.setScale(0.25, 0.25, 0.25)
             cube.setPos(pos[0], pos[1], pos[2])
 
-    def myFunction(self):
-        "Returns a collision entry for the closest object colliding with the ray."
-
-        traverser = CollisionTraverser("")
-        chq = CollisionHandlerQueue()
-        rayNode = CollisionNode("")
-        pickerRay = CollisionRay()
-
-
-        # Make a collision node with one collision ray.
-        ray.setOrigin(origin)
-        ray.setDirection(dir)
-        rayNode.addSolid(ray)
-
-        # Attach the collision node to the provided node path.
-        rayNP = rootNP.attachNewNode(rayNode)
-
-        # This will let the ray detect collisions with normal geometry.
-        rayNode.setFromCollideMask(GeomNode.getDefaultCollideMask())
-
-        # Add the queue to a traverser, which will do the traversal
-        # on the provided root node path.
-        traverser.addCollider(rayNP, chq)
-        traverser.traverse(rootNP)
-
-        # Get the first node path in the sorted queue and discard the rest.
-        if chq.getNumEntries() < 1:
-            return None
-        chq.sortEntries()
-        return chq.getEntry(0)
 
     def entity_select(self):
         traverser = CollisionTraverser("")
@@ -429,7 +400,7 @@ class CameraControl(DirectObject):
         picker_ray.setFromLens(self.panda3d.camNode, mpos.getX(), mpos.getY())
         traverser.traverse(self.panda3d.render)
         # Assume for simplicity's sake that myHandler is a CollisionHandlerQueue.
-
+        btn = self.panda3d.mouseWatcherNode
         if handler.getNumEntries() > 0:
             # This is so we get the closest object.
             handler.sortEntries()
@@ -438,29 +409,39 @@ class CameraControl(DirectObject):
             entity = entity.findNetTag('entity_id')
             if not entity.isEmpty():
 
-                print("entity selected: {}".format(entity.getTag("entity_id")))
+                #print("entity selected: {}".format(entity.getTag("entity_id")))
 
                 entity_id = entity.getTag("entity_id")
                 entity_type = entity.getTag("entity_type")
-                print(entity_type)
+                #print(entity_type)
                 model = app.model_reg
 
                 category_type = model.get(entity_type, dict())
                 entity = category_type.get(entity_id, None)
 
-                prop_editor = app.main_ui.prop_editor
-                print(entity)
-                prop_editor.entity_read(entity)
+
+                #print(entity)
+                if btn.isButtonDown("mouse1"):
+                    prop_editor = app.main_ui.prop_editor
+                    prop_editor.entity_read(entity)
+                else:
+                    status_bar = app.main_ui.status_bar
+                    status_bar.entity_read(entity)
         else:
-            entities = app.model_reg.get("View")
+            if btn.isButtonDown("mouse1"):
+                entities = app.model_reg.get("View")
 
-            if entities is None or len(entities) is 0:
-                View()
+                if entities is None or len(entities) is 0:
+                    View()
 
-            entities = app.model_reg.get("View")
-            entity = list(entities.values())[0]
-            prop_editor = app.main_ui.prop_editor
-            prop_editor.entity_read(entity)
+                entities = app.model_reg.get("View")
+                entity = list(entities.values())[0]
+                prop_editor = app.main_ui.prop_editor
+
+                prop_editor.entity_read(entity)
+            else:
+                status_bar = app.main_ui.status_bar
+                status_bar.entity_read()
 
 
 

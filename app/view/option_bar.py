@@ -72,9 +72,6 @@ class OptionBar:
         self.options_frame = WideFrame(position=[0, 150], colorString="C_NEPHRITIS")
         app.add_gui_region("options_frame", self.options_frame)
 
-        self.status_bar = WideFrame(position=[0, -25], colorString="C_NEPHRITIS", orginV="bottom")
-        app.add_gui_region("status_bar", self.status_bar)
-
         workspace = SimpleFrame(position=[0, 0], sizeHint=[1, 1], alpha=0, padding=[250, 0, 25, 150])
 
 

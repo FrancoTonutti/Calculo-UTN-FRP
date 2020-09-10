@@ -16,8 +16,7 @@ class Entity:
     def __init__(self):
         self._entity_id = str(uuid.uuid4())
         self._geom = None
-        self._hide = []
-        self._show = []
+        self._editor_properties = []
         self._read_only = []
         self._namespace = dict()
 
@@ -41,11 +40,11 @@ class Entity:
         else:
             return prop
 
-    def is_public(self, name):
+    """def is_public(self, name):
         print("is_public")
         print(type(name))
 
-        if name in self._show:
+        if name in self._editor_properties:
             return True
 
         if (name[0] is "_" or name in self._hide) or name not in self.__dir__:
@@ -53,22 +52,27 @@ class Entity:
         else:
             response = True
 
-        return response
+        return response"""
 
     def hide_properties(self, *args):
-        for arg in args:
-            if arg not in self._hide:
-                self._hide.append(arg)
+        for prop in args:
+            if prop in self._editor_properties:
+                self._editor_properties.remove(prop)
 
     def show_properties(self, *args):
         for arg in args:
-            if arg not in self._show:
-                self._show.append(arg)
+            if arg not in self._editor_properties:
+                self._editor_properties.append(arg)
 
     def set_prop_name(self, **kwargs):
         self._namespace.update(kwargs)
 
     def get_properties(self):
+
+        for prop in self._editor_properties:
+            yield prop
+
+    """def get_properties(self):
         attrs = list(self.__dict__.keys())
         i = 0
         attr2 = list()
@@ -83,7 +87,7 @@ class Entity:
         for prop in self._show:
             if prop not in attr2:
                 attr2.append(prop)
-        return attr2
+        return attr2"""
 
 
 def register(entity):
@@ -107,7 +111,6 @@ class View(Entity):
     def __init__(self):
         super().__init__()
 
-        self.hide_properties("panda3d")
         self.set_prop_name(work_plane_vect="Plano de Trabajo", worl_plane_height="Altura")
         self.show_properties("work_plane_vect", "work_plane_height")
         register(self)
@@ -153,13 +156,15 @@ class Node(Entity):
         self.name = name
         self.hide_properties("position")
         self.set_prop_name(position_str="Posición")
-        self.show_properties("position_str")
+        self.show_properties("name", "position_str")
         register(self)
 
     def __str__(self):
-        x = round(self.position[0]*100)/100
-        z = round(self.position[2]*100)/100
-        return "{}, {}".format(x, z)
+        name = str(self.name)
+        x = round(self.position[0], 2)
+        y = round(self.position[0], 2)
+        z = round(self.position[2], 2)
+        return "Nodo {} ({}, {}, {})".format(name, x, y, z)
 
     @property
     def position_str(self):
@@ -191,7 +196,6 @@ class Bar(Entity):
         self.material = material
         self._width = 0.2
         self._height = 0.3
-        self.hide_properties("section", "material", "start", "end")
         self.set_prop_name(start_str="Incio", end_str="Fin")
         self.show_properties("width", "height", "start_str", "end_str")
         register(self)
