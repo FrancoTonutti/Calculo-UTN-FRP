@@ -179,6 +179,13 @@ class PropertiesEditor(DirectObject):
 
         if new_value != "" and isinstance(old_value, float):
             new_value = float(new_value)
+
+        if isinstance(old_value, bool):
+            if new_value == "True":
+                new_value = True
+            else:
+                new_value = False
+
         if type(old_value) is type(new_value):
             if self.entity is not None:
                 print("atributo establecido")
@@ -188,31 +195,37 @@ class PropertiesEditor(DirectObject):
                 print("El tipo de asignación no corresponde: {},{}->{}".format(name, type(old_value), type(new_value)))
 
     def entity_read(self, entity=None):
+        if entity != self.entity:
+            for label, entry in self.fields:
+                if entry['focus'] is True:
+                    entry.defocus()
 
-        for label, entry in self.fields:
-            if entry['focus'] is True:
-                entry.defocus()
+            if self.entity and self.entity.geom:
+                for geom in self.entity.geom:
+                    geom.setTextureOff(0)
+                    geom.clearColorScale()
 
-        if self.entity and self.entity.geom:
-            self.entity.geom.setTextureOff(0)
-            self.entity.geom.clearColorScale()
+            if entity:
+                self.entity = entity
+                if self.entity.geom is not None:
+                    for geom in self.entity.geom:
+                        geom.setTextureOff(1)
+                        geom.setColorScale(1, 0, 0, 0.7)
+                        if "render/lines" in str(geom):
+                            geom.setColor(1, 0, 0, 1)
+                            geom.setColorScale(1, 0, 0, 1)
+                        print("!!!!!!!!!!!!!!!!geom", geom, len(self.entity.geom))
 
-        if entity:
-            self.entity = entity
-            if self.entity.geom:
-                self.entity.geom.setTextureOff(1)
-                self.entity.geom.setColorScale(1, 0, 0, 0.7)
+            for label, entry in self.fields:
+                label.destroy()
+                entry.destroy()
 
-        for label, entry in self.fields:
-            label.destroy()
-            entry.destroy()
+            self.fields.clear()
 
-        self.fields.clear()
+            for prop in self.entity.get_properties():
+                self.add_property(prop, self.entity.prop_name(prop), getattr(self.entity, prop))
 
-        for prop in self.entity.get_properties():
-            self.add_property(prop, self.entity.prop_name(prop), getattr(self.entity, prop))
-
-        execute("regen_ui")
+            execute("regen_ui")
 
     def toogle_show(self):
         if self.frame.is_hidden():

@@ -1,0 +1,220 @@
+<CoordinateSystem> { Z-up } 
+<Material> Material {
+  <Scalar> baser { 1 }
+  <Scalar> baseg { 1 }
+  <Scalar> baseb { 1 }
+  <Scalar> basea { 1 }
+  <Scalar> emitr { 0.0 }
+  <Scalar> emitg { 0.0 }
+  <Scalar> emitb { 0.0 }
+  <Scalar> emita { 1.0 }
+  <Scalar> shininess { 0.5 }
+  <Scalar> roughness { 0.4000000059604645 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> ior { 1.4500000476837158 }
+  <Scalar> local { 0 }
+}
+
+<Texture> tex_palette.png {
+  "./tex/tex_palette.png"
+  <Scalar> envtype { modulate }
+  <Scalar> uv-name { UVMap }
+  <Scalar> wrapu { repeat }
+  <Scalar> wrapv { repeat }
+}
+
+  <Group> Cube.001 {
+    <Transform> {
+      <Matrix4> {
+        1.0 0.0 0.0 0.0 
+        0.0 1.0 0.0 0.0 
+        0.0 0.0 1.0 0.0 
+        0.0 0.0 0.0 1.0 
+      }
+    }
+    
+    <VertexPool> Cube.001 {
+    
+      <Vertex> 0 {-0.100000 -0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.803412 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 1 {-0.100000 -0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.803412 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 2 {-0.100000 0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.805026 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 3 {-0.100000 0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.805026 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 4 {-0.100000 0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.805026 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 5 {-0.100000 0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.805026 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 6 {0.100000 0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.806641 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 7 {0.100000 0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.806641 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 8 {0.100000 0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.806641 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 9 {0.100000 0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.806641 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 10 {0.100000 -0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.808255 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 11 {0.100000 -0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.808255 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 12 {0.100000 -0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.808255 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 13 {0.100000 -0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.808255 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 14 {-0.100000 -0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.809870 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 15 {-0.100000 -0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.809870 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 16 {-0.100000 0.100000 -0.100000
+        <UV> UVMap {
+          0.429219 0.806641 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 17 {0.100000 0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.806641 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 18 {0.100000 -0.100000 -0.100000
+        <UV> UVMap {
+          0.430833 0.808255 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 19 {-0.100000 -0.100000 -0.100000
+        <UV> UVMap {
+          0.429219 0.808255 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 20 {0.100000 0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.806641 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 21 {-0.100000 0.100000 0.100000
+        <UV> UVMap {
+          0.434062 0.806641 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 22 {-0.100000 -0.100000 0.100000
+        <UV> UVMap {
+          0.434062 0.808255 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 23 {0.100000 -0.100000 0.100000
+        <UV> UVMap {
+          0.432448 0.808255 
+        }
+        <RGBA> { 1 1 1 1 }
+      }}
+    
+    
+    <Polygon> {
+      <TRef> { tex_palette.png }
+      <MRef> { Material }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 0 1 2 3 <Ref> { Cube.001 }} 
+    }
+    <Polygon> {
+      <TRef> { tex_palette.png }
+      <MRef> { Material }
+      <Normal> {0.000000 1.000000 0.000000}
+      <VertexRef> { 4 5 6 7 <Ref> { Cube.001 }} 
+    }
+    <Polygon> {
+      <TRef> { tex_palette.png }
+      <MRef> { Material }
+      <Normal> {1.000000 0.000000 0.000000}
+      <VertexRef> { 8 9 10 11 <Ref> { Cube.001 }} 
+    }
+    <Polygon> {
+      <TRef> { tex_palette.png }
+      <MRef> { Material }
+      <Normal> {0.000000 -1.000000 0.000000}
+      <VertexRef> { 12 13 14 15 <Ref> { Cube.001 }} 
+    }
+    <Polygon> {
+      <TRef> { tex_palette.png }
+      <MRef> { Material }
+      <Normal> {0.000000 0.000000 -1.000000}
+      <VertexRef> { 16 17 18 19 <Ref> { Cube.001 }} 
+    }
+    <Polygon> {
+      <TRef> { tex_palette.png }
+      <MRef> { Material }
+      <Normal> {0.000000 0.000000 1.000000}
+      <VertexRef> { 20 21 22 23 <Ref> { Cube.001 }} 
+    }
+  }
