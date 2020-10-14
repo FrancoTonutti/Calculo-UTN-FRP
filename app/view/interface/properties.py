@@ -5,6 +5,8 @@ from app.controller.console import execute
 from app.view.simpleui.simple_entry import SimpleEntry
 from app.view.simpleui.simple_label import SimpleLabel
 from app.view.simpleui.simple_scrolled_frame import SimpleScrolledFrame
+from app.view.simpleui import SimpleCheckBox
+
 from panda3d.core import TextNode
 from panda3d.core import WindowProperties
 from direct.gui.DirectScrolledFrame import *
@@ -24,7 +26,7 @@ class PropertiesEditor(DirectObject):
 
         self.accept("control-1", self.toogle_show)
 
-        entry = SimpleLabel(
+        label = SimpleLabel(
             text_fg=(0, 0, 0, 1),
             orginV="bottom",
             position=[0, 0],
@@ -53,82 +55,7 @@ class PropertiesEditor(DirectObject):
             frameColor="C_CARROT",
             alpha=0
         )
-        self.add_property("test", "testname2", 22)
-        self.add_property("test", "testname2", 22)
-        self.add_property("test", "testname2", 22)
-        self.add_property("test", "testname2", 22)
-        self.add_property("test", "testname2", 22)
 
-        """canvas = self.frame_scrolled.getCanvas()
-
-
-        entry = SimpleLabel(
-            text_fg=(0, 0, 0, 1),
-            orginV="bottom",
-            position=[0, 0],
-            text_scale=(12, 12),
-            text="Prop",
-            parent=self.frame_scrolled.getCanvas(),
-            size=[None, 20],
-            sizeHint=[0.50, None],
-            frameColor="C_WHITE",
-            align="left",
-            textCenterX=False,
-            padding=[15, 0, 0, 0]
-
-        )
-        entry = SimpleEntry(
-            text_fg=(0, 0, 0, 1),
-            orginH="center",
-            position=[0, 0],
-            text_scale=(12, 12),
-            width=20,
-            label="Ingrese un comando",
-            command=execute_console,
-            parent=self.frame_scrolled.getCanvas(),
-            size=[None, 20],
-            sizeHint=[0.50, None],
-            frameColor="C_WHITE"
-
-        )
-        self.add_property("test", "testname", 22)
-
-        frame_scrolled = SimpleScrolledFrame(
-
-            position=[400, 400],
-            canvasSize=(0, 150, -1000, 0),
-            layout="BoxLayout",
-            layoutDir="Y",
-            gridCols=2,
-            gridRows=2,
-            sizeHint=[0.25, 0.25],
-            frameColor="C_CARROT",
-            alpha=100
-        )
-
-        label = SimpleLabel(
-            text_fg=(1, 0, 0, 1),
-            orginV="bottom",
-            position=[0, 0],
-            text_scale=(12, 12),
-            text="Prop",
-            parent=frame_scrolled.getCanvas(),
-            size=[50, 50],
-            frameColor="C_CARROT",
-            align="left",
-            textCenterX=False,
-            padding=[15, 0, 0, 0]
-        )"""
-        """SimpleFrame(position=[0, 0],
-                    size=[250, 500],
-                    sizeHint=[None, 1],
-                    frameColor="C_NEPHRITIS",
-                    layout="BoxLayout",
-                    layoutDir="Y",
-                    gridCols=2,
-                    gridRows=2)"""
-        # myframe = DirectScrolledFrame(canvasSize=(-2, 2, -2, 2), frameSize=(-.5, .5, -.5, .5))
-        # myframe.setPos(0, 0, 0)
 
     def add_property(self, prop: str, fieldname: str, value=0):
         print("add_property")
@@ -151,25 +78,38 @@ class PropertiesEditor(DirectObject):
             padding=[15, 0, 0, 0]
 
         )
-        entry = SimpleEntry(
-            text_fg=(0, 0, 0, 1),
-            orginH="center",
-            position=[0, 0],
-            text_scale=(12, 12),
-            width=20,
-            align="left",
-            textCenterX=False,
-            command=self.entity_set_prop,
-            extraArgs=[prop],
-            focusOutCommand=self.entity_set_prop,
-            focusOutExtraArgs=[prop],
-            parent=self.frame_scrolled.getCanvas(),
-            size=[None, 20],
-            sizeHint=[0.50, None],
-            frameColor="C_WHITE",
-            initialText=str(value)
+        if isinstance(value, bool):
+            entry = SimpleCheckBox(
+                position=[0, 0],
+                size=[None, 20],
+                sizeHint=[0.50, None],
+                parent=self.frame_scrolled.getCanvas(),
+                command=self.entity_set_prop,
+                extraArgs=[prop],
+                value=value,
+                frameColor="C_WHITE",
+                maxSize=16
+            )
+        else:
+            entry = SimpleEntry(
+                text_fg=(0, 0, 0, 1),
+                orginH="center",
+                position=[0, 0],
+                text_scale=(12, 12),
+                width=20,
+                align="left",
+                textCenterX=False,
+                command=self.entity_set_prop,
+                extraArgs=[prop],
+                focusOutCommand=self.entity_set_prop,
+                focusOutExtraArgs=[prop],
+                parent=self.frame_scrolled.getCanvas(),
+                size=[None, 20],
+                sizeHint=[0.50, None],
+                frameColor="C_WHITE",
+                initialText=str(value)
 
-        )
+            )
         self.fields.append([label, entry])
 
     def entity_set_prop(self, new_value: any, name: str):
@@ -183,13 +123,14 @@ class PropertiesEditor(DirectObject):
         if isinstance(old_value, bool):
             if new_value == "True":
                 new_value = True
-            else:
+            elif new_value == "False":
                 new_value = False
 
         if type(old_value) is type(new_value):
             if self.entity is not None:
-                print("atributo establecido")
+                print("atributo establecido {}: {}".format(name,new_value))
                 setattr(self.entity, name, new_value)
+                print("verif {}: {}".format(name, getattr(self.entity, name, "undefined")))
         else:
             if self.entity is not None:
                 print("El tipo de asignación no corresponde: {},{}->{}".format(name, type(old_value), type(new_value)))
@@ -203,17 +144,26 @@ class PropertiesEditor(DirectObject):
             if self.entity and self.entity.geom:
                 for geom in self.entity.geom:
                     geom.setTextureOff(0)
+
                     geom.clearColorScale()
+                    if "render/lines" in str(geom):
+                        col = geom.getPythonTag('defcolor')
+                        if col is not None:
+                            geom.setColorScale(col)
 
             if entity:
                 self.entity = entity
                 if self.entity.geom is not None:
                     for geom in self.entity.geom:
-                        geom.setTextureOff(1)
-                        geom.setColorScale(1, 0, 0, 0.7)
                         if "render/lines" in str(geom):
-                            geom.setColor(1, 0, 0, 1)
+                            print(geom)
+                            #geom.setColor(1, 0, 0, 0)
                             geom.setColorScale(1, 0, 0, 1)
+                            #geom.node().setColor(1, 0, 0, 1)
+                        else:
+                            geom.setTextureOff(1)
+                            geom.setColorScale(1, 0, 0, 0.7)
+
                         print("!!!!!!!!!!!!!!!!geom", geom, len(self.entity.geom))
 
             for label, entry in self.fields:

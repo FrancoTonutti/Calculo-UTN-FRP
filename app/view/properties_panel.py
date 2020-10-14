@@ -56,5 +56,5 @@ class WidProperties:
         if type(last_value) is type(val):
             setattr(self.entity, name, val)
         else:
-            print("El tipo de asignación no corresponde: {},{}->{}".format(name, type(self.entity.__dict__[name]),
+            print("El tipo de asignación no corresponde1: {},{}->{}".format(name, type(self.entity.__dict__[name]),
                                                                            type(val)))

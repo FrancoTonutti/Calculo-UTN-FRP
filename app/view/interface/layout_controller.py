@@ -1,7 +1,11 @@
 from app.view.simpleui.simple_frame import SimpleFrame
 from app import app
 from app.view import draw
-
+from app.view.simpleui import SimpleCheckBox
+from app.view.simpleui import SimpleButton,SimpleLabel
+from direct.gui.DirectCheckBox import DirectCheckBox
+from direct.gui.DirectCheckButton import DirectCheckButton
+from direct.gui.DirectButton import DirectButton
 
 class Layout:
     def __init__(self):

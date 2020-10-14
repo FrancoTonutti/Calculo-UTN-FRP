@@ -3,8 +3,8 @@ import math
 from app import app
 from direct.showbase.DirectObject import DirectObject
 import numpy as np
-from app.model.entity import View
-import os
+from app.model import View
+
 """if os.name == 'nt':
     # Importar solo en windows
     import win32api
