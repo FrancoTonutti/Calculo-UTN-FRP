@@ -149,6 +149,10 @@ class SimpleFrame(DirectFrame):
 
             if self.parent_gui is not None:
                 size = self.parent_gui["frameSize"]
+
+                if size is None:
+                    print("size is None", self.parent_gui)
+
                 if hasattr(self.parent_gui, "getCanvas"):
                     size = self.parent_gui["canvasSize"]
 

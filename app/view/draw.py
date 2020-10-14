@@ -30,7 +30,8 @@ def draw_set_font(font_name=None, font_size=None):
     return font
 
 
-def draw_get_font(font_name: str = None, font_size: int = None) -> (Type[DynamicTextFont], Type[ImageFont.FreeTypeFont]):
+def draw_get_font(font_name: str = None, font_size: int = None) -> (
+Type[DynamicTextFont], Type[ImageFont.FreeTypeFont]):
     """
     Devuelve la fuente activa, o la fuente especificada como parámetro
 
@@ -68,7 +69,6 @@ C_GREEN = (0, 128, 0)
 C_LIME = (0, 255, 0)
 C_WHITE = (255, 255, 255)
 
-
 # https://www.webnots.com/flat-ui-color-codes/
 C_TURQUOISE = (26, 188, 156)
 C_GREEN_SEA = (22, 160, 133)
@@ -91,7 +91,6 @@ C_SILVER = (189, 195, 199)
 C_CONCRETE = (149, 165, 166)
 C_ASBESTOS = (127, 140, 141)
 
-
 # https://www.schemecolor.com/flat-black.php
 C_DARK_LIVER = (77, 77, 77)
 C_RAISIN_BLACK = (38, 38, 38)
@@ -106,7 +105,7 @@ def get_color(color_name, color_format="RGB", alpha=255):
         color += (alpha,)
 
     if color_format.islower():
-        color = tuple(val/255 for val in color)
+        color = tuple(val / 255 for val in color)
     return color
 
 
@@ -141,7 +140,7 @@ def merge_color(color1, color2, amount=0.5, color_format="RGB"):
 
     color = []
     for component1, component2 in zip(color1, color2):
-        color.append(round(component1 + (component2-component1)*amount))
+        color.append(round(component1 + (component2 - component1) * amount))
 
     return tuple(color)
 
@@ -195,12 +194,13 @@ def draw_line_2d(x1, y1, x2, y2, w=1, color=None, parent=None):
     node = line.create(dynamic=False)
 
     if parent is None:
-        parent=pixel2d
+        parent = pixel2d
 
     np = NodePath(node)
     np.reparentTo(parent)
 
     return np
+
 
 def draw_line_3d(x1, y1, z1, x2, y2, z2, w=1, color=None, parent=None, dynamic=False):
     """
@@ -212,7 +212,7 @@ def draw_line_3d(x1, y1, z1, x2, y2, z2, w=1, color=None, parent=None, dynamic=F
 
     color = draw_get_color(color, color_format="rgba")
 
-    line.setColor(color)
+    line.setColor((1, 1, 1, 1))
     line.moveTo(x1, y1, z1)
     line.drawTo(x2, y2, z2)
 
@@ -226,11 +226,15 @@ def draw_line_3d(x1, y1, z1, x2, y2, z2, w=1, color=None, parent=None, dynamic=F
     np = NodePath(node)
     print("draw_line_3d_2", np)
     np.reparentTo(parent)
-
+    np.setColorScale(color)
+    np.setLightOff()
+    np.setPythonTag('line', line)
+    np.setPythonTag('defcolor', color)
     if dynamic:
         return np, line
     else:
         return np
+
 
 def draw_cicle(x, y, r, col=None, parent=None):
     base = app.get_show_base()
@@ -260,6 +264,3 @@ def change_cursor(cursor_file):
     winprops.setCursorFilename(filename)
     base = app.get_show_base()
     base.win.requestProperties(winprops)
-
-
-

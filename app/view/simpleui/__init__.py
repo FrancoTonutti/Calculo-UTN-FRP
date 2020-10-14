@@ -1,5 +1,10 @@
 from direct.showbase.DirectObject import DirectObject
 from .simple_frame import SimpleFrame
+from .simple_entry import SimpleEntry
+from .simple_label import SimpleLabel
+from .simple_scrolled_frame import SimpleScrolledFrame
+from .simple_checkbox import SimpleCheckBox
+from .simple_button import SimpleButton
 
 
 def update_ui():

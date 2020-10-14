@@ -25,24 +25,24 @@ def regen():
 
         ux, uz, ry = node.get_restrictions2d()
         if node.geom is None:
-            node.geom = []
-            if ry is False:
-                node.geom.append(panda3d.loader.loadModel("data/geom/node"))
-            else:
-                node.geom.append(panda3d.loader.loadModel("data/geom/node_box"))
+            node.geom = [None]
+
+        if ry is False:
+            if "node_box" in str(node.geom[0]):
+                node.geom[0].removeNode()
+                node.geom[0] = None
+
+            if node.geom[0] is None:
+                node.geom[0] = panda3d.loader.loadModel("data/geom/node")
+        else:
+            if "node_box" not in str(node.geom[0]):
+                node.geom[0].removeNode()
+                node.geom[0] = None
+
+            if node.geom[0] is None:
+                node.geom[0] = panda3d.loader.loadModel("data/geom/node_box")
 
         geom1 = node.geom[0]
-
-        if ry is True:
-            if "node_box" not in str(geom1):
-                geom1.removeNode()
-                node.geom[0] = panda3d.loader.loadModel("data/geom/node_box")
-                geom1 = node.geom[0]
-        else:
-            if "node_box2" in str(geom1):
-                geom1.removeNode()
-                node.geom[0] = panda3d.loader.loadModel("data/geom/node")
-                geom1 = node.geom[0]
 
         geom1.setTag('entity_type', type(node).__name__)
         geom1.setTag('entity_id', node.entity_id)
@@ -51,6 +51,11 @@ def regen():
         geom1.reparentTo(panda3d.render)
 
         geom2 = None
+
+        if ux + uz == 0 and len(node.geom) is 2:
+            geom2 = node.geom.pop()
+            geom2.removeNode()
+            geom2 = None
 
         if ux + uz == 1:
             if len(node.geom) is 1:
@@ -64,11 +69,12 @@ def regen():
                     geom2 = node.geom[1]
 
             if uz is True:
-                geom1.setR(90)
-            else:
                 geom1.setR(0)
+            else:
+                geom1.setR(90)
 
         if ux is True and uz is True:
+            geom1.setR(0)
             if len(node.geom) is 1:
                 geom2 = panda3d.loader.loadModel("data/geom/support_pinned_x")
                 node.geom.append(geom2)
@@ -124,17 +130,21 @@ def regen():
             geom.hide()
             geom.setScale(0.1, norm, 0.1)
             if len(bar.geom) is 1:
-                line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, 3, "C_WHITE")
+                line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, 3, "C_BLUE")
 
                 line.setDepthOffset(1)
                 bar.geom.append(line)
             else:
                 line = bar.geom[1]
                 line.removeNode()
-                line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, 3, "C_WHITE")
+                line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, 3, "C_BLUE")
 
                 line.setDepthOffset(1)
                 bar.geom[1] = line
+            print("!!!!!!!!!!!!!!!!!!!!!!line")
+            print(line)
+            #line.setLight(panda3d.plight_node)
+
         else:
             if len(bar.geom) > 1:
                 line = bar.geom.pop()

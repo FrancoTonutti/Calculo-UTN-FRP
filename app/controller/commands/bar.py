@@ -1,4 +1,4 @@
-from app.model.entity import Node, Bar, Section
+from app.model import Node, Bar, Section
 from direct.task.Task import TaskManager
 from app import app
 
@@ -147,6 +147,7 @@ def bar_task(task):
         coredata["end"] = None
         coredata["press"] = False
         if coredata["line_node"] is not None:
+            print(coredata["line_node"])
             coredata["line_node"].removeNode()
 
         man = TaskManager()
@@ -178,9 +179,9 @@ def create_line_seg(panda3d):
 
     node = line.create(dynamic=True)
 
-    np = NodePath(node)
-    np.reparentTo(panda3d.render)
+    node_path = NodePath(node)
+    node_path.reparentTo(panda3d.render)
 
-    coredata["line_node"] = np
+    coredata["line_node"] = node_path
 
     return line, node
