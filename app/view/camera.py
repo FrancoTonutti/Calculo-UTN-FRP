@@ -149,6 +149,9 @@ class CameraControl(DirectObject):
 
             for name, gui_obj in gui_objects.items():
 
+                if gui_obj.isHidden():
+                    continue
+
                 pos = gui_obj.getPos(pixel2d)
                 frame_size = list(gui_obj["frameSize"])
 

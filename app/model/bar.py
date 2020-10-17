@@ -5,6 +5,7 @@ class Bar(Entity):
 
     def __init__(self, start, end, section, material=None):
         super().__init__()
+        self.name = ""
         self.start = start
         self.end = end
         self.section = section
@@ -12,13 +13,32 @@ class Bar(Entity):
         self._width = 0.2
         self._height = 0.3
 
-        self.show_properties("width", "height")
+        self.show_properties("name", "width", "height")
 
         self.show_properties("start_x", "start_y", "start_z")
         self.set_prop_name(start_x="Incio x", start_y="Incio y", start_z="Incio z")
         self.show_properties("end_x", "end_y", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
         register(self)
+
+    def __str__(self):
+        if self.name is "":
+            name_start = self.start.name
+            name_end = self.end.name
+
+            if name_start is not "" and name_end is not "":
+                name = "Barra {}-{}".format(name_start, name_end)
+            else:
+                name = None
+        else:
+            name = "Barra {}".format(self.name)
+
+        if name is None:
+            return super().__str__()
+        else:
+            return name
+
+
 
     @property
     def width(self):
@@ -85,9 +105,3 @@ class Bar(Entity):
     @end_z.setter
     def end_z(self, value: str):
         self.end.z = value
-
-
-
-
-    def __str__(self):
-        return "<class 'app.model.core.Bar'>"

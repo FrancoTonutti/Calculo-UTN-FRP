@@ -137,7 +137,7 @@ def bar_task(task):
                 x1, y1, z1 = coredata["start"]+bar_vect
             else:
                 # Mostrar la longitud de la barra en pantalla
-                box_input.enterText("{}".format(bar_len))
+                box_input.enterText("{}".format(round(bar_len,2)))
             line.setVertex(1, x1, y1, z1)
 
     if watcher.has_mouse() and (watcher.isButtonDown("escape") or watcher.isButtonDown("mouse3")):
