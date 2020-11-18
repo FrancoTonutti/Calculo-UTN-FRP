@@ -9,7 +9,7 @@ class Load(Entity):
     load_type: string  = "D", "L", "W", "S" etc.
     value: float
     """
-    scale = 0.5
+    scale = 0.25
 
     def __init__(self, parent, value, angle=90, load_type="D"):
         super().__init__()
@@ -36,6 +36,13 @@ class Load(Entity):
             model.hide()
 
             self.geom = [model, None]
+        elif isinstance(self.parent, Bar):
+            model = app.base.loader.loadModel("data/geom/plate")
+            model.set_two_sided(True)
+            model.setTag('entity_type', self.__class__.__name__)
+            model.setTag('entity_id', self.entity_id)
+            self.geom = [model]
+
 
         self.update_model()
 
@@ -70,6 +77,33 @@ class Load(Entity):
             line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, color="C_ORANGE")
 
             self.geom = [model, line]
+        elif isinstance(self.parent, Bar):
+            x0, y0, z0 = self.parent.start.position
+            x1, y1, z1 = self.parent.end.position
+            model = self.geom[0]
+            #model.setPos(x0, y0, z0)
+            model.setHpr(0, 0, 90)
+            #model.setColorScale(1, 0, 0, 1)
+
+            model_parent = self.parent.geom[0]
+            parent_scale = model_parent.getScale()
+            #model.reparentTo(app.base.render)
+            model.reparentTo(model_parent)
+
+            h = self.value * Load.scale
+            x = x1 - x0
+            y = y1 - y0
+            z = z1 - z0
+            vector = [x, y, z]
+            L = np.linalg.norm(vector)
+            model.setScale(h/parent_scale[2], L/parent_scale[1],1/parent_scale[0])
+            model.setPos(0, (L / 2)/parent_scale[1], 0.5*h/parent_scale[2])
+
+            model.wrtReparentTo(app.base.render)
+            model.setLightOff()
+            print("L", L)
+            print("h", h)
+
 
     def delete_model(self):
         pass

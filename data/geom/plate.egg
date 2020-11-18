@@ -1,0 +1,70 @@
+<CoordinateSystem> { Z-up } 
+<Material> Material {
+  <Scalar> baser { 1 }
+  <Scalar> baseg { 1 }
+  <Scalar> baseb { 1 }
+  <Scalar> basea { 1 }
+  <Scalar> emitr { 0.0 }
+  <Scalar> emitg { 0.0 }
+  <Scalar> emitb { 0.0 }
+  <Scalar> emita { 1.0 }
+  <Scalar> shininess { 0.5 }
+  <Scalar> roughness { 0.4000000059604645 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> ior { 1.4500000476837158 }
+  <Scalar> local { 0 }
+}
+
+<Texture> tex_palette.png {
+  "./tex/tex_palette.png"
+  <Scalar> envtype { modulate }
+  <Scalar> uv-name { UVMap }
+  <Scalar> wrapu { repeat }
+  <Scalar> wrapv { repeat }
+}
+
+  <Group> Cube {
+    <Transform> {
+      <Matrix4> {
+        1.0 0.0 0.0 0.0 
+        0.0 1.0 0.0 0.0 
+        0.0 0.0 1.0 0.0 
+        0.0 0.0 0.0 1.0 
+      }
+    }
+    
+    <VertexPool> Cube {
+    
+      <Vertex> 0 {-0.500000 0.500000 0.000000
+        <UV> UVMap {
+          0.810911 0.174893 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 1 {0.500000 0.500000 0.000000
+        <UV> UVMap {
+          0.826140 0.174893 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 2 {0.500000 -0.500000 0.000000
+        <UV> UVMap {
+          0.826140 0.190123 
+        }
+        <RGBA> { 1 1 1 1 }
+      }
+      <Vertex> 3 {-0.500000 -0.500000 0.000000
+        <UV> UVMap {
+          0.810911 0.190123 
+        }
+        <RGBA> { 1 1 1 1 }
+      }}
+    
+    
+    <Polygon> {
+      <TRef> { tex_palette.png }
+      <MRef> { Material }
+      <Normal> {0.000000 0.000000 -1.000000}
+      <VertexRef> { 0 1 2 3 <Ref> { Cube }} 
+    }
+  }

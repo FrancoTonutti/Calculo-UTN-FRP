@@ -31,6 +31,7 @@ INTERFACE = {
             "Escalera": {},
         },
         "Modelo": {
+            "Agregar carga": {"command": "load"},
             "Regen": {"command": "regen"},
             "Ver secciones": {"command": "wire"}
         },

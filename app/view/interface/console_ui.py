@@ -33,7 +33,16 @@ class ConsoleUI(DirectObject):
     @active_command.setter
     def active_command(self, value):
 
-        if self._activecommand is not value:
+        if value is None:
+            self.entry.show()
+
+            for entry in self._args_input.values():
+                entry.detachNode()
+
+            self._args_input.clear()
+
+        elif self._activecommand is not value:
+            self._activecommand = value
             data = app.commands.get(value, None)
             if data is not None:
                 print("data", data)
@@ -123,6 +132,9 @@ class ConsoleUI(DirectObject):
             self.tsk.add(task, "command_task")
 
     def close_command(self):
+        print("close_command start")
         if self.active_command:
+            print("close_command", self.tsk.hasTaskNamed("command_task"))
+
             self.tsk.remove("command_task")
             self.active_command = None
