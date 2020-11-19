@@ -1,5 +1,7 @@
 from app.model.entity import Entity, register
-
+import numpy as np
+from app.view import draw
+from app import app
 
 class Bar(Entity):
 
@@ -13,6 +15,9 @@ class Bar(Entity):
         self._width = 0.2
         self._height = 0.3
 
+        self.start.add_child_model(self)
+        self.end.add_child_model(self)
+
         self.show_properties("name", "width", "height")
 
         self.show_properties("start_x", "start_y", "start_z")
@@ -20,6 +25,8 @@ class Bar(Entity):
         self.show_properties("end_x", "end_y", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
         register(self)
+
+        self.create_model()
 
     def __str__(self):
         if self.name is "":
@@ -37,6 +44,8 @@ class Bar(Entity):
             return super().__str__()
         else:
             return name
+
+
 
 
 
@@ -105,3 +114,47 @@ class Bar(Entity):
     @end_z.setter
     def end_z(self, value: str):
         self.end.z = value
+
+    def create_model(self):
+        print("CREATE MODEL")
+        self.geom = [None, None]
+        self.geom[0] = self.load_model("data/geom/beam")
+
+        self.update_model()
+
+    def update_model(self):
+        geom = self.geom[0]
+        x0, y0, z0 = self.start.position
+        x1, y1, z1 = self.end.position
+        geom.setPos(x0, y0, z0)
+
+        b, h = self.section.size
+        x = x1 - x0
+        y = y1 - y0
+        z = z1 - z0
+        vector = [x, y, z]
+        norm = np.linalg.norm(vector)
+        geom.setScale(b, norm, h)
+
+        geom.lookAt(self.end.geom[0])
+
+        if app.wireframe is True:
+            geom.hide()
+            geom.setScale(0.1, norm, 0.1)
+
+            line = self.geom[1]
+            if line is not None:
+                line.removeNode()
+            line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, 3, "C_BLUE")
+
+            line.setDepthOffset(1)
+            self.geom[1] = line
+            print("!!!!!!!!!!!!!!!!!!!!!!line")
+            print(line)
+            #line.setLight(panda3d.plight_node)
+
+        else:
+            line = self.geom[1]
+            if line is not None:
+                line.removeNode()
+                self.geom[1] = None

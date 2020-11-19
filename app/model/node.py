@@ -26,6 +26,7 @@ class Node(Entity):
         self.bind_to_model("x", "y", "z", "fixed_ry", "fixed_ux", "fixed_uz")
 
         register(self)
+        self.create_model()
 
     def __str__(self):
         name = str(self.name)
@@ -35,11 +36,12 @@ class Node(Entity):
         return "Nodo {} ({}, {}, {})".format(name, x, y, z)
 
     def create_model(self):
+        print("CREATE NODE")
         self.geom = [None]
-        self.geom[0] = app.base.loader.loadModel("data/geom/node")
+        self.geom[0] = self.load_model("data/geom/node")
 
-        self.geom[0].setTag('entity_type', type(Node).__name__)
-        self.geom[0].setTag('entity_id', self.entity_id)
+        #self.geom[0].setTag('entity_type', type(Node).__name__)
+        #self.geom[0].setTag('entity_id', self.entity_id)
 
         self.update_model()
 

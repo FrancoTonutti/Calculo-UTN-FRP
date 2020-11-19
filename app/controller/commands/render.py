@@ -136,7 +136,8 @@ def regen():
                 bar.geom.append(line)
             else:
                 line = bar.geom[1]
-                line.removeNode()
+                if line is not None:
+                    line.removeNode()
                 line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, 3, "C_BLUE")
 
                 line.setDepthOffset(1)
@@ -147,5 +148,7 @@ def regen():
 
         else:
             if len(bar.geom) > 1:
-                line = bar.geom.pop()
-                line.removeNode()
+                line = bar.geom[1]
+                if line is not None:
+                    line.removeNode()
+                    bar.geom[1] = None

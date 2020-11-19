@@ -70,7 +70,7 @@ def bar_task(task):
         coredata["line"].setVertex(0, x1, y1, z1)
         coredata["end"] = None
 
-        execute("regen")
+        #execute("regen")
 
     if app.mouse_on_workspace:
 

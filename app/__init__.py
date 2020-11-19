@@ -32,6 +32,7 @@ class App:
         self.cursor = None
 
         self.main_ui = None
+        self.wireframe = False
 
     def set_show_base(self, base):
         self.base = base

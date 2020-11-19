@@ -8,10 +8,12 @@ from app.view import draw
 
 @command("wire")
 def wireframe_toggel():
-    if render.wireframe is True:
-        render.wireframe = False
+    if app.wireframe is True:
+        app.wireframe = False
     else:
-        render.wireframe = True
+        app.wireframe = True
+
+    render.wireframe = app.wireframe
 
     print("Wireframe", render.wireframe)
 
