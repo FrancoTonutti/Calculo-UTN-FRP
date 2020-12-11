@@ -2,6 +2,7 @@ from app.model.entity import Entity, register
 import numpy as np
 from app.view import draw
 from app import app
+from .material import Material
 
 class Bar(Entity):
 
@@ -11,6 +12,8 @@ class Bar(Entity):
         self.start = start
         self.end = end
         self.section = section
+        if material is None:
+            material = Material(20 * (10 ** 9))
         self.material = material
         self._width = 0.2
         self._height = 0.3

@@ -432,7 +432,7 @@ class CameraControl(DirectObject):
                     status_bar.entity_read(entity)
         else:
             if btn.isButtonDown("mouse1"):
-                entities = app.model_reg.get("View")
+                entities = app.model_reg.get("View", {})
 
                 if entities is None or len(entities) is 0:
                     View()

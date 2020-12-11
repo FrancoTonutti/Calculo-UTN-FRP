@@ -3,6 +3,8 @@ from app.model import Bar, Node
 from app.view import draw
 import numpy as np
 from app import app
+
+
 class Load(Entity):
     """
     bar: parent bar
