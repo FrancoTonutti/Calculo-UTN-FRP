@@ -4,19 +4,28 @@ from app.view import draw
 from app import app
 from .material import Material
 
+from typing import TYPE_CHECKING
+from typing import List
+if TYPE_CHECKING:
+    # Imports only for IDE type hints
+    from app.model import *
+
+
 class Bar(Entity):
 
     def __init__(self, start, end, section, material=None):
         super().__init__()
         self.name = ""
-        self.start = start
-        self.end = end
-        self.section = section
+        self.start: Node = start
+        self.end: Node = end
+        self.section: Section = section
         if material is None:
             material = Material(20 * (10 ** 9))
-        self.material = material
+        self.material: Material = material
         self._width = 0.2
         self._height = 0.3
+
+        self.loads: List[Load] = []
 
         self.start.add_child_model(self)
         self.end.add_child_model(self)
@@ -48,8 +57,12 @@ class Bar(Entity):
         else:
             return name
 
+    def add_load(self, new_load):
+        self.loads.append(new_load)
 
-
+    def get_loads(self):
+        for load_entity in self.loads:
+            yield load_entity
 
 
     @property

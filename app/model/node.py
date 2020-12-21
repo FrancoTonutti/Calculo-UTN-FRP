@@ -1,6 +1,12 @@
 from app.model.entity import Entity, register
 from app import app
 
+from typing import TYPE_CHECKING
+from typing import List
+if TYPE_CHECKING:
+    # Imports only for IDE type hints
+    from app.model import *
+
 class Node(Entity):
     def __init__(self, x, y, z=0, name=""):
         super().__init__()
@@ -11,7 +17,7 @@ class Node(Entity):
         self.hide_properties("position")
         self.set_prop_name()
         self.show_properties("name", "x", "y", "z")
-
+        self.index = 0
 
         self.fixed_ux = False
         self.fixed_uy = False
@@ -20,6 +26,8 @@ class Node(Entity):
         self.fixed_rx = False
         self.fixed_ry = False
         self.fixed_rz = False
+
+        self.loads: List[Load] = []
 
         self.show_properties("fixed_ux", "fixed_uz", "fixed_ry")
 
@@ -34,6 +42,13 @@ class Node(Entity):
         y = round(self.position[1], 2)
         z = round(self.position[2], 2)
         return "Nodo {} ({}, {}, {})".format(name, x, y, z)
+
+    def add_load(self, new_load):
+        self.loads.append(new_load)
+
+    def get_loads(self):
+        for load_entity in self.loads:
+            yield load_entity
 
     def create_model(self):
         print("CREATE NODE")

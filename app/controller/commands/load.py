@@ -7,7 +7,7 @@ import numpy as np
 
 from app.controller.console import command, execute
 
-# Creamos una variable global coredata que almacenará información sobre el modulo
+
 
 
 @command(name="load", shortcut="b", args=["entity", "value", "angle"])
@@ -39,6 +39,7 @@ def add_load_task(task):
         if entity and value and angle:
             load = Load(entity, value, angle)
             entity.add_child_model(load)
+            entity.add_load(load)
 
             app.console.set_arg("entity", None)
             app.console.close_command()

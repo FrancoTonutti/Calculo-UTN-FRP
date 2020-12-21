@@ -38,7 +38,7 @@ INTERFACE = {
     },
     _("Cálculo"): {
         "Cálculo": {
-            "Calcular": {"command": "calcular"},
+            "Calcular": {"command": "matricial"},
         },
     }
 }
