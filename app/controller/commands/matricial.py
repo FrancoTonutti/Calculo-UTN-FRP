@@ -1,6 +1,6 @@
-
 from app import app
 from app.controller.console import command
+from app.model import Diagram
 from app.controller.commands.Tomas import calculo
 
 from typing import TYPE_CHECKING
@@ -62,8 +62,6 @@ def start_analysis():
 
     v_global_references = np.array(v_global_references)
 
-
-
     bar_element: Bar
     for bar_element in model.get_bars():
 
@@ -85,6 +83,9 @@ def start_analysis():
                                 [0,  0, 1]])
 
         m_transform_t = np.transpose(m_transform)
+
+        # Guardamos la matriz transpuesta para futuros calculos
+        bar_element.set_analysis_results("m_transform_t", m_transform_t)
 
         # Procedemos a definir terminos para las submatrices de rigidez
 
@@ -119,6 +120,15 @@ def start_analysis():
                            [   0,  ei_l3, -ei_l2],
                            [   0, -ei_l2,  ei_l]])
 
+        # Matriz de rigidez local
+
+        k_l = np.block([[k_aa_l, k_ab_l],
+                        [k_ba_l, k_bb_l]])
+
+        # Guardamos la matriz de rigideces local para futuros calculos
+
+        bar_element.set_analysis_results("K_l", k_l)
+
         # Submatrices de rigidez globales
 
         """
@@ -144,11 +154,6 @@ def start_analysis():
         k_ab_g = np.matmul(np.matmul(m_transform, k_ab_l), m_transform_t)
         k_ba_g = np.matmul(np.matmul(m_transform, k_ba_l), m_transform_t)
         k_bb_g = np.matmul(np.matmul(m_transform, k_bb_l), m_transform_t)
-
-        # Matriz de rigidez globales
-
-        k_g = np.block([[k_aa_g, k_ab_g],
-                        [k_ba_g, k_bb_g]])
 
         # Ensablamos las submatrices en la matriz del sitema global
 
@@ -181,13 +186,29 @@ def start_analysis():
         fy = load_y * long / 2
         moment = load_y * long**2/12
 
+        bar_element.set_analysis_results("load_x", load_x)
+        bar_element.set_analysis_results("load_y", load_y)
+
         v_forces_a_l = np.array([[fx],
                                  [fy],
                                  [moment]])
 
         v_forces_b_l = np.array([[fx],
                                  [fy],
-                                 [moment]])
+                                 [-moment]])
+
+        print("save fb_l")
+        print(v_forces_a_l)
+        print(v_forces_b_l)
+        fb_l = np.concatenate([v_forces_a_l, v_forces_b_l])
+        print(fb_l)
+        bar_element.set_analysis_results("fb_l", fb_l)
+        print(bar_element.get_analysis_results("fb_l"))
+        print("end save")
+
+
+
+
         print("v_forces_a_l {}".format(v_forces_a_l))
 
         # Vector de fuerzas en extremos de barra por cargas en barras, en coordeandas globales
@@ -230,8 +251,10 @@ def start_analysis():
                 #v_global_references[node_index + i] = 0
             i += 1
 
+    # Buscamos las columnas de ceros para borrarlas
     to_delete_0 = np.argwhere(np.all(m_global_system_reduced[..., :] == 0, axis=0))
 
+    # Elimianamos filas y columnas restringidas por los vinculos
     m_global_system_reduced = np.delete(m_global_system_reduced, to_delete_0, axis=1)
     m_global_system_reduced = np.delete(m_global_system_reduced, to_delete_0, axis=0)
     v_global_fb_reduced = np.delete(v_global_fb, to_delete_0, axis=0)
@@ -245,14 +268,13 @@ def start_analysis():
     print(v_global_fb_reduced)
 
     if det != 0:
+        # Realizamos el calculo de desplazamientos nudos
         m_global_system_invert = np.linalg.inv(m_global_system_reduced)
-
         v_f = v_global_fe_reduced - v_global_fb_reduced
-
         v_desp = np.matmul(m_global_system_invert, v_f)
 
+        # Convierto el vector de desplazamientos reducido al vector de desplazamietos globales
         v_global_desp = np.zeros((total_nodes * 3, 1))
-
         for (desp, ref) in zip(v_desp, v_global_references_reduced):
             v_global_desp[ ref.get("index")*3 + ref.get("pos"), 0] = desp
 
@@ -268,6 +290,107 @@ def start_analysis():
         print(v_global_fb)
 
         print(v_reactions)
+
+        # Almaceno los desplazamientos globales de cada nudo
+        for ref, desp in zip(v_global_references, v_global_desp):
+
+            d_g = ref["node"].get_analysis_results("d_g")
+
+            if d_g is None:
+                d_g = [0, 0, 0]
+
+            d_g[ref["pos"]] = desp
+            ref["node"].set_analysis_results("d_g", d_g)
+
+        # Procedo al calculo de esfuerzos en extremos de barra
+        bar_element: Bar
+        for bar_element in model.get_bars():
+            print("Caluclo de esfuerzos")
+
+            # Obtenemos la matriz de rigidez local de la barra, calculada previamente
+            k_l = bar_element.get_analysis_results("K_l")
+            print("k_l")
+            print(k_l)
+
+            # obtenemos el vector de fuerzas en extremo de barra, en sistema local
+            fb_l = bar_element.get_analysis_results("fb_l")
+            print("fb_l")
+            print(fb_l)
+            # Obtenenmos los desplazamientos globales de los nudos
+
+            d_a_g = bar_element.start.get_analysis_results("d_g")
+            d_b_g = bar_element.end.get_analysis_results("d_g")
+
+            # Obtenenmos la matriz de transformación transpuesta de la barra
+
+            m_transform_t = bar_element.get_analysis_results("m_transform_t")
+
+            # Determinamos los desplazamientos de nudos en el sistema local
+
+            d_a_l = np.matmul(m_transform_t, d_a_g)
+            d_b_l = np.matmul(m_transform_t, d_b_g)
+            d_l = np.concatenate([d_a_l, d_b_l])
+            # d_l = np.transpose(d_l)
+
+            print("d_l")
+            print(d_l)
+
+            # Determinamos las fuerzas en extremo de barra en sistema local
+
+            f = np.matmul(k_l, d_l) + fb_l
+            bar_element.set_analysis_results("f_l", f)
+
+            print("Esfueros en barra {}-{}".format(bar_element.start.index, bar_element.end.index))
+            print(f)
+
+            # Detrminacion de esfuerzos internos en distintos puntos de la barra
+
+            step = 0.25
+            load_x = bar_element.get_analysis_results("load_x")
+            load_y = bar_element.get_analysis_results("load_y")
+
+            print("load_x {}".format(load_x))
+            print("load_y {}".format(load_y))
+            long = bar_element.longitude()
+
+            shear = lambda x: f[1, 0] - load_y * x
+            normal = lambda x: f[0, 0] - load_x * x
+            moment = lambda x: f[2, 0] - f[1, 0] * x + load_y * x * x / 2
+
+            v_shear = [shear(0.00*long),
+                       shear(0.25*long),
+                       shear(0.50*long),
+                       shear(0.75*long),
+                       shear(1.00*long)]
+
+            v_normal = [normal(0.00 * long),
+                        normal(0.25 * long),
+                        normal(0.50 * long),
+                        normal(0.75 * long),
+                        normal(1.00 * long)]
+
+            v_moment = [moment(0 * long),
+                        moment(0.25 * long),
+                        moment(0.50 * long),
+                        moment(0.75 * long),
+                        moment(1.00 * long)]
+
+            v_x_coord = [.00 * long,
+                         0.25 * long,
+                         0.50 * long,
+                         0.75 * long,
+                         1.00 * long]
+
+            v_shear = np.column_stack([v_x_coord, v_shear])
+            v_normal = np.column_stack([v_x_coord, v_normal])
+            v_moment = np.column_stack([v_x_coord, v_moment])
+
+            bar_element.set_analysis_results("v_shear", v_shear)
+            bar_element.set_analysis_results("v_normal", v_normal)
+            bar_element.set_analysis_results("v_moment", v_moment)
+
+            Diagram(bar_element, v_moment)
+
 
     else:
         print("Matriz singular, vinculos insuficientes: mecanismo")

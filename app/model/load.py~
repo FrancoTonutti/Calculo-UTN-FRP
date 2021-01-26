@@ -101,7 +101,7 @@ class Load(Entity):
             model.setScale(h/parent_scale[2], L/parent_scale[1],1/parent_scale[0])
             model.setPos(0, (L / 2)/parent_scale[1], 0.5*h/parent_scale[2])
 
-            #model.wrtReparentTo(app.base.render)
+            model.wrtReparentTo(app.base.render)
             model.setLightOff()
             print("L", L)
             print("h", h)

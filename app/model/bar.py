@@ -64,6 +64,17 @@ class Bar(Entity):
         for load_entity in self.loads:
             yield load_entity
 
+    def longitude(self):
+        start = self.start.position[0], self.start.position[1]
+        end = self.end.position[0], self.end.position[1]
+
+        delta_x = end[0] - start[0]
+        delta_y = end[1] - start[1]
+
+        long = np.linalg.norm([delta_x, delta_y])
+
+        return long
+
 
     @property
     def width(self):

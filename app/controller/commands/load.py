@@ -38,7 +38,7 @@ def add_load_task(task):
 
         if entity and value and angle:
             load = Load(entity, value, angle)
-            entity.add_child_model(load)
+            #entity.add_child_model(load)
             entity.add_load(load)
 
             app.console.set_arg("entity", None)
