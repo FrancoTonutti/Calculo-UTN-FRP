@@ -1,4 +1,5 @@
-from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode
+from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, \
+    CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode, LVecBase4
 import math
 from app import app
 from direct.showbase.DirectObject import DirectObject
@@ -371,6 +372,8 @@ class CameraControl(DirectObject):
         self.axis.reparentTo(self.corner)
         self.axis.setPos(-5 * scale, -5 * scale, -5 * scale)
         self.axis.setCompass()
+        separation = 0
+        #self.axis.setShaderInput("separation", LVecBase4(separation, 0, separation, 0))
 
     def add_cube(self):
         """
