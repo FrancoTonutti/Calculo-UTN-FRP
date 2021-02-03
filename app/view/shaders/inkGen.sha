@@ -3,57 +3,114 @@
 //Cg profile arbvp1 arbfp1
 
 void vshader(float4 vtx_position : POSITION,
-             float4 vtx_texcoord0 : TEXCOORD0,
+             float2 vtx_texcoord0 : TEXCOORD0,
              out float4 l_position : POSITION,
-             out float4 l_texcoord0 : TEXCOORD0,
+             out float2 l_texcoord0 : TEXCOORD0,
              uniform float4x4 mat_modelproj)
 {
   l_position=mul(mat_modelproj, vtx_position);
   l_texcoord0 = vtx_texcoord0;
 }
 
-void fshader(float4 l_texcoord0 : TEXCOORD0,
+void fshader(float2 l_texcoord0 : TEXCOORD0,
              uniform sampler2D tex_0 : TEXUNIT0,
              uniform sampler2D tex_1 : TEXUNIT1,
+             uniform sampler2D tex_2 : TEXUNIT2,
              uniform float4 k_cutoff : C6,
              uniform float4 k_separation : C7,
              uniform float2 k_screen,
              out float4 o_color : COLOR)
 {
-  float4 next_pixel = float4(1/k_screen.x, 0, 1/k_screen.y, 0)
-  float4 texcoord0 = l_texcoord0 + k_separation.xyzw/k_screen.x;
 
-  float4 texcoord0 = l_texcoord0 + k_separation.xyzw/k_screen.x;
-  float4 color0=tex2D(tex_0, float2(texcoord0.x, texcoord0.y));
-  float4 texcoord1 = l_texcoord0 - k_separation.xyzw/k_screen.x;
-  float4 color1=tex2D(tex_0, float2(texcoord1.x, texcoord1.y));
-  float4 texcoord2 = l_texcoord0 + k_separation.wzyx/k_screen.y;
-  float4 color2=tex2D(tex_0, float2(texcoord2.x, texcoord2.y));
-  float4 texcoord3 = l_texcoord0 - k_separation.wzyx/k_screen.y;
-  float4 color3=tex2D(tex_0, float2(texcoord3.x, texcoord3.y));
-  float4 mx = max(color0,max(color1,max(color2,color3)));
-  float4 mn = min(color0,min(color1,min(color2,color3)));
-  float4 trigger = (((mx-mn) * 3) - k_cutoff.x);
-  float thresh = dot(float3(trigger.x, trigger.y, trigger.z),float3(1,1,1));
-  if (thresh<0.2) thresh=0.0;
-  if (thresh>0.1) thresh=1.0;
+  float2 next_pixel_x = float2(0.625/k_screen.x, 0);
+  float2 next_pixel_y = float2(0, 0.7/(k_screen.y*1));
 
-  float4 colorb=tex2D(tex_1, float2(l_texcoord0.x, l_texcoord0.y));
+  float2 texcoord1 = l_texcoord0 + next_pixel_x;
+  float2 texcoord2 = l_texcoord0 - next_pixel_x;
+  float2 texcoord3 = l_texcoord0 + next_pixel_y;
+  float2 texcoord4 = l_texcoord0 - next_pixel_y;
 
-  texcoord0 = l_texcoord0 + k_separation.xyzw/k_screen.x;
-  color0=tex2D(tex_1, float2(texcoord0.x, texcoord0.y));
-  texcoord1 = l_texcoord0 - k_separation.xyzw/k_screen.x;
-  color1=tex2D(tex_1, float2(texcoord1.x, texcoord1.y));
-  texcoord2 = l_texcoord0 + k_separation.wzyx/k_screen.y;
-  color2=tex2D(tex_1, float2(texcoord2.x, texcoord2.y));
-  texcoord3 = l_texcoord0 - k_separation.wzyx/k_screen.y;
-  color3=tex2D(tex_1, float2(texcoord3.x, texcoord3.y));
+  float4 zero = float4(0.5,0.5,0.5,0.5);
 
-  mx = max(colorb,max(color0,max(color1,max(color2,color3))));
+  float4 color0=tex2D(tex_0, l_texcoord0);
+  float4 color1=tex2D(tex_0, texcoord1);
+  float4 color2=tex2D(tex_0, texcoord2);
+  float4 color3=tex2D(tex_0, texcoord3);
+  float4 color4=tex2D(tex_0, texcoord4);
 
-  float alpha = max(colorb.a,max(color0.a,max(color1.a,max(color2.a,color3.a))));
+  float3 normal0 = (float3) (color0-zero)*2;
+  float3 normal1 = (float3) (color1-zero)*2;
+  float3 normal2 = (float3) (color2-zero)*2;
+  float3 normal3 = (float3) (color3-zero)*2;
+  float3 normal4 = (float3) (color4-zero)*2;
 
-  float4 output_color = mx*thresh;
-  //output_color.a = alpha*thresh;
+
+
+  float cos_1 = dot(normal0, normal1);
+  float cos_2 = dot(normal0, normal2);
+  float cos_3 = dot(normal0, normal3);
+  float cos_4 = dot(normal0, normal4);
+
+  float3 camera_vec = float3(0,0,-1);
+  float cos_camera0 = dot(camera_vec, normal0)/2+0.5;
+  float cos_camera1 = dot(camera_vec, normal1)/2+0.5;
+  float cos_camera2 = dot(camera_vec, normal2)/2+0.5;
+  float cos_camera3 = dot(camera_vec, normal3)/2+0.5;
+  float cos_camera4 = dot(camera_vec, normal4)/2+0.5;
+
+  float test = (color0.a -0.5)*2;
+
+  float fix_cos_1 =1- max(sign(cos_camera0 - cos_camera1), 0.0);
+  float fix_cos_2 =1- max(sign(cos_camera0 - cos_camera2), 0.0);
+  float fix_cos_3 =1- max(sign(cos_camera0 - cos_camera3), 0.0);
+  float fix_cos_4 =1- max(sign(cos_camera0 - cos_camera4), 0.0);
+
+  //cos_1*=fix_cos_1;
+  //cos_2*=fix_cos_2;
+  //cos_3*=fix_cos_3;
+  //cos_4*=fix_cos_4;
+
+  if (cos_camera1<cos_camera0) cos_1=1;
+  if (cos_camera2<cos_camera0) cos_2=1;
+  if (cos_camera3<cos_camera0) cos_3=1;
+  if (cos_camera4<cos_camera0) cos_4=1;
+
+  float mx = min(cos_1,min(cos_2,min(cos_3,cos_4)));
+  //mx = cos_1;
+  float draw = 1 - max(sign(mx - 0.9), 0.0);
+
+
+
+
+  //draw *= abs(sign(normal0.a));
+  //if (normal0.a < 0.1) draw = 0;
+  if (test < 0.1) draw = 0;
+
+  float4 colorb=tex2D(tex_1, l_texcoord0);
+
+
+  float4 output_color = colorb*draw;
+  //output_color = colorb;
+   /*
+  output_color.r = 1-draw;
+  output_color.g = 1-draw;
+  output_color.b = 1-draw;
+  output_color.a = 1;
+
+  output_color = color4;
+
+    if (cos_1<1) mx=0;
+
+    output_color = float4(mx,mx,mx,1);
+
+  if (mx<0.97) mx=0;
+
+  output_color = float4(draw,draw,draw,1);
+    */
+
+  //float4 color_depth=tex2D(tex_2, l_texcoord0);
+  //output_color = color_depth;
+
   o_color = output_color;
+
 }

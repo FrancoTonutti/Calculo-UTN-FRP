@@ -1,0 +1,26 @@
+//Cg
+
+void vshader(float4 vtx_position : POSITION,
+             uniform float4x4 mat_modelproj,
+             out float4 l_position : POSITION,
+             out float4 l_pos : TEXCOORD0)
+{
+    float4 position = vtx_position;
+    l_pos = mul(mat_modelproj, position);
+    l_position = l_pos;
+}
+
+void fshader(in float4 l_pos : TEXCOORD0,
+             out float4 o_color : COLOR)
+{
+    float z = (l_pos.z / l_pos.w) * 0.5 + 0.5;
+    float zres = 16777216.0 * z;
+    float v0 = round(zres / 65536.0);
+    zres = zres - 65536.0 * v0;
+    float v1 = round(zres / 256.0);
+    zres = zres - 256.0 * v1;
+    float v2 = round(zres);
+    o_color = float4(v0, v1, v2, 1);
+    z *= 5000;
+    o_color = float4(z, z, z, 1);
+}

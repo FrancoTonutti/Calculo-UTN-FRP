@@ -1,5 +1,5 @@
 from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, \
-    CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode, LVecBase4
+    CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode, LVecBase4, DirectionalLight
 import math
 from app import app
 from direct.showbase.DirectObject import DirectObject
@@ -74,16 +74,22 @@ class CameraControl(DirectObject):
         self.corner = self.panda3d.camera.attachNewNode("corner of screen")
         #self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
         self.axis = self.panda3d.loader.loadModel("data/geom/view_cube")
+        self.axis.setLightOff(1)
+        self.axis.setColorScale(1,1,1,0.5)
+        self.axis.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0.25))
         self.show_view_cube()
 
         # Agregamos una luz puntual en la ubicación de la camara
-        plight = PointLight("camera_light")
+        plight = DirectionalLight("camera_light")
         plight.setColor((1, 1, 1, 1))
-        plight.setAttenuation((1, 0, 0))
-        print("getMaxDistance {}".format(plight.getMaxDistance()))
+        #plight.setAttenuation((1, 0, 0))
+        #print("getMaxDistance {}".format(plight.getMaxDistance()))
         self.panda3d.plight_node = self.panda3d.render.attach_new_node(plight)
         self.panda3d.plight_node.setPos(0, -50, 0)
         self.panda3d.render.setLight(self.panda3d.plight_node)
+        self.panda3d.plight_node.reparentTo(self.panda3d.camera)
+
+
 
         # Agregamos luz ambiental que disminuya las zonas oscuras
         alight = AmbientLight('alight')
@@ -118,6 +124,10 @@ class CameraControl(DirectObject):
         print("new lens {}: {} {}".format(lens_type, width / 100, height / 100))
         print(lens)
         self.panda3d.cam.node().setLens(lens)
+
+        shader_control = self.panda3d.shader_control
+        if shader_control is not None:
+            shader_control.update_cameras(lens)
 
     def window_rezise_event(self, window=None):
         """
@@ -241,9 +251,10 @@ class CameraControl(DirectObject):
                 app.workspace_active = True
                 self.entity_select()
             else:
+                pass
                 # Actualizamos la posición de la luz puntual
-                cam = self.panda3d.camera
-                self.panda3d.plight_node.setPos(cam.get_pos(self.panda3d.render))
+                #cam = self.panda3d.camera
+                #self.panda3d.plight_node.setPos(cam.get_pos(self.panda3d.render))
 
             # Ejecutar  solo en windows
             """if os.name == 'nt':
@@ -358,6 +369,7 @@ class CameraControl(DirectObject):
 
         # Dibujar por encima de todos los objetos
         self.axis.setBin("fixed", 0)
+        #self.axis.set_two_sided(True)
 
         """
         Tarea pendiente:

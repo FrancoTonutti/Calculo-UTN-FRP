@@ -17,10 +17,12 @@ class MyProgram(ShowBase):
         app.set_show_base(self)
 
         MainUI()
+        self.shader_control = None
+        self.camera_control = camera.CameraControl(self)
+        self.shader_control = shaders.ShaderControl(self)
 
-        camera.CameraControl(self)
 
-        shaders.add_shadders(self)
+        #shaders.add_shadders(self)
 
         #self.separation = 1  # Pixels
         #self.filters = CommonFilters(self.win, self.cam)
