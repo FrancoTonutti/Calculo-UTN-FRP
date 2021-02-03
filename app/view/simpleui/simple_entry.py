@@ -27,6 +27,11 @@ class SimpleEntry(DirectEntry, SimpleFrame):
             ('textCenterX', True, self.update_text_pos),
             ('textCenterY', True, self.update_text_pos),
             ('align', "center", self.set_align),
+            ('value', None, None),
+            ('typeFunc', str, None),
+            ('prefix', "", None),
+            ('suffix', "", None),
+
         )
         # Merge keyword options with default options
         self.defineoptions(kw, optiondefs)
@@ -63,38 +68,28 @@ class SimpleEntry(DirectEntry, SimpleFrame):
         self.accept(self.guiItem.getFocusOutEvent(), self.on_defocus)
 
 
-
     def on_enter(self, event):
         # draw.change_cursor("/c/Windows/Cursors/no_rm.cur")
         # draw.change_cursor("/d/Bibliotecas/Documentos/Python 3/UTN/Calculo-UTN-FRP/data/cursors/cursor-link.cur")
         # draw.change_cursor("data/cursors/link.cur")
         window.set_cursor(window.cr_beam)
 
+
     def on_leave(self, event):
         # draw.change_cursor("/c/Windows/Cursors/aero_arrow.cur")
         # draw.change_cursor("/d/Bibliotecas/Documentos/Python 3/UTN/Calculo-UTN-FRP/data/cursors/arrow.cur")
         window.set_cursor(window.cr_arrow)
 
-    def find_task(self, task):
-
-        if random.randint(0, 20) == 9:
-
-            x = random.randint(0, 500)
-            y = random.randint(-500, 0)
-            self.setPos(x, 0, y)
-            print(self.getPos(pixel2d))
-            print(self["text"])
-            print("find_task")
-
-
-        return task.cont
-
     def on_focus(self, event=None):
         self.focusInCommandFunc()
         self["focus"] = True
-        print("on_focus", self["focus"])
         if self.get() == self["label"]:
             self.enterText("")
+        else:
+            value = self['value']
+            if value is not None:
+                self.enterText(str(value))
+
         task_manager.add(self.focus_task, "entry_focus_task")
 
     def on_defocus(self, event=None):
@@ -102,8 +97,16 @@ class SimpleEntry(DirectEntry, SimpleFrame):
         self["focus"] = False
         if self["label"] is not None and self.get() is "":
             self.enterText(self["label"])
-        else:
-            print("defocus", self.get() == "", self["text"])
+        elif self.get() is not "":
+            func = self["typeFunc"]
+            if func is not None:
+
+                self.enter_value(func(self.get()))
+                prefix = self["prefix"]
+                txt = self.get()
+                suffix = self["suffix"]
+
+                self.enterText("{}{}{}".format(prefix, txt, suffix))
 
     def focus_task(self, task):
         panda3d = app.get_show_base()
@@ -183,3 +186,22 @@ class SimpleEntry(DirectEntry, SimpleFrame):
         if self['autoCapitalize']:
             self.ignore(self.guiItem.getTypeEvent())
             self.ignore(self.guiItem.getEraseEvent())
+
+    def enter_value(self, value):
+        self["value"] = value
+        self.enterText(str(self["value"]))
+
+    def get_value(self):
+        value = self["value"]
+
+        if self["focus"]:
+            if str(self["value"]) != self.get():
+                value = self.get()
+                type_func = self["typeFunc"]
+                if type_func is not None:
+                    try:
+                        value = type_func(value)
+                    except ValueError as ex:
+                        pass
+
+        return value

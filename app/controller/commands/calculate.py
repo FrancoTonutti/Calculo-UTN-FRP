@@ -1,6 +1,14 @@
-#from kivy.app import App
+
 from app import app
 from app.controller.console import command
+from app.controller.commands.Tomas import calculo
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    # Imports only for IDE type hints
+    from app.view.interface.console_ui import ConsoleUI
+    from app.model import *
+
 
 import math
 import numpy as np
@@ -19,163 +27,93 @@ def start_analysis():
     # Obtenemos el registro del modelo
     model_reg = app.model_reg
 
-    puntos = []
+
     areas = []
     inercias = []
+    node_list = []
+
 
     # Recorremos la lista de barras e imprimimos en consola las posiciones de inicio y fin de cada barra
     print("model_reg", model_reg)
-    bar_list = model_reg.get("Bar", {})
-    i = 1
-    for entity_id, bar in bar_list.items():
-        print("Barra {}".format(i))
+
+    Barras = []
+    for bar in model_reg.get_bars():
+        #print("Barra {}".format(i))
         print(bar)
-        start = bar.start.position[0], bar.start.position[1]
-        end = bar.end.position[0], bar.end.position[1]
-        if start not in puntos:
-            puntos.append(start)
-        if end not in puntos:
-            puntos.append(end)
 
-        b, h = bar.section.size
-        areas.append([b*h])
-        inercias.append([(b*h**3)/12])
-
-        i += 1
-
-    i = 1
-    mcb = []
-    for entity_id, bar in bar_list.items():
         start = bar.start.position[0], bar.start.position[1]
         end = bar.end.position[0], bar.end.position[1]
 
-        start_index = puntos.index(start)
-        end_index = puntos.index(end)
-        mcb.append([start_index, end_index])
+        if bar.start not in node_list:
+            node_list.append(bar.start)
+        if bar.end not in node_list:
+            node_list.append(bar.end)
 
+        elastic_modulus = bar.material.elastic_modulus
+        inertia_x = bar.section.inertia_x()
+        area = bar.section.area()
 
-    puntos = array(puntos)
-    areas = array(areas)
-    inercias = array(inercias)
-    mcb = array(mcb)
-    print(mcb)
-    # Elasticidad una sola prefijada
-    elasticidad = 1007
-    print(mcb)
+        inercias.append(inertia_x)
+        areas.append(area)
 
-    R = MatizGlobalEnsambalda(puntos, areas, inercias, elasticidad, mcb)
-    print(R)
-    print("----------------------------------------------------")
+        Barras.append(calculo.Viga(elastic_modulus, inertia_x, area, start, end))
 
-    return None
+    b = len(Barras)
+    puntos = np.ones((b * 2, 2))
 
+    m = 0
+    for i in range(0, b):
+        puntos[m, 0] = Barras[i].a[0]
+        puntos[m, 1] = Barras[i].a[1]
+        puntos[m + 1, 0] = Barras[i].b[0]
+        puntos[m + 1, 1] = Barras[i].b[1]
+        m = m + 2
 
-# Funciones prefijadas
-def MatrizLocal(L, A, I, E):
-    R1 = (E * A / L, 0, 0, -E * A / L, 0, 0)
-    R2 = (0, 12 * E * I / L ** 3, 6 * E * I / L ** 2, 0, -12 * E * I / L ** 3, 6 * E * I / L ** 2)
-    R3 = (0, 6 * E * I / L ** 2, 4 * E * I / L, 0, -6 * E * I / L ** 2, 2 * E * I / L)
-    R4 = (-E * A / L, 0, 0, +E * A / L, 0, 0)
-    R5 = (0, -12 * E * I / L ** 3, -6 * E * I / L ** 2, 0, 12 * E * I / L ** 3, -6 * E * I / L ** 2)
-    R6 = (0, 6 * E * I / L ** 2, 2 * E * I / L, 0, -6 * E * I / L ** 2, 4 * E * I / L)
-    M = np.array([[R1], [R2], [R3], [R4], [R5], [R6]])
-    M = matrix(M)
-    return M
+    # Lista "PUNTOS" es un valor cpor cada punto y el numero de adentro define su posibilidad de desplazamientos
+    PUNTOS = []
 
+    point: Node
+    for point in node_list:
+        restrictions = point.get_restrictions2d()
 
-def Matriztrans(ang):
-    R1 = (math.cos(ang), -math.sin(ang), 0, 0, 0, 0)
-    R2 = (math.sin(ang), math.cos(ang), 0, 0, 0, 0)
-    R3 = (0, 0, 1, 0, 0, 0)
-    R4 = (0, 0, 0, math.cos(ang), -math.sin(ang), 0)
-    R5 = (0, 0, 0, math.sin(ang), math.cos(ang), 0)
-    R6 = (0, 0, 0, 0, 0, 1)
-    M = np.array([[R1], [R2], [R3], [R4], [R5], [R6]])
-    M = matrix(M)
-    return M
+        new_point = calculo.Puntos(0)
+        new_point.P = list(map(lambda x: not x, restrictions))
 
+        PUNTOS.append(new_point)
 
-def MatrizGlobal(local, transformacion):
-    T = np.transpose(transformacion)
-    A = T.dot(local)
-    E = A.dot(transformacion)
-    return E
+    Rest = calculo.resticciones(PUNTOS)
 
+    Con = np.zeros((b * 2, 1))
+    Con[0] = 0
+    Con[1] = 1
 
-def Matrizconectividad(CB):
-    TC = np.zeros((CB.shape[0], 6))
-    for i in range(0, CB.shape[0]):
-        for j in range(0, 3):
-            if CB[i][0] == 0:
-                TC[i][j] = int(j)
-            else:
-                TC[i][j] = int(j + 3 * (CB[i][0]))
-        for j in range(3, 6):
-            if CB[i][1] == 0:
-                TC[i][j] = int(j - 3)
-            else:
-                TC[i][j] = int((j - 3) + 3 * (CB[i][1]))
-    A = array(TC, dtype=int)
-    return A
+    for i in range(2, b * 2):
+        for n in range(0, i):
+            if puntos[i, 0] == puntos[n, 0] and puntos[i, 1] == puntos[n, 1]:
+                Con[i] = Con[n]
+        if Con[i] == 0:
+            Con[i] = max(Con) + 1
 
+    print("Con=", Con)
 
-"""
-# Puntos no se desarrolla, se hara con extraccion de la grafica, lo mismo con areas e inercia, buscar la forma de obtenerla mediante el grafico o tablas
-Puntos = array([[0, 0], [0, 10], [5, 7], [8, 0]])
-Areas = array(([[1], [2], [3], [4]]))
-Inercias = array(([[10], [20], [30], [40]]))
-# Elasticidad una sola prefijada
-Elasticidad = 1007
-# Matriz de conectividad de baras (fila 1=barra 1, pos 1: Punto a, pos 2: Punto B)
-MCB = array(([[0, 1], [1, 2], [2, 3], [0, 2]]))
-print(MCB)
-# Matriz de conectividad
-TC = Matrizconectividad(MCB)
-print(TC)
-"""
+    # se Crea una matriz que contenga en forma ordenada el orden de puntos y las barras que llegan a los mismos
+    # es deci la barra esta representada por renglones. el renglon uno representa a la barra uno
+    # la barra uno va del punto que se encuentra en la primera columna al punto de la segunda columna
+    matrizconectividad = np.ones((b, 2))
+    d = 0
+    for i in range(0, b):
+        matrizconectividad[i, 0] = Con[d]
+        matrizconectividad[i, 1] = Con[d + 1]
+        d = d + 2
 
+    print("Vector de puntos=", matrizconectividad)
 
-def MatizGlobalEnsambalda(P, A, I, E, CB):
-    # calculo de distancias considerando una sola barra entre 2 nudos y nudos sucecivos (bara1 va de 1 a 2, barra 2, de 2 a 3)
-    H = np.ones((A.shape[0], P.shape[1]))
-    for i in range(0, P.shape[0] - 1):
-        H[i][0] = P[CB[i][1]][0] - P[CB[i][0]][0]
-        H[i][1] = P[CB[i][1]][1] - P[CB[i][0]][1]
-    # Calculos de longitudes de barras
-    D = np.ones((A.shape[0], 1))
-    for i in range(0, P.shape[0] - 1):
-        D[i] = math.sqrt(H[i][0] ** 2 + H[i][1] ** 2)
-    # calculo de pendientes y angulos
-    pen = np.ones((A.shape[0], 1))
-    for i in range(0, P.shape[0] - 1):
-        if H[i][0] == 0:
-            pen[i] = 9999999999999999999999
-        else:
-            pen[i] = H[i][1] / H[i][0]
-    # Calculo de angulos
-    ang = np.ones((A.shape[0], 1))
-    for i in range(0, P.shape[0] - 1):
-        ang[i] = np.arctan(pen[i])
-    # Calculo de matrices de rigidez local
-    K = np.ones((A.shape[0], 6, 6))
-    for i in range(0, A.shape[0]):
-        K[i] = MatrizLocal(D[i], A[i], I[i], E)
-    # Calculo de matrices de transformacion
-    T = np.ones((A.shape[0], 6, 6))
-    for i in range(0, P.shape[0] - 1):
-        T[i] = Matriztrans(ang[i])
-    # Calculo de matriz de global por barra
-    G = np.ones((A.shape[0], 6, 6))
-    for i in range(0, A.shape[0]):
-        G[i] = MatrizGlobal(K[i], T[i])
-    # Matriz de conectividad
-    TC = Matrizconectividad(CB)
-    # Ensamble de matriz Global de la estructura
-    KG = np.zeros((P.shape[0] * 3, P.shape[0] * 3))
-    Kiel = np.zeros((6, 6))
-    for iel in range(0, A.shape[0]):
-        Kiel = G[iel]
-        for i in range(0, 6):
-            for j in range(0, 6):
-                KG[TC[iel][i]][TC[iel][j]] = KG[TC[iel][i]][TC[iel][j]] + Kiel[i][j]
-    return KG
+    MC = calculo.Matrizconectividad(matrizconectividad)
+
+    print("matriz conectividad=", MC)
+
+    # Matriz de conectividad de baras (fila 1=barra 1, pos 1: Punto a, pos 2: Punto B)
+
+    MG = calculo.MatrizGlobalEnsambalda(Barras, matrizconectividad)
+
+    #print("Matriz Global=", MG)

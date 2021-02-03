@@ -1,4 +1,5 @@
-from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode
+from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, \
+    CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode, LVecBase4, DirectionalLight
 import math
 from app import app
 from direct.showbase.DirectObject import DirectObject
@@ -71,17 +72,24 @@ class CameraControl(DirectObject):
 
         # Agrega un indicador de ejes en la esquina inferior izquierda
         self.corner = self.panda3d.camera.attachNewNode("corner of screen")
-        self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
+        #self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
+        self.axis = self.panda3d.loader.loadModel("data/geom/view_cube")
+        self.axis.setLightOff(1)
+        self.axis.setColorScale(1,1,1,0.5)
+        self.axis.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0.25))
         self.show_view_cube()
 
         # Agregamos una luz puntual en la ubicación de la camara
-        plight = PointLight("camera_light")
+        plight = DirectionalLight("camera_light")
         plight.setColor((1, 1, 1, 1))
-        plight.setAttenuation((1, 0, 0))
-        print("getMaxDistance {}".format(plight.getMaxDistance()))
+        #plight.setAttenuation((1, 0, 0))
+        #print("getMaxDistance {}".format(plight.getMaxDistance()))
         self.panda3d.plight_node = self.panda3d.render.attach_new_node(plight)
         self.panda3d.plight_node.setPos(0, -50, 0)
         self.panda3d.render.setLight(self.panda3d.plight_node)
+        self.panda3d.plight_node.reparentTo(self.panda3d.camera)
+
+
 
         # Agregamos luz ambiental que disminuya las zonas oscuras
         alight = AmbientLight('alight')
@@ -117,6 +125,10 @@ class CameraControl(DirectObject):
         print(lens)
         self.panda3d.cam.node().setLens(lens)
 
+        shader_control = self.panda3d.shader_control
+        if shader_control is not None:
+            shader_control.update_cameras(lens)
+
     def window_rezise_event(self, window=None):
         """
         Se activa con cualquier evento de la ventana de windows, en caso de que haya
@@ -148,6 +160,9 @@ class CameraControl(DirectObject):
             mouse_x, mouse_y = mouse_data.getX(), mouse_data.getY()
 
             for name, gui_obj in gui_objects.items():
+
+                if gui_obj.isHidden():
+                    continue
 
                 pos = gui_obj.getPos(pixel2d)
                 frame_size = list(gui_obj["frameSize"])
@@ -236,9 +251,10 @@ class CameraControl(DirectObject):
                 app.workspace_active = True
                 self.entity_select()
             else:
+                pass
                 # Actualizamos la posición de la luz puntual
-                cam = self.panda3d.camera
-                self.panda3d.plight_node.setPos(cam.get_pos(self.panda3d.render))
+                #cam = self.panda3d.camera
+                #self.panda3d.plight_node.setPos(cam.get_pos(self.panda3d.render))
 
             # Ejecutar  solo en windows
             """if os.name == 'nt':
@@ -340,15 +356,20 @@ class CameraControl(DirectObject):
         """
         Agrega un indicador de ejes en la esquina inferior izquierda
         """
-        scale = 0.08
+        scale = 0.25
         width = self.panda3d.win.getXSize()/100
         height = self.panda3d.win.getYSize()/100
 
-        self.corner.setPos(width / 2 - 10 * scale, 5, height / 2 - 28 * scale)
+        #self.corner.setPos(width / 2 - 10 * scale, 5, height / 2 - 28 * scale)
+        self.corner.setPos(width / 2-1, 5, height / 2 - 2)
 
+        print("DEBUG SHOW VIEW CUBE")
+        print(height)
+        print(height / 2 - 28 * scale)
 
         # Dibujar por encima de todos los objetos
         self.axis.setBin("fixed", 0)
+        #self.axis.set_two_sided(True)
 
         """
         Tarea pendiente:
@@ -366,8 +387,12 @@ class CameraControl(DirectObject):
         self.axis.setScale(scale)
         # axis.setScale(1)
         self.axis.reparentTo(self.corner)
-        self.axis.setPos(-5 * scale, -5 * scale, -5 * scale)
+        #self.axis.setPos(-5 * scale, -5 * scale, -5 * scale)
         self.axis.setCompass()
+        separation = 1
+        #self.axis.setShaderInput("showborders", LVecBase4(0))
+        #self.axis.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0))
+        #self.axis.setShaderInput("separation", LVecBase4(separation, 0, separation, 0))
 
     def add_cube(self):
         """
@@ -429,7 +454,7 @@ class CameraControl(DirectObject):
                     status_bar.entity_read(entity)
         else:
             if btn.isButtonDown("mouse1"):
-                entities = app.model_reg.get("View")
+                entities = app.model_reg.get("View", {})
 
                 if entities is None or len(entities) is 0:
                     View()

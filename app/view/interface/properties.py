@@ -143,28 +143,30 @@ class PropertiesEditor(DirectObject):
 
             if self.entity and self.entity.geom:
                 for geom in self.entity.geom:
-                    geom.setTextureOff(0)
+                    if geom:
+                        geom.setTextureOff(0)
 
-                    geom.clearColorScale()
-                    if "render/lines" in str(geom):
-                        col = geom.getPythonTag('defcolor')
-                        if col is not None:
-                            geom.setColorScale(col)
+                        geom.clearColorScale()
+                        if "render/lines" in str(geom):
+                            col = geom.getPythonTag('defcolor')
+                            if col is not None:
+                                geom.setColorScale(col)
 
             if entity:
                 self.entity = entity
                 if self.entity.geom is not None:
                     for geom in self.entity.geom:
-                        if "render/lines" in str(geom):
-                            print(geom)
-                            #geom.setColor(1, 0, 0, 0)
-                            geom.setColorScale(1, 0, 0, 1)
-                            #geom.node().setColor(1, 0, 0, 1)
-                        else:
-                            geom.setTextureOff(1)
-                            geom.setColorScale(1, 0, 0, 0.7)
+                        if geom:
+                            if "render/lines" in str(geom):
+                                print(geom)
+                                #geom.setColor(1, 0, 0, 0)
+                                geom.setColorScale(1, 0, 0, 1)
+                                #geom.node().setColor(1, 0, 0, 1)
+                            else:
+                                geom.setTextureOff(1)
+                                geom.setColorScale(1, 0, 0, 0.7)
 
-                        print("!!!!!!!!!!!!!!!!geom", geom, len(self.entity.geom))
+                            print("!!!!!!!!!!!!!!!!geom", geom, len(self.entity.geom))
 
             for label, entry in self.fields:
                 label.destroy()

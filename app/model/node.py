@@ -1,5 +1,11 @@
 from app.model.entity import Entity, register
+from app import app
 
+from typing import TYPE_CHECKING
+from typing import List
+if TYPE_CHECKING:
+    # Imports only for IDE type hints
+    from app.model import *
 
 class Node(Entity):
     def __init__(self, x, y, z=0, name=""):
@@ -11,6 +17,7 @@ class Node(Entity):
         self.hide_properties("position")
         self.set_prop_name()
         self.show_properties("name", "x", "y", "z")
+        self.index = 0
 
         self.fixed_ux = False
         self.fixed_uy = False
@@ -20,9 +27,14 @@ class Node(Entity):
         self.fixed_ry = False
         self.fixed_rz = False
 
+        self.loads: List[Load] = []
+
         self.show_properties("fixed_ux", "fixed_uz", "fixed_ry")
 
+        self.bind_to_model("x", "y", "z", "fixed_ry", "fixed_ux", "fixed_uz")
+
         register(self)
+        self.create_model()
 
     def __str__(self):
         name = str(self.name)
@@ -30,6 +42,69 @@ class Node(Entity):
         y = round(self.position[1], 2)
         z = round(self.position[2], 2)
         return "Nodo {} ({}, {}, {})".format(name, x, y, z)
+
+    def add_load(self, new_load):
+        self.loads.append(new_load)
+
+    def get_loads(self):
+        for load_entity in self.loads:
+            yield load_entity
+
+    def create_model(self):
+        print("CREATE NODE")
+        self.geom = [None]
+        self.geom[0] = self.load_model("data/geom/node")
+
+        #self.geom[0].setTag('entity_type', type(Node).__name__)
+        #self.geom[0].setTag('entity_id', self.entity_id)
+
+        self.update_model()
+
+    def update_model(self):
+
+        ux, uz, ry = self.get_restrictions2d()
+
+        if ry is False:
+            if "node_box" in str(self.geom[0]):
+                self.geom[0].removeNode()
+                self.geom[0] = self.load_model("data/geom/node")
+        else:
+            if "node_box" not in str(self.geom[0]):
+                self.geom[0].removeNode()
+                self.geom[0] = self.load_model("data/geom/node_box")
+
+        x, y, z = self.position
+        self.geom[0].setPos(x, y, z)
+
+        if ux + uz == 0 and len(self.geom) is 2:
+            print("REMOVE GEOM!!!")
+            geom2 = self.geom.pop()
+            geom2.removeNode()
+
+        angle = 0
+        model = None
+        if ux + uz == 1:
+            model = "support_roller_x"
+            if uz is not True:
+                angle = 90
+        elif ux + uz == 2:
+            model = "support_pinned_x"
+
+        self.geom[0].setR(angle)
+
+        if model:
+            if len(self.geom) is 1:
+                self.geom.append(None)
+
+            if model not in str(self.geom[1]):
+                if self.geom[1]:
+                    self.geom[1].removeNode()
+                self.geom[1] = self.load_model("data/geom/{}".format(model), parent=self.geom[0])
+
+        if len(self.geom) is 2:
+            self.geom[1].reparentTo(self.geom[0])
+            self.geom[1].setPos(0, 0, -0.2)
+            self.geom[1].setScale(0.20, 0.20, 0.20)
 
     @property
     def x(self):

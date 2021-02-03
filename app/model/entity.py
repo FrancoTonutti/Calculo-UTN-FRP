@@ -19,6 +19,15 @@ class Entity:
         self._editor_properties = []
         self._read_only = []
         self._namespace = dict()
+        self._child_models = list()
+        self._bind_model = list()
+        self._analysis_results = dict()
+
+    def set_analysis_results(self, name, value):
+        self._analysis_results.update({name: value})
+
+    def get_analysis_results(self, name):
+        return self._analysis_results.get(name, None)
 
     @property
     def entity_id(self):
@@ -72,22 +81,51 @@ class Entity:
         for prop in self._editor_properties:
             yield prop
 
-    """def get_properties(self):
-        attrs = list(self.__dict__.keys())
-        i = 0
-        attr2 = list()
-        for attr in attrs:
-            name = str(attr)
-            if name[0] is "_" or name in self._hide:
-                pass
-            else:
-                attr2.append(attr)
-            i += 1
+    def load_model(self, model, set_id=True, parent=None):
+        if parent is None:
+            parent = app.base.render
 
-        for prop in self._show:
-            if prop not in attr2:
-                attr2.append(prop)
-        return attr2"""
+        node = app.base.loader.loadModel(model)
+        if set_id:
+            print("entity_type", self.__class__.__name__)
+            node.setTag('entity_type', self.__class__.__name__)
+            node.setTag('entity_id', self.entity_id)
+
+        node.reparentTo(parent)
+        return node
+
+    def create_model(self):
+        pass
+
+    def update_model(self):
+        pass
+
+    def delete_model(self):
+        pass
+
+    def update_tree(self):
+        self.update_model()
+        for child in self._child_models:
+            child.update_tree()
+
+    def add_child_model(self, child):
+        self._child_models.append(child)
+
+    def bind_to_model(self, *args):
+        for prop in args:
+            if prop not in self._bind_model:
+                self._bind_model.append(prop)
+
+    def __setattr__(self, name, value):
+        update = False
+        if hasattr(self, "_bind_model") and name in self._bind_model:
+            if getattr(self, name) != value:
+                update = True
+                
+        super(Entity, self).__setattr__(name, value)
+
+        if update:
+            self.update_tree()
 
 
 def register(entity):

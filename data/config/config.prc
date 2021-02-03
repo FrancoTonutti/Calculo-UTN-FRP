@@ -6,3 +6,5 @@ undecorated False
 
 gl-debug True
 icon-filename data/icons/icon.ico
+egg-retesselate-coplanar 0
+egg-mesh 0

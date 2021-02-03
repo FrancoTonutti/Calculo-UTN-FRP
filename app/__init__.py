@@ -1,6 +1,14 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.view.interface.console_ui import ConsoleUI
+    from app.model.model_reg import ModelReg
+
+
 from direct.showbase.ShowBase import ShowBase
 from typing import Type, Union
 from direct.gui.DirectEntry import *
+
 
 PandaApp = Union[Type[ShowBase], None]
 
@@ -18,13 +26,15 @@ class App:
         self.work_plane_mouse = (0, 0, 0)
 
         # Creamos una variable que almacenará el registro de todos los elementos del modelo
-        self.model_reg = dict()
+        self.model_reg: ModelReg = dict()
         self.console_input: Union[DirectEntry, None] = None
+        self.console: ConsoleUI = None
 
         self.commands = dict()
         self.cursor = None
 
         self.main_ui = None
+        self.wireframe = False
 
     def set_show_base(self, base):
         self.base = base

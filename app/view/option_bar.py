@@ -31,13 +31,14 @@ INTERFACE = {
             "Escalera": {},
         },
         "Modelo": {
+            "Agregar carga": {"command": "load"},
             "Regen": {"command": "regen"},
             "Ver secciones": {"command": "wire"}
         },
     },
     _("Cálculo"): {
         "Cálculo": {
-            "Calcular": {"command": "calcular"},
+            "Calcular": {"command": "matricial"},
         },
     }
 }
