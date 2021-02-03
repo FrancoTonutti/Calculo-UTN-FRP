@@ -24,13 +24,14 @@ class Bar(Entity):
         self.material: Material = material
         self._width = 0.2
         self._height = 0.3
+        self.borders = True
 
         self.loads: List[Load] = []
 
         self.start.add_child_model(self)
         self.end.add_child_model(self)
 
-        self.show_properties("name", "width", "height")
+        self.show_properties("name", "width", "height", "borders")
 
         self.show_properties("start_x", "start_y", "start_z")
         self.set_prop_name(start_x="Incio x", start_y="Incio y", start_z="Incio z")
@@ -162,6 +163,7 @@ class Bar(Entity):
         vector = [x, y, z]
         norm = np.linalg.norm(vector)
         geom.setScale(b, norm, h)
+        geom.setShaderInput("showborders", self.borders, self.borders, self.borders, self.borders)
 
         geom.lookAt(self.end.geom[0])
 

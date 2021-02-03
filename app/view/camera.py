@@ -72,7 +72,8 @@ class CameraControl(DirectObject):
 
         # Agrega un indicador de ejes en la esquina inferior izquierda
         self.corner = self.panda3d.camera.attachNewNode("corner of screen")
-        self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
+        #self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
+        self.axis = self.panda3d.loader.loadModel("data/geom/view_cube")
         self.show_view_cube()
 
         # Agregamos una luz puntual en la ubicación de la camara
@@ -344,12 +345,16 @@ class CameraControl(DirectObject):
         """
         Agrega un indicador de ejes en la esquina inferior izquierda
         """
-        scale = 0.08
+        scale = 0.25
         width = self.panda3d.win.getXSize()/100
         height = self.panda3d.win.getYSize()/100
 
-        self.corner.setPos(width / 2 - 10 * scale, 5, height / 2 - 28 * scale)
+        #self.corner.setPos(width / 2 - 10 * scale, 5, height / 2 - 28 * scale)
+        self.corner.setPos(width / 2-1, 5, height / 2 - 2)
 
+        print("DEBUG SHOW VIEW CUBE")
+        print(height)
+        print(height / 2 - 28 * scale)
 
         # Dibujar por encima de todos los objetos
         self.axis.setBin("fixed", 0)
@@ -370,9 +375,11 @@ class CameraControl(DirectObject):
         self.axis.setScale(scale)
         # axis.setScale(1)
         self.axis.reparentTo(self.corner)
-        self.axis.setPos(-5 * scale, -5 * scale, -5 * scale)
+        #self.axis.setPos(-5 * scale, -5 * scale, -5 * scale)
         self.axis.setCompass()
-        separation = 0
+        separation = 1
+        #self.axis.setShaderInput("showborders", LVecBase4(0))
+        #self.axis.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0))
         #self.axis.setShaderInput("separation", LVecBase4(separation, 0, separation, 0))
 
     def add_cube(self):
