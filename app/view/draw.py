@@ -101,11 +101,15 @@ def get_color(color_name, color_format="RGB", alpha=255):
         color = globals().get(color_name, (0, 0, 0))
     else:
         color = color_name
-    if (color_format is "RGBA" or color_format is "rgba") and len(color) < 4:
-        color += (alpha,)
 
     if color_format.islower():
         color = tuple(val / 255 for val in color)
+
+    if (color_format is "RGBA" or color_format is "rgba") and len(color) < 4:
+        if color_format is "rgba" and alpha > 1:
+            alpha /= 255
+        color += (alpha,)
+
     return color
 
 

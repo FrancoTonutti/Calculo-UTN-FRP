@@ -37,6 +37,9 @@ class Bar(Entity):
         self.set_prop_name(start_x="Incio x", start_y="Incio y", start_z="Incio z")
         self.show_properties("end_x", "end_y", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
+
+        self.bind_to_model("width", "height", "borders")
+
         register(self)
 
         self.create_model()

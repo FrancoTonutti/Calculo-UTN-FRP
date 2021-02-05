@@ -22,12 +22,18 @@ class Entity:
         self._child_models = list()
         self._bind_model = list()
         self._analysis_results = dict()
+        self.is_selectable = True
+        self.is_editable = True
+        self.is_selected = False
 
     def set_analysis_results(self, name, value):
         self._analysis_results.update({name: value})
 
     def get_analysis_results(self, name):
         return self._analysis_results.get(name, None)
+
+    def on_click(self):
+        pass
 
     @property
     def entity_id(self):

@@ -5,6 +5,7 @@ from app import app
 from direct.showbase.DirectObject import DirectObject
 import numpy as np
 from app.model import View
+from app.model.view_cube import ViewCube
 
 """if os.name == 'nt':
     # Importar solo en windows
@@ -74,6 +75,9 @@ class CameraControl(DirectObject):
         self.corner = self.panda3d.camera.attachNewNode("corner of screen")
         #self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
         self.axis = self.panda3d.loader.loadModel("data/geom/view_cube")
+        self.view_cube = ViewCube()
+        self.view_cube.set_geom(self.axis)
+
         self.axis.setLightOff(1)
         self.axis.setColorScale(1,1,1,0.5)
         self.axis.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0.25))
@@ -447,9 +451,11 @@ class CameraControl(DirectObject):
 
                 #print(entity)
                 if btn.isButtonDown("mouse1"):
-                    prop_editor = app.main_ui.prop_editor
-                    prop_editor.entity_read(entity)
-                else:
+                    entity.on_click()
+                    if entity.is_editable:
+                        prop_editor = app.main_ui.prop_editor
+                        prop_editor.entity_read(entity)
+                elif entity.is_selectable:
                     status_bar = app.main_ui.status_bar
                     status_bar.entity_read(entity)
         else:
