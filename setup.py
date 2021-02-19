@@ -19,6 +19,7 @@ setup(
                 '**/*.ttf',
                 '**/*.cur',
                 '**/*.ico',
+                '**/*.dll',
             ],
             'exclude_patterns': [
                 'build/**',
@@ -26,7 +27,7 @@ setup(
                 'test/**'
             ],
             'gui_apps': {
-                'CalculoUTN': 'main.py',
+                'CalculoUTN': 'main_test.py',
             },
             "icons": {
                 "CalculoUTN": [
@@ -39,7 +40,6 @@ setup(
             },
             'platforms': [
                 'win_amd64',
-                'win32'
             ],
             'package_data_dirs': {
                 'numpy': [('numpy.libs/*', '', {'PKG_DATA_MAKE_EXECUTABLE'})]},

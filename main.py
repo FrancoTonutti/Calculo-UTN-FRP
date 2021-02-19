@@ -14,15 +14,19 @@ loadPrcFile("data/config/config.prc")
 class MyProgram(ShowBase):
     def __init__(self):
         super().__init__()
+
         app.set_show_base(self)
 
         MainUI()
+
         self.shader_control = None
         self.camera_control = camera.CameraControl(self)
-        self.shader_control = shaders.ShaderControl(self)
+        # self.render.setRenderMode(5,5,1)
+        self.shader_control = shaders.ShaderControlGLSL(self)
 
 
         #shaders.add_shadders(self)
+
 
         #self.separation = 1  # Pixels
         #self.filters = CommonFilters(self.win, self.cam)

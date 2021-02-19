@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     # Imports only for IDE type hints
     from app.model import *
 
+from app.controller import ifc_tools
 
 class Bar(Entity):
 
@@ -40,7 +41,7 @@ class Bar(Entity):
 
         self.bind_to_model("width", "height", "borders")
 
-        register(self)
+        #register(self)
 
         self.create_model()
 
@@ -190,3 +191,75 @@ class Bar(Entity):
             if line is not None:
                 line.removeNode()
                 self.geom[1] = None
+
+    def generate_ifc(self, ifc_file):
+        owner_history = ifc_file.by_type("IfcOwnerHistory")[0]
+        context = ifc_file.by_type("IfcGeometricRepresentationContext")[0]
+
+        x0 = float(self.start.x)
+        y0 = float(self.start.y)
+        z0 = float(self.start.z)
+
+        x1, y1, z1 = self.end.position
+        x = float(x1 - x0)
+        y = float(y1 - y0)
+        z = float(z1 - z0)
+        vector = [x, y, z]
+        norm = np.linalg.norm(vector)
+
+        placement = ifc_tools.create_ifclocalplacement(ifc_file,
+                                                       relative_to=ifc_file.storey_placement,
+                                                       point=(x0, y0, z0),
+                                                       dir1=(x, y, z))
+        polyline = ifc_tools.create_ifcpolyline(ifc_file, [(0.0, 0.0, 0.0), (1.0, 0.0, 0.0)])
+
+        axis_representation = ifc_file.create_entity(type="IfcShapeRepresentation",
+                                                     ContextOfItems=context,
+                                                     RepresentationIdentifier="Axis",
+                                                     RepresentationType="Curve2D",
+                                                     Items=[polyline])
+
+        extrusion_placement = ifc_tools.create_ifcaxis2placement(ifc_file, (0.0, 0.0, 0.0))
+
+        h, w = self.section.size
+        w = float(w)
+        h = float(h)
+
+        point_list_extrusion_area = [(0.0, -0.1, 0.0),
+                                     (0.2, -0.1, 0.0),
+                                     (0.2, 0.1, 0.0),
+                                     (0.0, 0.1, 0.0),
+                                     (0.0, -0.1, 0.0)]
+
+        point_list_extrusion_area = [(-w/2, -h/2, 0.0),
+                                     ( w/2, -h/2, 0.0),
+                                     ( w/2,  h/2, 0.0),
+                                     (-w/2,  h/2, 0.0),
+                                     (-w/2, -h/2, 0.0)]
+
+        solid = ifc_tools.create_ifcextrudedareasolid(ifc_file, point_list_extrusion_area, extrusion_placement,
+                                                      (0.0, 0.0, 1.0), norm)
+
+        body_representation = ifc_file.createIfcShapeRepresentation(ContextOfItems=context,
+                                                                    RepresentationIdentifier="Body",
+                                                                    RepresentationType="SweptSolid",
+                                                                    Items=[solid])
+
+        product_shape = ifc_file.createIfcProductDefinitionShape(
+            Representations=[axis_representation, body_representation])
+
+        print("id: {}".format(self.entity_id))
+        ifcid = ifc_tools.create_guid()
+        print("GlobalId: {}".format(ifcid))
+
+        #IfcStructuralCurveMember
+        self.ifc_entity = ifc_file.create_entity(type="IfcBeam",
+                                                 GlobalId=self.entity_id,
+                                                 OwnerHistory=owner_history,
+                                                 Name="Mi Columna",
+                                                 Description="Soy una columna",
+                                                 ObjectPlacement=placement,
+                                                 Representation=product_shape
+                                                 )
+
+        return self.ifc_entity

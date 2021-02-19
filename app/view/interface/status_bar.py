@@ -42,7 +42,7 @@ class StatusBar(DirectObject):
                             geom.setRenderModeFilled(1)
                         else:
                             pass
-                            #geom.setRenderModeFilled(1)
+                            # geom.setRenderModeFilled(1)
                             geom.setTextureOff(0)
                             geom.setColorScale(1, 1, 1, 1)
 
@@ -60,7 +60,7 @@ class StatusBar(DirectObject):
                             geom.setTextureOff(1)
                             color = draw.get_color(draw.C_NEPHRITIS, color_format="rgba", alpha=0.2)
                             geom.setColorScale(color)
-                            #geom.setRenderModeThickness(3)
+                            # geom.setRenderModeThickness(3)
                             #geom.setRenderModeFilledWireframe(c_black, 1)
 
 

@@ -1,0 +1,597 @@
+<CoordinateSystem> { Z-up } 
+<Material> "Panda Material" {
+  <Scalar> baser { 1 }
+  <Scalar> baseg { 1 }
+  <Scalar> baseb { 1 }
+  <Scalar> emitr { 5 }
+  <Scalar> emitg { 0 }
+  <Scalar> emitb { 0.0 }
+  <Scalar> emita { 1.0 }
+  <Scalar> shininess { 0.2 }
+  <Scalar> roughness { 0.5 }
+  <Scalar> metallic { 0.0 }
+  <Scalar> ior { 1.4500000476837158 }
+  <Scalar> local { 0 }
+}
+
+<Texture> tex_view_gizmo.png {
+  "./tex/tex_view_gizmo.png"
+  <Scalar> envtype { modulate }
+  <Scalar> uv-name { UVMap }
+  <Scalar> wrapu { repeat }
+  <Scalar> wrapv { repeat }
+}
+
+  <Group> Izquierda {
+    <Transform> {
+      <Matrix4> {
+        1.0 0.0 0.0 0.0 
+        0.0 1.0 0.0 0.0 
+        0.0 0.0 1.0 0.0 
+        0.0 0.0 0.0 1.0 
+      }
+    }
+    
+    <VertexPool> Izquierda {
+    
+      <Vertex> 0 {-1.000000 0.666667 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.944444 
+        }
+      }
+      <Vertex> 1 {-1.000000 0.666667 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 1.000000 
+        }
+      }
+      <Vertex> 2 {-1.000000 1.000000 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 1.000000 
+        }
+      }
+      <Vertex> 3 {-1.000000 1.000000 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.944444 
+        }
+      }
+      <Vertex> 4 {-1.000000 0.666667 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.666666 
+        }
+      }
+      <Vertex> 5 {-1.000000 0.666667 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.722222 
+        }
+      }
+      <Vertex> 6 {-1.000000 1.000000 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.722222 
+        }
+      }
+      <Vertex> 7 {-1.000000 1.000000 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.666666 
+        }
+      }
+      <Vertex> 8 {-1.000000 -1.000000 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.722222 
+        }
+      }
+      <Vertex> 9 {-1.000000 -1.000000 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.944444 
+        }
+      }
+      <Vertex> 10 {-1.000000 -0.666667 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.944444 
+        }
+      }
+      <Vertex> 11 {-1.000000 -0.666667 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.722222 
+        }
+      }
+      <Vertex> 12 {-1.000000 -1.000000 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.666666 
+        }
+      }
+      <Vertex> 13 {-1.000000 -1.000000 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.722222 
+        }
+      }
+      <Vertex> 14 {-1.000000 -0.666667 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.722222 
+        }
+      }
+      <Vertex> 15 {-1.000000 -0.666667 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.666666 
+        }
+      }
+      <Vertex> 16 {-1.000000 -0.666667 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.722222 
+        }
+      }
+      <Vertex> 17 {-1.000000 0.666667 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.722222 
+        }
+      }
+      <Vertex> 18 {-1.000000 0.666667 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.666666 
+        }
+      }
+      <Vertex> 19 {-1.000000 -0.666667 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.666666 
+        }
+      }
+      <Vertex> 20 {-1.000000 0.666667 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.722222 
+        }
+      }
+      <Vertex> 21 {-1.000000 0.666667 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.944444 
+        }
+      }
+      <Vertex> 22 {-1.000000 1.000000 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.944444 
+        }
+      }
+      <Vertex> 23 {-1.000000 1.000000 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.722222 
+        }
+      }
+      <Vertex> 24 {-1.000000 0.666667 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.722222 
+        }
+      }
+      <Vertex> 25 {-1.000000 -0.666667 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.722222 
+        }
+      }
+      <Vertex> 26 {-1.000000 -0.666667 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.944444 
+        }
+      }
+      <Vertex> 27 {-1.000000 0.666667 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.944444 
+        }
+      }
+      <Vertex> 28 {-1.000000 -1.000000 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.944444 
+        }
+      }
+      <Vertex> 29 {-1.000000 -1.000000 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 1.000000 
+        }
+      }
+      <Vertex> 30 {-1.000000 -0.666667 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 1.000000 
+        }
+      }
+      <Vertex> 31 {-1.000000 -0.666667 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.944444 
+        }
+      }
+      <Vertex> 32 {-1.000000 -0.666667 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 1.000000 
+        }
+      }
+      <Vertex> 33 {-1.000000 0.666667 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 1.000000 
+        }
+      }
+      <Vertex> 34 {-1.000000 0.666667 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.944444 
+        }
+      }
+      <Vertex> 35 {-1.000000 -0.666667 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.944444 
+        }
+      }
+      <Vertex> 36 {-1.000000 -1.000000 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.722222 
+        }
+      }
+      <Vertex> 37 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.944444 
+        }
+      }
+      <Vertex> 38 {-1.000000 -1.000000 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.944444 
+        }
+      }
+      <Vertex> 39 {-1.000000 -0.666667 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.666666 
+        }
+      }
+      <Vertex> 40 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.666666 
+        }
+      }
+      <Vertex> 41 {-1.000000 -1.000000 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.666666 
+        }
+      }
+      <Vertex> 42 {-1.000000 1.000000 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 1.000000 
+        }
+      }
+      <Vertex> 43 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.944444 
+        }
+      }
+      <Vertex> 44 {-1.000000 1.000000 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.944444 
+        }
+      }
+      <Vertex> 45 {-1.000000 1.000000 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.722222 
+        }
+      }
+      <Vertex> 46 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.666666 
+        }
+      }
+      <Vertex> 47 {-1.000000 1.000000 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.666666 
+        }
+      }
+      <Vertex> 48 {-1.000000 -1.000000 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.666666 
+        }
+      }
+      <Vertex> 49 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.722222 
+        }
+      }
+      <Vertex> 50 {-1.000000 -1.000000 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.722222 
+        }
+      }
+      <Vertex> 51 {-1.000000 -0.666667 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 1.000000 
+        }
+      }
+      <Vertex> 52 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 1.000000 
+        }
+      }
+      <Vertex> 53 {-1.000000 0.666667 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 1.000000 
+        }
+      }
+      <Vertex> 54 {-1.000000 0.666667 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 1.000000 
+        }
+      }
+      <Vertex> 55 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 1.000000 
+        }
+      }
+      <Vertex> 56 {-1.000000 1.000000 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 1.000000 
+        }
+      }
+      <Vertex> 57 {-1.000000 0.666667 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.666666 
+        }
+      }
+      <Vertex> 58 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.666666 
+        }
+      }
+      <Vertex> 59 {-1.000000 -0.666667 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 0.666666 
+        }
+      }
+      <Vertex> 60 {-1.000000 -1.000000 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 1.000000 
+        }
+      }
+      <Vertex> 61 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 1.000000 
+        }
+      }
+      <Vertex> 62 {-1.000000 -0.666667 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.277778 1.000000 
+        }
+      }
+      <Vertex> 63 {-1.000000 1.000000 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.666666 
+        }
+      }
+      <Vertex> 64 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.666666 
+        }
+      }
+      <Vertex> 65 {-1.000000 0.666667 -1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.055556 0.666666 
+        }
+      }
+      <Vertex> 66 {-1.000000 1.000000 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.944444 
+        }
+      }
+      <Vertex> 67 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.722222 
+        }
+      }
+      <Vertex> 68 {-1.000000 1.000000 -0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.000000 0.722222 
+        }
+      }
+      <Vertex> 69 {-1.000000 -1.000000 0.666667
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 0.944444 
+        }
+      }
+      <Vertex> 70 {0.000000 0.000000 0.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 1.000000 
+        }
+      }
+      <Vertex> 71 {-1.000000 -1.000000 1.000000
+        <RGBA> { 1 1 1 1 }
+        <UV> UVMap {
+          0.333333 1.000000 
+        }
+      }}
+    
+    
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 0 1 2 3 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 4 5 6 7 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 8 9 10 11 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 12 13 14 15 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 16 17 18 19 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 20 21 22 23 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 24 25 26 27 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 28 29 30 31 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {-1.000000 0.000000 0.000000}
+      <VertexRef> { 32 33 34 35 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 -0.707107 0.000000}
+      <VertexRef> { 36 37 38 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.000000 -0.707107}
+      <VertexRef> { 39 40 41 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.707107 0.000000}
+      <VertexRef> { 42 43 44 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.707107 0.000000}
+      <VertexRef> { 45 46 47 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 -0.707107 0.000000}
+      <VertexRef> { 48 49 50 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.000000 0.707107}
+      <VertexRef> { 51 52 53 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.000000 0.707107}
+      <VertexRef> { 54 55 56 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.000000 -0.707107}
+      <VertexRef> { 57 58 59 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.000000 0.707107}
+      <VertexRef> { 60 61 62 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.000000 -0.707107}
+      <VertexRef> { 63 64 65 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 0.707107 0.000000}
+      <VertexRef> { 66 67 68 <Ref> { Izquierda }} 
+    }
+    <Polygon> {
+      <TRef> { tex_view_gizmo.png }
+      <MRef> { "Panda Material" }
+      <Normal> {0.707107 -0.707107 0.000000}
+      <VertexRef> { 69 70 71 <Ref> { Izquierda }} 
+    }
+  }

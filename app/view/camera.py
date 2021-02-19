@@ -1,11 +1,11 @@
 from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, \
-    CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode, LVecBase4, DirectionalLight
+    CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode, LVecBase4, DirectionalLight, BoundingSphere
 import math
 from app import app
 from direct.showbase.DirectObject import DirectObject
 import numpy as np
 from app.model import View
-from app.model.view_cube import ViewCube
+from app.model.view_gizmo import ViewGizmoZone
 
 """if os.name == 'nt':
     # Importar solo en windows
@@ -73,15 +73,31 @@ class CameraControl(DirectObject):
 
         # Agrega un indicador de ejes en la esquina inferior izquierda
         self.corner = self.panda3d.camera.attachNewNode("corner of screen")
-        #self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
-        self.axis = self.panda3d.loader.loadModel("data/geom/view_cube")
-        self.view_cube = ViewCube()
-        self.view_cube.set_geom(self.axis)
+        # self.axis = self.panda3d.loader.loadModel("data/geom/custom-axis")
+        # self.axis = self.panda3d.loader.loadModel("data/geom/view_gizmo_F")
+        self.view_gizmo = list()
+        self.view_gizmo.append(self.panda3d.loader.loadModel("data/geom/view_gizmo_compass"))
 
-        self.axis.setLightOff(1)
-        self.axis.setColorScale(1,1,1,0.5)
-        self.axis.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0.25))
-        self.show_view_cube()
+        # self.view_gizmo.append(self.panda3d.loader.loadModel("data/geom/view_gizmo_L"))
+        # self.view_cube = ViewGizmoZone()
+        # self.view_cube.set_geom(self.axis)
+
+        for gizmo_geom in self.view_gizmo:
+            gizmo_geom.setLightOff(1)
+            # gizmo_geom.setColorScale(1,1,1,1)
+            gizmo_geom.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0.25))
+
+            gizmo = ViewGizmoZone()
+            gizmo.set_geom(gizmo_geom)
+            gizmo_geom.node().setBounds(BoundingSphere(Point3(0, 0, 0), 10))
+            gizmo_geom.node().setFinal(True)
+
+            #gizmo_geom.showTightBounds()
+            # gizmo_geom.showBounds()
+
+
+
+        self.show_view_gizmo()
 
         # Agregamos una luz puntual en la ubicación de la camara
         plight = DirectionalLight("camera_light")
@@ -102,6 +118,19 @@ class CameraControl(DirectObject):
         alnp = self.panda3d.render.attachNewNode(alight)
         self.panda3d.render.setLight(alnp)
 
+        #def init_select_detection(self):
+        self.traverser = CollisionTraverser("")
+        # self.traverser.show_collisions(self.panda3d.render)
+        self.picker_ray = CollisionRay()
+        self.handler = CollisionHandlerQueue()
+
+        self.picker_node = CollisionNode('mouseRay')
+        self.picker_np = self.panda3d.camera.attachNewNode(self.picker_node)
+        self.picker_node.setFromCollideMask(GeomNode.getDefaultCollideMask())
+        self.picker_ray = CollisionRay()
+        self.picker_node.addSolid(self.picker_ray)
+        self.traverser.addCollider(self.picker_np, self.handler)
+
     def set_lens(self, lens_type="OrthographicLens"):
         """
         Permite cambiar la lente de la camara
@@ -116,10 +145,10 @@ class CameraControl(DirectObject):
 
         if lens_type is "OrthographicLens":
             lens = OrthographicLens()
-            lens.setFilmSize(width / 100, height / 100)
+            lens.setFilmSize(width, height )
         if lens_type is "PerspectiveLens":
             lens = PerspectiveLens()
-            lens.setFilmSize(width / 100, height / 100)
+            lens.setFilmSize(width , height )
         else:
             # Default value
             lens = OrthographicLens()
@@ -131,7 +160,7 @@ class CameraControl(DirectObject):
 
         shader_control = self.panda3d.shader_control
         if shader_control is not None:
-            shader_control.update_cameras(lens)
+            shader_control.update_camera_lens(lens)
 
     def window_rezise_event(self, window=None):
         """
@@ -147,7 +176,7 @@ class CameraControl(DirectObject):
             if self.winsize != newsize:
                 self.winsize = newsize
                 self.set_lens()
-                self.show_view_cube()
+                self.show_view_gizmo()
 
     def mouse_is_over_workspace(self):
         """
@@ -356,47 +385,52 @@ class CameraControl(DirectObject):
             new_scale = min(new_scale, self.max_zoom)
             target.setScale(new_scale, new_scale, new_scale)
 
-    def show_view_cube(self):
+    def show_view_gizmo(self):
         """
         Agrega un indicador de ejes en la esquina inferior izquierda
         """
-        scale = 0.25
+        scale = 0.075
         width = self.panda3d.win.getXSize()/100
         height = self.panda3d.win.getYSize()/100
 
         #self.corner.setPos(width / 2 - 10 * scale, 5, height / 2 - 28 * scale)
-        self.corner.setPos(width / 2-1, 5, height / 2 - 2)
+        self.corner.setPos(width / 2-1, 5, height / 2 - 2.4)
 
         print("DEBUG SHOW VIEW CUBE")
         print(height)
         print(height / 2 - 28 * scale)
 
         # Dibujar por encima de todos los objetos
-        self.axis.setBin("fixed", 0)
-        #self.axis.set_two_sided(True)
 
-        """
-        Tarea pendiente:
-        
-        Hay que corregir un error por el cual el indicador de ejes no se dubuja por encima de todos los objetos
-        pudiendo intersectarse cona las geometrías del modelo
-        
-        Simplemente es un error visual, no afecta al funcionamiento
-        
-        axis.setDepthTest(False)
-        
-        https://discourse.panda3d.org/t/model-always-on-screen/8135/5
-        """
+        for gizmo_geom in self.view_gizmo:
+            gizmo_geom.setLightOff(1)
+            # gizmo_geom.setBin("fixed", 0)
 
-        self.axis.setScale(scale)
-        # axis.setScale(1)
-        self.axis.reparentTo(self.corner)
-        #self.axis.setPos(-5 * scale, -5 * scale, -5 * scale)
-        self.axis.setCompass()
-        separation = 1
-        #self.axis.setShaderInput("showborders", LVecBase4(0))
-        #self.axis.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0))
-        #self.axis.setShaderInput("separation", LVecBase4(separation, 0, separation, 0))
+            # gizmo_geom.set_two_sided(True)
+
+            """
+            Tarea pendiente:
+            
+            Hay que corregir un error por el cual el indicador de ejes no se dubuja por encima de todos los objetos
+            pudiendo intersectarse cona las geometrías del modelo
+            
+            Simplemente es un error visual, no afecta al funcionamiento
+            
+            axis.setDepthTest(False)
+            
+            https://discourse.panda3d.org/t/model-always-on-screen/8135/5
+            """
+
+            gizmo_geom.setScale(scale)
+            # axis.setScale(1)
+            gizmo_geom.reparentTo(self.corner)
+            #
+            gizmo_geom.setPos(0, 0, 0)
+            gizmo_geom.setCompass()
+            separation = 1
+            # gizmo_geom.setShaderInput("showborders", LVecBase4(0))
+            # gizmo_geom.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0))
+            # gizmo_geom.setShaderInput("separation", LVecBase4(separation, 0, separation, 0))
 
     def add_cube(self):
         """
@@ -413,66 +447,82 @@ class CameraControl(DirectObject):
             cube.setPos(pos[0], pos[1], pos[2])
 
 
+
     def entity_select(self):
-        traverser = CollisionTraverser("")
-        picker_ray = CollisionRay()
-        handler = CollisionHandlerQueue()
+        if self.panda3d.mouseWatcherNode.hasMouse():
+            """traverser = CollisionTraverser("")
+            #traverser.show_collisions(render)
+            picker_ray = CollisionRay()
+            handler = CollisionHandlerQueue()
 
-        picker_node = CollisionNode('mouseRay')
-        picker_np = self.panda3d.camera.attachNewNode(picker_node)
-        picker_node.setFromCollideMask(GeomNode.getDefaultCollideMask())
-        picker_ray = CollisionRay()
-        picker_node.addSolid(picker_ray)
-        traverser.addCollider(picker_np, handler)
+            picker_node = CollisionNode('mouseRay')
+            picker_np = self.panda3d.camera.attachNewNode(picker_node)
+            picker_node.setFromCollideMask(GeomNode.getDefaultCollideMask())
+            picker_ray = CollisionRay()
+            picker_node.addSolid(picker_ray)
+            traverser.addCollider(picker_np, handler)
 
-        mpos = self.panda3d.mouseWatcherNode.getMouse()
-        picker_ray.setFromLens(self.panda3d.camNode, mpos.getX(), mpos.getY())
-        traverser.traverse(self.panda3d.render)
-        # Assume for simplicity's sake that myHandler is a CollisionHandlerQueue.
-        btn = self.panda3d.mouseWatcherNode
-        if handler.getNumEntries() > 0:
-            # This is so we get the closest object.
-            handler.sortEntries()
-
-            entity = handler.getEntry(0).getIntoNodePath()
-            entity = entity.findNetTag('entity_id')
-            if not entity.isEmpty():
-
-                #print("entity selected: {}".format(entity.getTag("entity_id")))
-
-                entity_id = entity.getTag("entity_id")
-                entity_type = entity.getTag("entity_type")
-                #print(entity_type)
-                model = app.model_reg
-
-                category_type = model.get(entity_type, dict())
-                entity = category_type.get(entity_id, None)
+            picker_node.setFromCollideMask(GeomNode.getDefaultCollideMask())
+            mpos = self.panda3d.mouseWatcherNode.getMouse()
+            picker_ray.setFromLens(self.panda3d.camNode, mpos.getX(), mpos.getY())
+            traverser.traverse(self.panda3d.render)"""
 
 
-                #print(entity)
-                if btn.isButtonDown("mouse1"):
-                    entity.on_click()
-                    if entity.is_editable:
-                        prop_editor = app.main_ui.prop_editor
-                        prop_editor.entity_read(entity)
-                elif entity.is_selectable:
-                    status_bar = app.main_ui.status_bar
-                    status_bar.entity_read(entity)
-        else:
-            if btn.isButtonDown("mouse1"):
-                entities = app.model_reg.get("View", {})
+            self.picker_node.setFromCollideMask(GeomNode.getDefaultCollideMask())
+            mpos = self.panda3d.mouseWatcherNode.getMouse()
+            self.picker_ray.setFromLens(self.panda3d.camNode, mpos.getX(), mpos.getY())
+            self.traverser.traverse(self.panda3d.render)
+            handler = self.handler
 
-                if entities is None or len(entities) is 0:
-                    View()
+            # Assume for simplicity's sake that myHandler is a CollisionHandlerQueue.
+            btn = self.panda3d.mouseWatcherNode
 
-                entities = app.model_reg.get("View")
-                entity = list(entities.values())[0]
-                prop_editor = app.main_ui.prop_editor
+            if handler.getNumEntries() > 0:
+                # This is so we get the closest object.
+                handler.sortEntries()
 
-                prop_editor.entity_read(entity)
+                entity = handler.getEntry(0).getIntoNodePath()
+                entity = entity.findNetTag('entity_id')
+                if not entity.isEmpty():
+
+                    #print("entity selected: {}".format(entity.getTag("entity_id")))
+
+                    entity_id = entity.getTag("entity_id")
+                    entity_type = entity.getTag("entity_type")
+                    #print(entity_type)
+                    model = app.model_reg
+
+                    category_type = model.get(entity_type, dict())
+                    entity = category_type.get(entity_id, None)
+
+
+                    #print(entity)
+                    if btn.isButtonDown("mouse1"):
+                        entity.on_click()
+                        if entity.is_editable:
+                            prop_editor = app.main_ui.prop_editor
+                            prop_editor.entity_read(entity)
+                    elif entity.is_selectable:
+                        status_bar = app.main_ui.status_bar
+                        status_bar.entity_read(entity)
+
+                else:
+                    print("Hay {} entidades bajo el mouse".format(handler.getNumEntries()))
             else:
-                status_bar = app.main_ui.status_bar
-                status_bar.entity_read()
+                if btn.isButtonDown("mouse1"):
+                    entities = app.model_reg.get("View", {})
+
+                    if entities is None or len(entities) is 0:
+                        View()
+
+                    entities = app.model_reg.get("View")
+                    entity = list(entities.values())[0]
+                    prop_editor = app.main_ui.prop_editor
+
+                    prop_editor.entity_read(entity)
+                else:
+                    status_bar = app.main_ui.status_bar
+                    status_bar.entity_read()
 
 
 
