@@ -9,10 +9,10 @@ class ShaderControlCG:
         # Inicialización de variables
         self.winsize = [0, 0]
         self.panda3d = panda3d
-        sha_normal = "app/view/shaders/normalGen.sha"
-        sha_depth = "app/view/shaders/depthGen.sha"
-        sha_color = "app/view/shaders/colorGen.sha"
-        sha_ink = "app/view/shaders/inkGen.sha"
+        sha_normal = "data/shaders/normalGen.sha"
+        sha_depth = "data/shaders/depthGen.sha"
+        sha_color = "data/shaders/colorGen.sha"
+        sha_ink = "data/shaders/inkGen.sha"
 
         self.normal_buff, self.normal_cam = self.make_buffer("normalsBuffer", sha_normal, 0.5)
         # self.depth_buff, self.depth_cam = self.make_buffer("depthBuffer", sha_depth, 0.5)
@@ -75,8 +75,8 @@ class ShaderControlGLSL:
         # Inicialización de variables
         self.winsize = [0, 0]
         self.panda3d = panda3d
-        sha_depthnormal_path = "app/view/shaders/GLSL/normal_depth"
-        sha_outline_path = "app/view/shaders/GLSL/outline"
+        sha_depthnormal_path = "data/shaders/GLSL/normal_depth"
+        sha_outline_path = "data/shaders/GLSL/outline"
 
         self.normal_buff, self.normal_cam = self.make_buffer("normal_depthBuffer", sha_depthnormal_path, 0.5)
         # self.depth_buff, self.depth_cam = self.make_buffer("depthBuffer", sha_depth, 0.5)

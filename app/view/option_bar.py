@@ -17,7 +17,7 @@ INTERFACE = {
         "Archivo": {
             "Nuevo": {},
             "Abrir": {},
-            "Guardar": {},
+            "Guardar": {"command": "save"},
         }
     },
     _("Estructura"): {

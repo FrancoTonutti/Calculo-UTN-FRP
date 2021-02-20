@@ -8,6 +8,9 @@ from app import app
 from app.controller.console import command
 from app.controller import ifc_tools
 
+import tkinter as tk
+from tkinter import filedialog
+
 
 from typing import TYPE_CHECKING
 
@@ -38,7 +41,20 @@ Z = 0., 0., 1.
 def save():
     print("----------------------------------------------------")
     print("save()")
+    root = tk.Tk()
+    root.withdraw()
+
     filename = "myifc.ifc"
+
+    filename = filedialog.asksaveasfile(defaultextension=".ifc", filetypes=[('ifc', '.ifc'),])
+    if filename is None:  # asksaveasfile return `None` if dialog closed with "cancel".
+        print("cancel save as")
+        return
+    print(filename)
+
+
+
+
     temp_filename = ifc_tools.create_temp_ifc()
 
     # Obtain references to instances defined in template
@@ -93,7 +109,7 @@ def save():
                                                     ifc_bars, building_storey)
 
     # Write the contents of the file to disk
-    ifcfile.write(filename)
+    ifcfile.write(filename.name)
 
 
 @command(name="save_ifc", shortcut="s")
