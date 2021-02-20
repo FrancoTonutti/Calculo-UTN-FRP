@@ -4,6 +4,9 @@ venv/
 
 .*.sw*
 *.pyc
+*.ifc
+*.ifc.*
+
 __pycache__/
 build/
 dist/

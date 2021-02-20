@@ -1,6 +1,16 @@
 from app import app
 import uuid
 
+
+
+from typing import TYPE_CHECKING
+from typing import List
+if TYPE_CHECKING:
+    # Imports only for IDE type hints
+    pass
+from ifcopenshell import guid
+from ifcopenshell.file import file
+
 LANG = {
     "start": "Inicio",
     "end": "Fin",
@@ -14,7 +24,9 @@ LANG = {
 
 class Entity:
     def __init__(self):
-        self._entity_id = str(uuid.uuid4())
+        #self._entity_id = str(uuid.uuid1())
+        self._entity_id = guid.new()
+
         self._geom = None
         self._editor_properties = []
         self._read_only = []
@@ -22,12 +34,24 @@ class Entity:
         self._child_models = list()
         self._bind_model = list()
         self._analysis_results = dict()
+        self.is_selectable = True
+        self.is_editable = True
+        self.is_selected = False
+        self.ifc_entity = None
+
+        self.register()
 
     def set_analysis_results(self, name, value):
         self._analysis_results.update({name: value})
 
     def get_analysis_results(self, name):
         return self._analysis_results.get(name, None)
+
+    def on_click(self):
+        pass
+
+    def generate_ifc(self, ifc_file: file):
+        pass
 
     @property
     def entity_id(self):
@@ -126,6 +150,22 @@ class Entity:
 
         if update:
             self.update_tree()
+
+    def register(self):
+        # Obtenemos el registro del modelo
+        model_reg = app.model_reg
+
+        # Leemos el nombre de la clase
+        name = type(self).__name__
+
+        # Extraemos el diccionario con todos los elementos de la categoría, si no existe lo creamos
+        category_dict = model_reg.get(name, None)
+        if category_dict is None:
+            category_dict = dict()
+            model_reg.update({name: category_dict})
+
+        # Agregamos el modelo al diccionario
+        category_dict.update({self.entity_id: self})
 
 
 def register(entity):
