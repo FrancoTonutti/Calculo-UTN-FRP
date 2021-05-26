@@ -1,0 +1,1602 @@
+from enum import Enum
+
+class IfcAbsorbedDoseMeasure(float):
+    pass
+
+
+class IfcAccelerationMeasure(float):
+    pass
+
+
+class IfcAmountOfSubstanceMeasure(float):
+    pass
+
+
+class IfcAngularVelocityMeasure(float):
+    pass
+
+
+class IfcArcIndex(IfcPositiveInteger):
+    pass
+
+
+class IfcAreaDensityMeasure(float):
+    pass
+
+
+class IfcAreaMeasure(float):
+    pass
+
+
+class IfcBinary(str):
+    pass
+
+
+class IfcBoolean:
+    pass
+
+
+class IfcBoxAlignment(IfcLabel):
+    pass
+
+
+class IfcCardinalPointReference(int):
+    pass
+
+
+class IfcComplexNumber(float):
+    pass
+
+
+class IfcCompoundPlaneAngleMeasure(int):
+    pass
+
+
+class IfcContextDependentMeasure(float):
+    pass
+
+
+class IfcCountMeasure(float):
+    pass
+
+
+class IfcCurvatureMeasure(float):
+    pass
+
+
+class IfcDate(str):
+    pass
+
+
+class IfcDateTime(str):
+    pass
+
+
+class IfcDayInMonthNumber(int):
+    pass
+
+
+class IfcDayInWeekNumber(int):
+    pass
+
+
+class IfcDescriptiveMeasure(str):
+    pass
+
+
+class IfcDimensionCount(int):
+    pass
+
+
+class IfcDoseEquivalentMeasure(float):
+    pass
+
+
+class IfcDuration(str):
+    pass
+
+
+class IfcDynamicViscosityMeasure(float):
+    pass
+
+
+class IfcElectricCapacitanceMeasure(float):
+    pass
+
+
+class IfcElectricChargeMeasure(float):
+    pass
+
+
+class IfcElectricConductanceMeasure(float):
+    pass
+
+
+class IfcElectricCurrentMeasure(float):
+    pass
+
+
+class IfcElectricResistanceMeasure(float):
+    pass
+
+
+class IfcElectricVoltageMeasure(float):
+    pass
+
+
+class IfcEnergyMeasure(float):
+    pass
+
+
+class IfcFontStyle(str):
+    pass
+
+
+class IfcFontVariant(str):
+    pass
+
+
+class IfcFontWeight(str):
+    pass
+
+
+class IfcForceMeasure(float):
+    pass
+
+
+class IfcFrequencyMeasure(float):
+    pass
+
+
+class IfcGloballyUniqueId(STRING(22) FIXED):
+    pass
+
+
+class IfcHeatFluxDensityMeasure(float):
+    pass
+
+
+class IfcHeatingValueMeasure(float):
+    pass
+
+
+class IfcIdentifier(STRING(255)):
+    pass
+
+
+class IfcIlluminanceMeasure(float):
+    pass
+
+
+class IfcInductanceMeasure(float):
+    pass
+
+
+class IfcInteger(int):
+    pass
+
+
+class IfcIntegerCountRateMeasure(int):
+    pass
+
+
+class IfcIonConcentrationMeasure(float):
+    pass
+
+
+class IfcIsothermalMoistureCapacityMeasure(float):
+    pass
+
+
+class IfcKinematicViscosityMeasure(float):
+    pass
+
+
+class IfcLabel(STRING(255)):
+    pass
+
+
+class IfcLanguageId(IfcIdentifier):
+    pass
+
+
+class IfcLengthMeasure(float):
+    pass
+
+
+class IfcLineIndex(IfcPositiveInteger):
+    pass
+
+
+class IfcLinearForceMeasure(float):
+    pass
+
+
+class IfcLinearMomentMeasure(float):
+    pass
+
+
+class IfcLinearStiffnessMeasure(float):
+    pass
+
+
+class IfcLinearVelocityMeasure(float):
+    pass
+
+
+class IfcLogical:
+    pass
+
+
+class IfcLuminousFluxMeasure(float):
+    pass
+
+
+class IfcLuminousIntensityDistributionMeasure(float):
+    pass
+
+
+class IfcLuminousIntensityMeasure(float):
+    pass
+
+
+class IfcMagneticFluxDensityMeasure(float):
+    pass
+
+
+class IfcMagneticFluxMeasure(float):
+    pass
+
+
+class IfcMassDensityMeasure(float):
+    pass
+
+
+class IfcMassFlowRateMeasure(float):
+    pass
+
+
+class IfcMassMeasure(float):
+    pass
+
+
+class IfcMassPerLengthMeasure(float):
+    pass
+
+
+class IfcModulusOfElasticityMeasure(float):
+    pass
+
+
+class IfcModulusOfLinearSubgradeReactionMeasure(float):
+    pass
+
+
+class IfcModulusOfRotationalSubgradeReactionMeasure(float):
+    pass
+
+
+class IfcModulusOfSubgradeReactionMeasure(float):
+    pass
+
+
+class IfcMoistureDiffusivityMeasure(float):
+    pass
+
+
+class IfcMolecularWeightMeasure(float):
+    pass
+
+
+class IfcMomentOfInertiaMeasure(float):
+    pass
+
+
+class IfcMonetaryMeasure(float):
+    pass
+
+
+class IfcMonthInYearNumber(int):
+    pass
+
+
+class IfcNonNegativeLengthMeasure(IfcLengthMeasure):
+    pass
+
+
+class IfcNormalisedRatioMeasure(IfcRatioMeasure):
+    pass
+
+
+class IfcNumericMeasure(float):
+    pass
+
+
+class IfcPHMeasure(float):
+    pass
+
+
+class IfcParameterValue(float):
+    pass
+
+
+class IfcPlanarForceMeasure(float):
+    pass
+
+
+class IfcPlaneAngleMeasure(float):
+    pass
+
+
+class IfcPositiveInteger(IfcInteger):
+    pass
+
+
+class IfcPositiveLengthMeasure(IfcLengthMeasure):
+    pass
+
+
+class IfcPositivePlaneAngleMeasure(IfcPlaneAngleMeasure):
+    pass
+
+
+class IfcPositiveRatioMeasure(IfcRatioMeasure):
+    pass
+
+
+class IfcPowerMeasure(float):
+    pass
+
+
+class IfcPresentableText(str):
+    pass
+
+
+class IfcPressureMeasure(float):
+    pass
+
+
+class IfcPropertySetDefinitionSet(IfcPropertySetDefinition):
+    pass
+
+
+class IfcRadioActivityMeasure(float):
+    pass
+
+
+class IfcRatioMeasure(float):
+    pass
+
+
+class IfcReal(float):
+    pass
+
+
+class IfcRotationalFrequencyMeasure(float):
+    pass
+
+
+class IfcRotationalMassMeasure(float):
+    pass
+
+
+class IfcRotationalStiffnessMeasure(float):
+    pass
+
+
+class IfcSectionModulusMeasure(float):
+    pass
+
+
+class IfcSectionalAreaIntegralMeasure(float):
+    pass
+
+
+class IfcShearModulusMeasure(float):
+    pass
+
+
+class IfcSolidAngleMeasure(float):
+    pass
+
+
+class IfcSoundPowerLevelMeasure(float):
+    pass
+
+
+class IfcSoundPowerMeasure(float):
+    pass
+
+
+class IfcSoundPressureLevelMeasure(float):
+    pass
+
+
+class IfcSoundPressureMeasure(float):
+    pass
+
+
+class IfcSpecificHeatCapacityMeasure(float):
+    pass
+
+
+class IfcSpecularExponent(float):
+    pass
+
+
+class IfcSpecularRoughness(float):
+    pass
+
+
+class IfcTemperatureGradientMeasure(float):
+    pass
+
+
+class IfcTemperatureRateOfChangeMeasure(float):
+    pass
+
+
+class IfcText(str):
+    pass
+
+
+class IfcTextAlignment(str):
+    pass
+
+
+class IfcTextDecoration(str):
+    pass
+
+
+class IfcTextFontName(str):
+    pass
+
+
+class IfcTextTransformation(str):
+    pass
+
+
+class IfcThermalAdmittanceMeasure(float):
+    pass
+
+
+class IfcThermalConductivityMeasure(float):
+    pass
+
+
+class IfcThermalExpansionCoefficientMeasure(float):
+    pass
+
+
+class IfcThermalResistanceMeasure(float):
+    pass
+
+
+class IfcThermalTransmittanceMeasure(float):
+    pass
+
+
+class IfcThermodynamicTemperatureMeasure(float):
+    pass
+
+
+class IfcTime(str):
+    pass
+
+
+class IfcTimeMeasure(float):
+    pass
+
+
+class IfcTimeStamp(int):
+    pass
+
+
+class IfcTorqueMeasure(float):
+    pass
+
+
+class IfcURIReference(str):
+    pass
+
+
+class IfcVaporPermeabilityMeasure(float):
+    pass
+
+
+class IfcVolumeMeasure(float):
+    pass
+
+
+class IfcVolumetricFlowRateMeasure(float):
+    pass
+
+
+class IfcWarpingConstantMeasure(float):
+    pass
+
+
+class IfcWarpingMomentMeasure(float):
+    pass
+
+
+class IfcActionRequestTypeEnum((EMAIL, FAX, PHONE, POST, VERBAL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcActionSourceTypeEnum((DEAD_LOAD_G, COMPLETION_G1, LIVE_LOAD_Q, SNOW_S, WIND_W, PRESTRESSING_P, SETTLEMENT_U, TEMPERATURE_T, EARTHQUAKE_E, FIRE, IMPULSE, IMPACT, TRANSPORT, ERECTION, PROPPING, SYSTEM_IMPERFECTION, SHRINKAGE, CREEP, LACK_OF_FIT, BUOYANCY, ICE, CURRENT, WAVE, RAIN, BRAKES, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcActionTypeEnum((PERMANENT_G, VARIABLE_Q, EXTRAORDINARY_A, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcActuatorTypeEnum((ELECTRICACTUATOR, HANDOPERATEDACTUATOR, HYDRAULICACTUATOR, PNEUMATICACTUATOR, THERMOSTATICACTUATOR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcAddressTypeEnum((OFFICE, SITE, HOME, DISTRIBUTIONPOINT, USERDEFINED)):
+    pass
+
+
+class IfcAirTerminalBoxTypeEnum((CONSTANTFLOW, VARIABLEFLOWPRESSUREDEPENDANT, VARIABLEFLOWPRESSUREINDEPENDANT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcAirTerminalTypeEnum((DIFFUSER, GRILLE, LOUVRE, REGISTER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcAirToAirHeatRecoveryTypeEnum((FIXEDPLATECOUNTERFLOWEXCHANGER, FIXEDPLATECROSSFLOWEXCHANGER, FIXEDPLATEPARALLELFLOWEXCHANGER, ROTARYWHEEL, RUNAROUNDCOILLOOP, HEATPIPE, TWINTOWERENTHALPYRECOVERYLOOPS, THERMOSIPHONSEALEDTUBEHEATEXCHANGERS, THERMOSIPHONCOILTYPEHEATEXCHANGERS, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcAlarmTypeEnum((BELL, BREAKGLASSBUTTON, LIGHT, MANUALPULLBOX, SIREN, WHISTLE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcAlignmentTypeEnum((USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcAnalysisModelTypeEnum((IN_PLANE_LOADING_2D, OUT_PLANE_LOADING_2D, LOADING_3D, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcAnalysisTheoryTypeEnum((FIRST_ORDER_THEORY, SECOND_ORDER_THEORY, THIRD_ORDER_THEORY, FULL_NONLINEAR_THEORY, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcArithmeticOperatorEnum((ADD, DIVIDE, MULTIPLY, SUBTRACT)):
+    pass
+
+
+class IfcAssemblyPlaceEnum((SITE, FACTORY, NOTDEFINED)):
+    pass
+
+
+class IfcAudioVisualApplianceTypeEnum((AMPLIFIER, CAMERA, DISPLAY, MICROPHONE, PLAYER, PROJECTOR, RECEIVER, SPEAKER, SWITCHER, TELEPHONE, TUNER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcBSplineCurveForm((POLYLINE_FORM, CIRCULAR_ARC, ELLIPTIC_ARC, PARABOLIC_ARC, HYPERBOLIC_ARC, UNSPECIFIED)):
+    pass
+
+
+class IfcBSplineSurfaceForm((PLANE_SURF, CYLINDRICAL_SURF, CONICAL_SURF, SPHERICAL_SURF, TOROIDAL_SURF, SURF_OF_REVOLUTION, RULED_SURF, GENERALISED_CONE, QUADRIC_SURF, SURF_OF_LINEAR_EXTRUSION, UNSPECIFIED)):
+    pass
+
+
+class IfcBeamTypeEnum((BEAM, JOIST, HOLLOWCORE, LINTEL, SPANDREL, T_BEAM, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcBenchmarkEnum((GREATERTHAN, GREATERTHANOREQUALTO, LESSTHAN, LESSTHANOREQUALTO, EQUALTO, NOTEQUALTO, INCLUDES, NOTINCLUDES, INCLUDEDIN, NOTINCLUDEDIN)):
+    pass
+
+
+class IfcBoilerTypeEnum((WATER, STEAM, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcBooleanOperator((UNION, INTERSECTION, DIFFERENCE)):
+    pass
+
+
+class IfcBuildingElementPartTypeEnum((INSULATION, PRECASTPANEL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcBuildingElementProxyTypeEnum((COMPLEX, ELEMENT, PARTIAL, PROVISIONFORVOID, PROVISIONFORSPACE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcBuildingSystemTypeEnum((FENESTRATION, FOUNDATION, LOADBEARING, OUTERSHELL, SHADING, TRANSPORT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcBurnerTypeEnum((USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCableCarrierFittingTypeEnum((BEND, CROSS, REDUCER, TEE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCableCarrierSegmentTypeEnum((CABLELADDERSEGMENT, CABLETRAYSEGMENT, CABLETRUNKINGSEGMENT, CONDUITSEGMENT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCableFittingTypeEnum((CONNECTOR, ENTRY, EXIT, JUNCTION, TRANSITION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCableSegmentTypeEnum((BUSBARSEGMENT, CABLESEGMENT, CONDUCTORSEGMENT, CORESEGMENT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcChangeActionEnum((NOCHANGE, MODIFIED, ADDED, DELETED, NOTDEFINED)):
+    pass
+
+
+class IfcChillerTypeEnum((AIRCOOLED, WATERCOOLED, HEATRECOVERY, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcChimneyTypeEnum((USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCoilTypeEnum((DXCOOLINGCOIL, ELECTRICHEATINGCOIL, GASHEATINGCOIL, HYDRONICCOIL, STEAMHEATINGCOIL, WATERCOOLINGCOIL, WATERHEATINGCOIL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcColumnTypeEnum((COLUMN, PILASTER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCommunicationsApplianceTypeEnum((ANTENNA, COMPUTER, FAX, GATEWAY, MODEM, NETWORKAPPLIANCE, NETWORKBRIDGE, NETWORKHUB, PRINTER, REPEATER, ROUTER, SCANNER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcComplexPropertyTemplateTypeEnum((P_COMPLEX, Q_COMPLEX)):
+    pass
+
+
+class IfcCompressorTypeEnum((DYNAMIC, RECIPROCATING, ROTARY, SCROLL, TROCHOIDAL, SINGLESTAGE, BOOSTER, OPENTYPE, HERMETIC, SEMIHERMETIC, WELDEDSHELLHERMETIC, ROLLINGPISTON, ROTARYVANE, SINGLESCREW, TWINSCREW, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCondenserTypeEnum((AIRCOOLED, EVAPORATIVECOOLED, WATERCOOLED, WATERCOOLEDBRAZEDPLATE, WATERCOOLEDSHELLCOIL, WATERCOOLEDSHELLTUBE, WATERCOOLEDTUBEINTUBE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcConnectionTypeEnum((ATPATH, ATSTART, ATEND, NOTDEFINED)):
+    pass
+
+
+class IfcConstraintEnum((HARD, SOFT, ADVISORY, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcConstructionEquipmentResourceTypeEnum((DEMOLISHING, EARTHMOVING, ERECTING, HEATING, LIGHTING, PAVING, PUMPING, TRANSPORTING, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcConstructionMaterialResourceTypeEnum((AGGREGATES, CONCRETE, DRYWALL, FUEL, GYPSUM, MASONRY, METAL, PLASTIC, WOOD, NOTDEFINED, USERDEFINED)):
+    pass
+
+
+class IfcConstructionProductResourceTypeEnum((ASSEMBLY, FORMWORK, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcControllerTypeEnum((FLOATING, PROGRAMMABLE, PROPORTIONAL, MULTIPOSITION, TWOPOSITION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCooledBeamTypeEnum((ACTIVE, PASSIVE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCoolingTowerTypeEnum((NATURALDRAFT, MECHANICALINDUCEDDRAFT, MECHANICALFORCEDDRAFT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCostItemTypeEnum((USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCostScheduleTypeEnum((BUDGET, COSTPLAN, ESTIMATE, TENDER, PRICEDBILLOFQUANTITIES, UNPRICEDBILLOFQUANTITIES, SCHEDULEOFRATES, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCoveringTypeEnum((CEILING, FLOORING, CLADDING, ROOFING, MOLDING, SKIRTINGBOARD, INSULATION, MEMBRANE, SLEEVING, WRAPPING, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCrewResourceTypeEnum((OFFICE, SITE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCurtainWallTypeEnum((USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcCurveInterpolationEnum((LINEAR, LOG_LINEAR, LOG_LOG, NOTDEFINED)):
+    pass
+
+
+class IfcDamperTypeEnum((BACKDRAFTDAMPER, BALANCINGDAMPER, BLASTDAMPER, CONTROLDAMPER, FIREDAMPER, FIRESMOKEDAMPER, FUMEHOODEXHAUST, GRAVITYDAMPER, GRAVITYRELIEFDAMPER, RELIEFDAMPER, SMOKEDAMPER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDataOriginEnum((MEASURED, PREDICTED, SIMULATED, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDerivedUnitEnum((ANGULARVELOCITYUNIT, AREADENSITYUNIT, COMPOUNDPLANEANGLEUNIT, DYNAMICVISCOSITYUNIT, HEATFLUXDENSITYUNIT, INTEGERCOUNTRATEUNIT, ISOTHERMALMOISTURECAPACITYUNIT, KINEMATICVISCOSITYUNIT, LINEARVELOCITYUNIT, MASSDENSITYUNIT, MASSFLOWRATEUNIT, MOISTUREDIFFUSIVITYUNIT, MOLECULARWEIGHTUNIT, SPECIFICHEATCAPACITYUNIT, THERMALADMITTANCEUNIT, THERMALCONDUCTANCEUNIT, THERMALRESISTANCEUNIT, THERMALTRANSMITTANCEUNIT, VAPORPERMEABILITYUNIT, VOLUMETRICFLOWRATEUNIT, ROTATIONALFREQUENCYUNIT, TORQUEUNIT, MOMENTOFINERTIAUNIT, LINEARMOMENTUNIT, LINEARFORCEUNIT, PLANARFORCEUNIT, MODULUSOFELASTICITYUNIT, SHEARMODULUSUNIT, LINEARSTIFFNESSUNIT, ROTATIONALSTIFFNESSUNIT, MODULUSOFSUBGRADEREACTIONUNIT, ACCELERATIONUNIT, CURVATUREUNIT, HEATINGVALUEUNIT, IONCONCENTRATIONUNIT, LUMINOUSINTENSITYDISTRIBUTIONUNIT, MASSPERLENGTHUNIT, MODULUSOFLINEARSUBGRADEREACTIONUNIT, MODULUSOFROTATIONALSUBGRADEREACTIONUNIT, PHUNIT, ROTATIONALMASSUNIT, SECTIONAREAINTEGRALUNIT, SECTIONMODULUSUNIT, SOUNDPOWERLEVELUNIT, SOUNDPOWERUNIT, SOUNDPRESSURELEVELUNIT, SOUNDPRESSUREUNIT, TEMPERATUREGRADIENTUNIT, TEMPERATURERATEOFCHANGEUNIT, THERMALEXPANSIONCOEFFICIENTUNIT, WARPINGCONSTANTUNIT, WARPINGMOMENTUNIT, USERDEFINED)):
+    pass
+
+
+class IfcDirectionSenseEnum((POSITIVE, NEGATIVE)):
+    pass
+
+
+class IfcDiscreteAccessoryTypeEnum((ANCHORPLATE, BRACKET, SHOE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDistributionChamberElementTypeEnum((FORMEDDUCT, INSPECTIONCHAMBER, INSPECTIONPIT, MANHOLE, METERCHAMBER, SUMP, TRENCH, VALVECHAMBER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDistributionPortTypeEnum((CABLE, CABLECARRIER, DUCT, PIPE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDistributionSystemEnum((AIRCONDITIONING, AUDIOVISUAL, CHEMICAL, CHILLEDWATER, COMMUNICATION, COMPRESSEDAIR, CONDENSERWATER, CONTROL, CONVEYING, DATA, DISPOSAL, DOMESTICCOLDWATER, DOMESTICHOTWATER, DRAINAGE, EARTHING, ELECTRICAL, ELECTROACOUSTIC, EXHAUST, FIREPROTECTION, FUEL, GAS, HAZARDOUS, HEATING, LIGHTING, LIGHTNINGPROTECTION, MUNICIPALSOLIDWASTE, OIL, OPERATIONAL, POWERGENERATION, RAINWATER, REFRIGERATION, SECURITY, SEWAGE, SIGNAL, STORMWATER, TELEPHONE, TV, VACUUM, VENT, VENTILATION, WASTEWATER, WATERSUPPLY, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDocumentConfidentialityEnum((PUBLIC, RESTRICTED, CONFIDENTIAL, PERSONAL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDocumentStatusEnum((DRAFT, FINALDRAFT, FINAL, REVISION, NOTDEFINED)):
+    pass
+
+
+class IfcDoorPanelOperationEnum((SWINGING, DOUBLE_ACTING, SLIDING, FOLDING, REVOLVING, ROLLINGUP, FIXEDPANEL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDoorPanelPositionEnum((LEFT, MIDDLE, RIGHT, NOTDEFINED)):
+    pass
+
+
+class IfcDoorStyleConstructionEnum((ALUMINIUM, HIGH_GRADE_STEEL, STEEL, WOOD, ALUMINIUM_WOOD, ALUMINIUM_PLASTIC, PLASTIC, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDoorStyleOperationEnum((SINGLE_SWING_LEFT, SINGLE_SWING_RIGHT, DOUBLE_DOOR_SINGLE_SWING, DOUBLE_DOOR_SINGLE_SWING_OPPOSITE_LEFT, DOUBLE_DOOR_SINGLE_SWING_OPPOSITE_RIGHT, DOUBLE_SWING_LEFT, DOUBLE_SWING_RIGHT, DOUBLE_DOOR_DOUBLE_SWING, SLIDING_TO_LEFT, SLIDING_TO_RIGHT, DOUBLE_DOOR_SLIDING, FOLDING_TO_LEFT, FOLDING_TO_RIGHT, DOUBLE_DOOR_FOLDING, REVOLVING, ROLLINGUP, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDoorTypeEnum((DOOR, GATE, TRAPDOOR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDoorTypeOperationEnum((SINGLE_SWING_LEFT, SINGLE_SWING_RIGHT, DOUBLE_DOOR_SINGLE_SWING, DOUBLE_DOOR_SINGLE_SWING_OPPOSITE_LEFT, DOUBLE_DOOR_SINGLE_SWING_OPPOSITE_RIGHT, DOUBLE_SWING_LEFT, DOUBLE_SWING_RIGHT, DOUBLE_DOOR_DOUBLE_SWING, SLIDING_TO_LEFT, SLIDING_TO_RIGHT, DOUBLE_DOOR_SLIDING, FOLDING_TO_LEFT, FOLDING_TO_RIGHT, DOUBLE_DOOR_FOLDING, REVOLVING, ROLLINGUP, SWING_FIXED_LEFT, SWING_FIXED_RIGHT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDuctFittingTypeEnum((BEND, CONNECTOR, ENTRY, EXIT, JUNCTION, OBSTRUCTION, TRANSITION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDuctSegmentTypeEnum((RIGIDSEGMENT, FLEXIBLESEGMENT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcDuctSilencerTypeEnum((FLATOVAL, RECTANGULAR, ROUND, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcElectricApplianceTypeEnum((DISHWASHER, ELECTRICCOOKER, FREESTANDINGELECTRICHEATER, FREESTANDINGFAN, FREESTANDINGWATERHEATER, FREESTANDINGWATERCOOLER, FREEZER, FRIDGE_FREEZER, HANDDRYER, KITCHENMACHINE, MICROWAVE, PHOTOCOPIER, REFRIGERATOR, TUMBLEDRYER, VENDINGMACHINE, WASHINGMACHINE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcElectricDistributionBoardTypeEnum((CONSUMERUNIT, DISTRIBUTIONBOARD, MOTORCONTROLCENTRE, SWITCHBOARD, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcElectricFlowStorageDeviceTypeEnum((BATTERY, CAPACITORBANK, HARMONICFILTER, INDUCTORBANK, UPS, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcElectricGeneratorTypeEnum((CHP, ENGINEGENERATOR, STANDALONE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcElectricMotorTypeEnum((DC, INDUCTION, POLYPHASE, RELUCTANCESYNCHRONOUS, SYNCHRONOUS, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcElectricTimeControlTypeEnum((TIMECLOCK, TIMEDELAY, RELAY, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcElementAssemblyTypeEnum((ACCESSORY_ASSEMBLY, ARCH, BEAM_GRID, BRACED_FRAME, GIRDER, REINFORCEMENT_UNIT, RIGID_FRAME, SLAB_FIELD, TRUSS, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcElementCompositionEnum((COMPLEX, ELEMENT, PARTIAL)):
+    pass
+
+
+class IfcEngineTypeEnum((EXTERNALCOMBUSTION, INTERNALCOMBUSTION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcEvaporativeCoolerTypeEnum((DIRECTEVAPORATIVERANDOMMEDIAAIRCOOLER, DIRECTEVAPORATIVERIGIDMEDIAAIRCOOLER, DIRECTEVAPORATIVESLINGERSPACKAGEDAIRCOOLER, DIRECTEVAPORATIVEPACKAGEDROTARYAIRCOOLER, DIRECTEVAPORATIVEAIRWASHER, INDIRECTEVAPORATIVEPACKAGEAIRCOOLER, INDIRECTEVAPORATIVEWETCOIL, INDIRECTEVAPORATIVECOOLINGTOWERORCOILCOOLER, INDIRECTDIRECTCOMBINATION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcEvaporatorTypeEnum((DIRECTEXPANSION, DIRECTEXPANSIONSHELLANDTUBE, DIRECTEXPANSIONTUBEINTUBE, DIRECTEXPANSIONBRAZEDPLATE, FLOODEDSHELLANDTUBE, SHELLANDCOIL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcEventTriggerTypeEnum((EVENTRULE, EVENTMESSAGE, EVENTTIME, EVENTCOMPLEX, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcEventTypeEnum((STARTEVENT, ENDEVENT, INTERMEDIATEEVENT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcExternalSpatialElementTypeEnum((EXTERNAL, EXTERNAL_EARTH, EXTERNAL_WATER, EXTERNAL_FIRE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcFanTypeEnum((CENTRIFUGALFORWARDCURVED, CENTRIFUGALRADIAL, CENTRIFUGALBACKWARDINCLINEDCURVED, CENTRIFUGALAIRFOIL, TUBEAXIAL, VANEAXIAL, PROPELLORAXIAL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcFastenerTypeEnum((GLUE, MORTAR, WELD, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcFilterTypeEnum((AIRPARTICLEFILTER, COMPRESSEDAIRFILTER, ODORFILTER, OILFILTER, STRAINER, WATERFILTER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcFireSuppressionTerminalTypeEnum((BREECHINGINLET, FIREHYDRANT, HOSEREEL, SPRINKLER, SPRINKLERDEFLECTOR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcFlowDirectionEnum((SOURCE, SINK, SOURCEANDSINK, NOTDEFINED)):
+    pass
+
+
+class IfcFlowInstrumentTypeEnum((PRESSUREGAUGE, THERMOMETER, AMMETER, FREQUENCYMETER, POWERFACTORMETER, PHASEANGLEMETER, VOLTMETER_PEAK, VOLTMETER_RMS, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcFlowMeterTypeEnum((ENERGYMETER, GASMETER, OILMETER, WATERMETER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcFootingTypeEnum((CAISSON_FOUNDATION, FOOTING_BEAM, PAD_FOOTING, PILE_CAP, STRIP_FOOTING, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcFurnitureTypeEnum((CHAIR, TABLE, DESK, BED, FILECABINET, SHELF, SOFA, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcGeographicElementTypeEnum((TERRAIN, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcGeometricProjectionEnum((GRAPH_VIEW, SKETCH_VIEW, MODEL_VIEW, PLAN_VIEW, REFLECTED_PLAN_VIEW, SECTION_VIEW, ELEVATION_VIEW, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcGlobalOrLocalEnum((GLOBAL_COORDS, LOCAL_COORDS)):
+    pass
+
+
+class IfcGridTypeEnum((RECTANGULAR, RADIAL, TRIANGULAR, IRREGULAR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcHeatExchangerTypeEnum((PLATE, SHELLANDTUBE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcHumidifierTypeEnum((STEAMINJECTION, ADIABATICAIRWASHER, ADIABATICPAN, ADIABATICWETTEDELEMENT, ADIABATICATOMIZING, ADIABATICULTRASONIC, ADIABATICRIGIDMEDIA, ADIABATICCOMPRESSEDAIRNOZZLE, ASSISTEDELECTRIC, ASSISTEDNATURALGAS, ASSISTEDPROPANE, ASSISTEDBUTANE, ASSISTEDSTEAM, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcInterceptorTypeEnum((CYCLONIC, GREASE, OIL, PETROL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcInternalOrExternalEnum((INTERNAL, EXTERNAL, EXTERNAL_EARTH, EXTERNAL_WATER, EXTERNAL_FIRE, NOTDEFINED)):
+    pass
+
+
+class IfcInventoryTypeEnum((ASSETINVENTORY, SPACEINVENTORY, FURNITUREINVENTORY, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcJunctionBoxTypeEnum((DATA, POWER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcKnotType((UNIFORM_KNOTS, QUASI_UNIFORM_KNOTS, PIECEWISE_BEZIER_KNOTS, UNSPECIFIED)):
+    pass
+
+
+class IfcLaborResourceTypeEnum((ADMINISTRATION, CARPENTRY, CLEANING, CONCRETE, DRYWALL, ELECTRIC, FINISHING, FLOORING, GENERAL, HVAC, LANDSCAPING, MASONRY, PAINTING, PAVING, PLUMBING, ROOFING, SITEGRADING, STEELWORK, SURVEYING, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcLampTypeEnum((COMPACTFLUORESCENT, FLUORESCENT, HALOGEN, HIGHPRESSUREMERCURY, HIGHPRESSURESODIUM, LED, METALHALIDE, OLED, TUNGSTENFILAMENT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcLayerSetDirectionEnum((AXIS1, AXIS2, AXIS3)):
+    pass
+
+
+class IfcLightDistributionCurveEnum((TYPE_A, TYPE_B, TYPE_C, NOTDEFINED)):
+    pass
+
+
+class IfcLightEmissionSourceEnum((COMPACTFLUORESCENT, FLUORESCENT, HIGHPRESSUREMERCURY, HIGHPRESSURESODIUM, LIGHTEMITTINGDIODE, LOWPRESSURESODIUM, LOWVOLTAGEHALOGEN, MAINVOLTAGEHALOGEN, METALHALIDE, TUNGSTENFILAMENT, NOTDEFINED)):
+    pass
+
+
+class IfcLightFixtureTypeEnum((POINTSOURCE, DIRECTIONSOURCE, SECURITYLIGHTING, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcLoadGroupTypeEnum((LOAD_GROUP, LOAD_CASE, LOAD_COMBINATION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcLogicalOperatorEnum((LOGICALAND, LOGICALOR, LOGICALXOR, LOGICALNOTAND, LOGICALNOTOR)):
+    pass
+
+
+class IfcMechanicalFastenerTypeEnum((ANCHORBOLT, BOLT, DOWEL, NAIL, NAILPLATE, RIVET, SCREW, SHEARCONNECTOR, STAPLE, STUDSHEARCONNECTOR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcMedicalDeviceTypeEnum((AIRSTATION, FEEDAIRUNIT, OXYGENGENERATOR, OXYGENPLANT, VACUUMSTATION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcMemberTypeEnum((BRACE, CHORD, COLLAR, MEMBER, MULLION, PLATE, POST, PURLIN, RAFTER, STRINGER, STRUT, STUD, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcMotorConnectionTypeEnum((BELTDRIVE, COUPLING, DIRECTDRIVE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcNullStyle((NULL)):
+    pass
+
+
+class IfcObjectTypeEnum((PRODUCT, PROCESS, CONTROL, RESOURCE, ACTOR, GROUP, PROJECT, NOTDEFINED)):
+    pass
+
+
+class IfcObjectiveEnum((CODECOMPLIANCE, CODEWAIVER, DESIGNINTENT, EXTERNAL, HEALTHANDSAFETY, MERGECONFLICT, MODELVIEW, PARAMETER, REQUIREMENT, SPECIFICATION, TRIGGERCONDITION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcOccupantTypeEnum((ASSIGNEE, ASSIGNOR, LESSEE, LESSOR, LETTINGAGENT, OWNER, TENANT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcOpeningElementTypeEnum((OPENING, RECESS, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcOutletTypeEnum((AUDIOVISUALOUTLET, COMMUNICATIONSOUTLET, POWEROUTLET, DATAOUTLET, TELEPHONEOUTLET, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPerformanceHistoryTypeEnum((USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPermeableCoveringOperationEnum((GRILL, LOUVER, SCREEN, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPermitTypeEnum((ACCESS, BUILDING, WORK, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPhysicalOrVirtualEnum((PHYSICAL, VIRTUAL, NOTDEFINED)):
+    pass
+
+
+class IfcPileConstructionEnum((CAST_IN_PLACE, COMPOSITE, PRECAST_CONCRETE, PREFAB_STEEL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPileTypeEnum((BORED, DRIVEN, JETGROUTING, COHESION, FRICTION, SUPPORT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPipeFittingTypeEnum((BEND, CONNECTOR, ENTRY, EXIT, JUNCTION, OBSTRUCTION, TRANSITION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPipeSegmentTypeEnum((CULVERT, FLEXIBLESEGMENT, RIGIDSEGMENT, GUTTER, SPOOL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPlateTypeEnum((CURTAIN_PANEL, SHEET, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPreferredSurfaceCurveRepresentation((CURVE3D, PCURVE_S1, PCURVE_S2)):
+    pass
+
+
+class IfcProcedureTypeEnum((ADVICE_CAUTION, ADVICE_NOTE, ADVICE_WARNING, CALIBRATION, DIAGNOSTIC, SHUTDOWN, STARTUP, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcProfileTypeEnum((CURVE, AREA)):
+    pass
+
+
+class IfcProjectOrderTypeEnum((CHANGEORDER, MAINTENANCEWORKORDER, MOVEORDER, PURCHASEORDER, WORKORDER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcProjectedOrTrueLengthEnum((PROJECTED_LENGTH, TRUE_LENGTH)):
+    pass
+
+
+class IfcProjectionElementTypeEnum((USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPropertySetTemplateTypeEnum((PSET_TYPEDRIVENONLY, PSET_TYPEDRIVENOVERRIDE, PSET_OCCURRENCEDRIVEN, PSET_PERFORMANCEDRIVEN, QTO_TYPEDRIVENONLY, QTO_TYPEDRIVENOVERRIDE, QTO_OCCURRENCEDRIVEN, NOTDEFINED)):
+    pass
+
+
+class IfcProtectiveDeviceTrippingUnitTypeEnum((ELECTRONIC, ELECTROMAGNETIC, RESIDUALCURRENT, THERMAL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcProtectiveDeviceTypeEnum((CIRCUITBREAKER, EARTHLEAKAGECIRCUITBREAKER, EARTHINGSWITCH, FUSEDISCONNECTOR, RESIDUALCURRENTCIRCUITBREAKER, RESIDUALCURRENTSWITCH, VARISTOR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcPumpTypeEnum((CIRCULATOR, ENDSUCTION, SPLITCASE, SUBMERSIBLEPUMP, SUMPPUMP, VERTICALINLINE, VERTICALTURBINE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcRailingTypeEnum((HANDRAIL, GUARDRAIL, BALUSTRADE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcRampFlightTypeEnum((STRAIGHT, SPIRAL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcRampTypeEnum((STRAIGHT_RUN_RAMP, TWO_STRAIGHT_RUN_RAMP, QUARTER_TURN_RAMP, TWO_QUARTER_TURN_RAMP, HALF_TURN_RAMP, SPIRAL_RAMP, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcRecurrenceTypeEnum((DAILY, WEEKLY, MONTHLY_BY_DAY_OF_MONTH, MONTHLY_BY_POSITION, BY_DAY_COUNT, BY_WEEKDAY_COUNT, YEARLY_BY_DAY_OF_MONTH, YEARLY_BY_POSITION)):
+    pass
+
+
+class IfcReferentTypeEnum((KILOPOINT, MILEPOINT, STATION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcReflectanceMethodEnum((BLINN, FLAT, GLASS, MATT, METAL, MIRROR, PHONG, PLASTIC, STRAUSS, NOTDEFINED)):
+    pass
+
+
+class IfcReinforcingBarRoleEnum((MAIN, SHEAR, LIGATURE, STUD, PUNCHING, EDGE, RING, ANCHORING, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcReinforcingBarSurfaceEnum((PLAIN, TEXTURED)):
+    pass
+
+
+class IfcReinforcingBarTypeEnum((ANCHORING, EDGE, LIGATURE, MAIN, PUNCHING, RING, SHEAR, STUD, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcReinforcingMeshTypeEnum((USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcRoleEnum((SUPPLIER, MANUFACTURER, CONTRACTOR, SUBCONTRACTOR, ARCHITECT, STRUCTURALENGINEER, COSTENGINEER, CLIENT, BUILDINGOWNER, BUILDINGOPERATOR, MECHANICALENGINEER, ELECTRICALENGINEER, PROJECTMANAGER, FACILITIESMANAGER, CIVILENGINEER, COMMISSIONINGENGINEER, ENGINEER, OWNER, CONSULTANT, CONSTRUCTIONMANAGER, FIELDCONSTRUCTIONMANAGER, RESELLER, USERDEFINED)):
+    pass
+
+
+class IfcRoofTypeEnum((FLAT_ROOF, SHED_ROOF, GABLE_ROOF, HIP_ROOF, HIPPED_GABLE_ROOF, GAMBREL_ROOF, MANSARD_ROOF, BARREL_ROOF, RAINBOW_ROOF, BUTTERFLY_ROOF, PAVILION_ROOF, DOME_ROOF, FREEFORM, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSIPrefix((EXA, PETA, TERA, GIGA, MEGA, KILO, HECTO, DECA, DECI, CENTI, MILLI, MICRO, NANO, PICO, FEMTO, ATTO)):
+    pass
+
+
+class IfcSIUnitName((AMPERE, BECQUEREL, CANDELA, COULOMB, CUBIC_METRE, DEGREE_CELSIUS, FARAD, GRAM, GRAY, HENRY, HERTZ, JOULE, KELVIN, LUMEN, LUX, METRE, MOLE, NEWTON, OHM, PASCAL, RADIAN, SECOND, SIEMENS, SIEVERT, SQUARE_METRE, STERADIAN, TESLA, VOLT, WATT, WEBER)):
+    pass
+
+
+class IfcSanitaryTerminalTypeEnum((BATH, BIDET, CISTERN, SHOWER, SINK, SANITARYFOUNTAIN, TOILETPAN, URINAL, WASHHANDBASIN, WCSEAT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSectionTypeEnum((UNIFORM, TAPERED)):
+    pass
+
+
+class IfcSensorTypeEnum((COSENSOR, CO2SENSOR, CONDUCTANCESENSOR, CONTACTSENSOR, FIRESENSOR, FLOWSENSOR, FROSTSENSOR, GASSENSOR, HEATSENSOR, HUMIDITYSENSOR, IDENTIFIERSENSOR, IONCONCENTRATIONSENSOR, LEVELSENSOR, LIGHTSENSOR, MOISTURESENSOR, MOVEMENTSENSOR, PHSENSOR, PRESSURESENSOR, RADIATIONSENSOR, RADIOACTIVITYSENSOR, SMOKESENSOR, SOUNDSENSOR, TEMPERATURESENSOR, WINDSENSOR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSequenceEnum((START_START, START_FINISH, FINISH_START, FINISH_FINISH, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcShadingDeviceTypeEnum((JALOUSIE, SHUTTER, AWNING, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSimplePropertyTemplateTypeEnum(list):
+    pass
+
+
+class IfcSlabTypeEnum((FLOOR, ROOF, LANDING, BASESLAB, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSolarDeviceTypeEnum((SOLARCOLLECTOR, SOLARPANEL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSpaceHeaterTypeEnum((CONVECTOR, RADIATOR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSpaceTypeEnum((SPACE, PARKING, GFA, INTERNAL, EXTERNAL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSpatialZoneTypeEnum((CONSTRUCTION, FIRESAFETY, LIGHTING, OCCUPANCY, SECURITY, THERMAL, TRANSPORT, VENTILATION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcStackTerminalTypeEnum((BIRDCAGE, COWL, RAINWATERHOPPER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcStairFlightTypeEnum((STRAIGHT, WINDER, SPIRAL, CURVED, FREEFORM, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcStairTypeEnum((STRAIGHT_RUN_STAIR, TWO_STRAIGHT_RUN_STAIR, QUARTER_WINDING_STAIR, QUARTER_TURN_STAIR, HALF_WINDING_STAIR, HALF_TURN_STAIR, TWO_QUARTER_WINDING_STAIR, TWO_QUARTER_TURN_STAIR, THREE_QUARTER_WINDING_STAIR, THREE_QUARTER_TURN_STAIR, SPIRAL_STAIR, DOUBLE_RETURN_STAIR, CURVED_RUN_STAIR, TWO_CURVED_RUN_STAIR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcStateEnum((READWRITE, READONLY, LOCKED, READWRITELOCKED, READONLYLOCKED)):
+    pass
+
+
+class IfcStructuralCurveActivityTypeEnum((CONST, LINEAR, POLYGONAL, EQUIDISTANT, SINUS, PARABOLA, DISCRETE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcStructuralCurveMemberTypeEnum((RIGID_JOINED_MEMBER, PIN_JOINED_MEMBER, CABLE, TENSION_MEMBER, COMPRESSION_MEMBER, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcStructuralSurfaceActivityTypeEnum((CONST, BILINEAR, DISCRETE, ISOCONTOUR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcStructuralSurfaceMemberTypeEnum((BENDING_ELEMENT, MEMBRANE_ELEMENT, SHELL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSubContractResourceTypeEnum((PURCHASE, WORK, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSurfaceFeatureTypeEnum((MARK, TAG, TREATMENT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSurfaceSide((POSITIVE, NEGATIVE, BOTH)):
+    pass
+
+
+class IfcSwitchingDeviceTypeEnum((CONTACTOR, DIMMERSWITCH, EMERGENCYSTOP, KEYPAD, MOMENTARYSWITCH, SELECTORSWITCH, STARTER, SWITCHDISCONNECTOR, TOGGLESWITCH, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcSystemFurnitureElementTypeEnum((PANEL, WORKSURFACE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcTankTypeEnum((BASIN, BREAKPRESSURE, EXPANSION, FEEDANDEXPANSION, PRESSUREVESSEL, STORAGE, VESSEL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcTaskDurationEnum((ELAPSEDTIME, WORKTIME, NOTDEFINED)):
+    pass
+
+
+class IfcTaskTypeEnum((ATTENDANCE, CONSTRUCTION, DEMOLITION, DISMANTLE, DISPOSAL, INSTALLATION, LOGISTIC, MAINTENANCE, MOVE, OPERATION, REMOVAL, RENOVATION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcTendonAnchorTypeEnum((COUPLER, FIXED_END, TENSIONING_END, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcTendonTypeEnum((BAR, COATED, STRAND, WIRE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcTextPath((LEFT, RIGHT, UP, DOWN)):
+    pass
+
+
+class IfcTimeSeriesDataTypeEnum((CONTINUOUS, DISCRETE, DISCRETEBINARY, PIECEWISEBINARY, PIECEWISECONSTANT, PIECEWISECONTINUOUS, NOTDEFINED)):
+    pass
+
+
+class IfcTransformerTypeEnum((CURRENT, FREQUENCY, INVERTER, RECTIFIER, VOLTAGE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcTransitionCode((DISCONTINUOUS, CONTINUOUS, CONTSAMEGRADIENT, CONTSAMEGRADIENTSAMECURVATURE)):
+    pass
+
+
+class IfcTransitionCurveType((BIQUADRATICPARABOLA, BLOSSCURVE, CLOTHOIDCURVE, COSINECURVE, CUBICPARABOLA, SINECURVE)):
+    pass
+
+
+class IfcTransportElementTypeEnum((ELEVATOR, ESCALATOR, MOVINGWALKWAY, CRANEWAY, LIFTINGGEAR, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcTrimmingPreference((CARTESIAN, PARAMETER, UNSPECIFIED)):
+    pass
+
+
+class IfcTubeBundleTypeEnum((FINNED, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcUnitEnum((ABSORBEDDOSEUNIT, AMOUNTOFSUBSTANCEUNIT, AREAUNIT, DOSEEQUIVALENTUNIT, ELECTRICCAPACITANCEUNIT, ELECTRICCHARGEUNIT, ELECTRICCONDUCTANCEUNIT, ELECTRICCURRENTUNIT, ELECTRICRESISTANCEUNIT, ELECTRICVOLTAGEUNIT, ENERGYUNIT, FORCEUNIT, FREQUENCYUNIT, ILLUMINANCEUNIT, INDUCTANCEUNIT, LENGTHUNIT, LUMINOUSFLUXUNIT, LUMINOUSINTENSITYUNIT, MAGNETICFLUXDENSITYUNIT, MAGNETICFLUXUNIT, MASSUNIT, PLANEANGLEUNIT, POWERUNIT, PRESSUREUNIT, RADIOACTIVITYUNIT, SOLIDANGLEUNIT, THERMODYNAMICTEMPERATUREUNIT, TIMEUNIT, VOLUMEUNIT, USERDEFINED)):
+    pass
+
+
+class IfcUnitaryControlElementTypeEnum((ALARMPANEL, CONTROLPANEL, GASDETECTIONPANEL, INDICATORPANEL, MIMICPANEL, HUMIDISTAT, THERMOSTAT, WEATHERSTATION, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcUnitaryEquipmentTypeEnum((AIRHANDLER, AIRCONDITIONINGUNIT, DEHUMIDIFIER, SPLITSYSTEM, ROOFTOPUNIT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcValveTypeEnum((AIRRELEASE, ANTIVACUUM, CHANGEOVER, CHECK, COMMISSIONING, DIVERTING, DRAWOFFCOCK, DOUBLECHECK, DOUBLEREGULATING, FAUCET, FLUSHING, GASCOCK, GASTAP, ISOLATING, MIXING, PRESSUREREDUCING, PRESSURERELIEF, REGULATING, SAFETYCUTOFF, STEAMTRAP, STOPCOCK, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcVibrationIsolatorTypeEnum((COMPRESSION, SPRING, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcVoidingFeatureTypeEnum((CUTOUT, NOTCH, HOLE, MITER, CHAMFER, EDGE, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcWallTypeEnum((MOVABLE, PARAPET, PARTITIONING, PLUMBINGWALL, SHEAR, SOLIDWALL, STANDARD, POLYGONAL, ELEMENTEDWALL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcWasteTerminalTypeEnum((FLOORTRAP, FLOORWASTE, GULLYSUMP, GULLYTRAP, ROOFDRAIN, WASTEDISPOSALUNIT, WASTETRAP, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcWindowPanelOperationEnum((SIDEHUNGRIGHTHAND, SIDEHUNGLEFTHAND, TILTANDTURNRIGHTHAND, TILTANDTURNLEFTHAND, TOPHUNG, BOTTOMHUNG, PIVOTHORIZONTAL, PIVOTVERTICAL, SLIDINGHORIZONTAL, SLIDINGVERTICAL, REMOVABLECASEMENT, FIXEDCASEMENT, OTHEROPERATION, NOTDEFINED)):
+    pass
+
+
+class IfcWindowPanelPositionEnum((LEFT, MIDDLE, RIGHT, BOTTOM, TOP, NOTDEFINED)):
+    pass
+
+
+class IfcWindowStyleConstructionEnum((ALUMINIUM, HIGH_GRADE_STEEL, STEEL, WOOD, ALUMINIUM_WOOD, PLASTIC, OTHER_CONSTRUCTION, NOTDEFINED)):
+    pass
+
+
+class IfcWindowStyleOperationEnum((SINGLE_PANEL, DOUBLE_PANEL_VERTICAL, DOUBLE_PANEL_HORIZONTAL, TRIPLE_PANEL_VERTICAL, TRIPLE_PANEL_BOTTOM, TRIPLE_PANEL_TOP, TRIPLE_PANEL_LEFT, TRIPLE_PANEL_RIGHT, TRIPLE_PANEL_HORIZONTAL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcWindowTypeEnum((WINDOW, SKYLIGHT, LIGHTDOME, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcWindowTypePartitioningEnum((SINGLE_PANEL, DOUBLE_PANEL_VERTICAL, DOUBLE_PANEL_HORIZONTAL, TRIPLE_PANEL_VERTICAL, TRIPLE_PANEL_BOTTOM, TRIPLE_PANEL_TOP, TRIPLE_PANEL_LEFT, TRIPLE_PANEL_RIGHT, TRIPLE_PANEL_HORIZONTAL, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcWorkCalendarTypeEnum((FIRSTSHIFT, SECONDSHIFT, THIRDSHIFT, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcWorkPlanTypeEnum((ACTUAL, BASELINE, PLANNED, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcWorkScheduleTypeEnum((ACTUAL, BASELINE, PLANNED, USERDEFINED, NOTDEFINED)):
+    pass
+
+
+class IfcActorSelect(SELECT (IfcOrganization, IfcPerson, IfcPersonAndOrganization)):
+    pass
+
+
+class IfcAppliedValueSelect(SELECT (IfcMeasureWithUnit, IfcReference, IfcValue)):
+    pass
+
+
+class IfcAxis2Placement(SELECT (IfcAxis2Placement2D, IfcAxis2Placement3D)):
+    pass
+
+
+class IfcBendingParameterSelect(SELECT (IfcLengthMeasure, IfcPlaneAngleMeasure)):
+    pass
+
+
+class IfcBooleanOperand(SELECT (IfcBooleanResult, IfcCsgPrimitive3D, IfcHalfSpaceSolid, IfcSolidModel, IfcTessellatedFaceSet)):
+    pass
+
+
+class IfcClassificationReferenceSelect(SELECT (IfcClassification, IfcClassificationReference)):
+    pass
+
+
+class IfcClassificationSelect(SELECT (IfcClassification, IfcClassificationReference)):
+    pass
+
+
+class IfcColour(SELECT (IfcColourSpecification, IfcPreDefinedColour)):
+    pass
+
+
+class IfcColourOrFactor(SELECT (IfcColourRgb, IfcNormalisedRatioMeasure)):
+    pass
+
+
+class IfcCoordinateReferenceSystemSelect(SELECT (IfcCoordinateReferenceSystem, IfcGeometricRepresentationContext)):
+    pass
+
+
+class IfcCsgSelect(SELECT (IfcBooleanResult, IfcCsgPrimitive3D)):
+    pass
+
+
+class IfcCurveFontOrScaledCurveFontSelect(SELECT (IfcCurveStyleFontAndScaling, IfcCurveStyleFontSelect)):
+    pass
+
+
+class IfcCurveOnSurface(SELECT (IfcCompositeCurveOnSurface, IfcPcurve, IfcSurfaceCurve)):
+    pass
+
+
+class IfcCurveOrEdgeCurve(SELECT (IfcBoundedCurve, IfcEdgeCurve)):
+    pass
+
+
+class IfcCurveStyleFontSelect(SELECT (IfcCurveStyleFont, IfcPreDefinedCurveFont)):
+    pass
+
+
+class IfcDefinitionSelect(SELECT (IfcObjectDefinition, IfcPropertyDefinition)):
+    pass
+
+
+class IfcDerivedMeasureValue(SELECT (IfcAbsorbedDoseMeasure, IfcAccelerationMeasure, IfcAngularVelocityMeasure, IfcAreaDensityMeasure, IfcCompoundPlaneAngleMeasure, IfcCurvatureMeasure, IfcDoseEquivalentMeasure, IfcDynamicViscosityMeasure, IfcElectricCapacitanceMeasure, IfcElectricChargeMeasure, IfcElectricConductanceMeasure, IfcElectricResistanceMeasure, IfcElectricVoltageMeasure, IfcEnergyMeasure, IfcForceMeasure, IfcFrequencyMeasure, IfcHeatFluxDensityMeasure, IfcHeatingValueMeasure, IfcIlluminanceMeasure, IfcInductanceMeasure, IfcIntegerCountRateMeasure, IfcIonConcentrationMeasure, IfcIsothermalMoistureCapacityMeasure, IfcKinematicViscosityMeasure, IfcLinearForceMeasure, IfcLinearMomentMeasure, IfcLinearStiffnessMeasure, IfcLinearVelocityMeasure, IfcLuminousFluxMeasure, IfcLuminousIntensityDistributionMeasure, IfcMagneticFluxDensityMeasure, IfcMagneticFluxMeasure, IfcMassDensityMeasure, IfcMassFlowRateMeasure, IfcMassPerLengthMeasure, IfcModulusOfElasticityMeasure, IfcModulusOfLinearSubgradeReactionMeasure, IfcModulusOfRotationalSubgradeReactionMeasure, IfcModulusOfSubgradeReactionMeasure, IfcMoistureDiffusivityMeasure, IfcMolecularWeightMeasure, IfcMomentOfInertiaMeasure, IfcMonetaryMeasure, IfcPHMeasure, IfcPlanarForceMeasure, IfcPowerMeasure, IfcPressureMeasure, IfcRadioActivityMeasure, IfcRotationalFrequencyMeasure, IfcRotationalMassMeasure, IfcRotationalStiffnessMeasure, IfcSectionModulusMeasure, IfcSectionalAreaIntegralMeasure, IfcShearModulusMeasure, IfcSoundPowerLevelMeasure, IfcSoundPowerMeasure, IfcSoundPressureLevelMeasure, IfcSoundPressureMeasure, IfcSpecificHeatCapacityMeasure, IfcTemperatureGradientMeasure, IfcTemperatureRateOfChangeMeasure, IfcThermalAdmittanceMeasure, IfcThermalConductivityMeasure, IfcThermalExpansionCoefficientMeasure, IfcThermalResistanceMeasure, IfcThermalTransmittanceMeasure, IfcTorqueMeasure, IfcVaporPermeabilityMeasure, IfcVolumetricFlowRateMeasure, IfcWarpingConstantMeasure, IfcWarpingMomentMeasure)):
+    pass
+
+
+class IfcDocumentSelect(SELECT (IfcDocumentInformation, IfcDocumentReference)):
+    pass
+
+
+class IfcFillStyleSelect(SELECT (IfcColour, IfcExternallyDefinedHatchStyle, IfcFillAreaStyleHatching, IfcFillAreaStyleTiles)):
+    pass
+
+
+class IfcGeometricSetSelect(SELECT (IfcCurve, IfcPoint, IfcSurface)):
+    pass
+
+
+class IfcGridPlacementDirectionSelect(SELECT (IfcDirection, IfcVirtualGridIntersection)):
+    pass
+
+
+class IfcHatchLineDistanceSelect(SELECT (IfcPositiveLengthMeasure, IfcVector)):
+    pass
+
+
+class IfcLayeredItem(SELECT (IfcRepresentation, IfcRepresentationItem)):
+    pass
+
+
+class IfcLibrarySelect(SELECT (IfcLibraryInformation, IfcLibraryReference)):
+    pass
+
+
+class IfcLightDistributionDataSourceSelect(SELECT (IfcExternalReference, IfcLightIntensityDistribution)):
+    pass
+
+
+class IfcMaterialSelect(list):
+    pass
+
+
+class IfcMeasureValue(SELECT (IfcAmountOfSubstanceMeasure, IfcAreaMeasure, IfcComplexNumber, IfcContextDependentMeasure, IfcCountMeasure, IfcDescriptiveMeasure, IfcElectricCurrentMeasure, IfcLengthMeasure, IfcLuminousIntensityMeasure, IfcMassMeasure, IfcNonNegativeLengthMeasure, IfcNormalisedRatioMeasure, IfcNumericMeasure, IfcParameterValue, IfcPlaneAngleMeasure, IfcPositiveLengthMeasure, IfcPositivePlaneAngleMeasure, IfcPositiveRatioMeasure, IfcRatioMeasure, IfcSolidAngleMeasure, IfcThermodynamicTemperatureMeasure, IfcTimeMeasure, IfcVolumeMeasure)):
+    pass
+
+
+class IfcMetricValueSelect(SELECT (IfcAppliedValue, IfcMeasureWithUnit, IfcReference, IfcTable, IfcTimeSeries, IfcValue)):
+    pass
+
+
+class IfcModulusOfRotationalSubgradeReactionSelect(SELECT (IfcBoolean, IfcModulusOfRotationalSubgradeReactionMeasure)):
+    pass
+
+
+class IfcModulusOfSubgradeReactionSelect(SELECT (IfcBoolean, IfcModulusOfSubgradeReactionMeasure)):
+    pass
+
+
+class IfcModulusOfTranslationalSubgradeReactionSelect(SELECT (IfcBoolean, IfcModulusOfLinearSubgradeReactionMeasure)):
+    pass
+
+
+class IfcObjectReferenceSelect(SELECT (IfcAddress, IfcAppliedValue, IfcExternalReference, IfcMaterialDefinition, IfcOrganization, IfcPerson, IfcPersonAndOrganization, IfcTable, IfcTimeSeries)):
+    pass
+
+
+class IfcPointOrVertexPoint(SELECT (IfcPoint, IfcVertexPoint)):
+    pass
+
+
+class IfcPresentationStyleSelect(SELECT (IfcCurveStyle, IfcFillAreaStyle, IfcNullStyle, IfcSurfaceStyle, IfcTextStyle)):
+    pass
+
+
+class IfcProcessSelect(SELECT (IfcProcess, IfcTypeProcess)):
+    pass
+
+
+class IfcProductRepresentationSelect(SELECT (IfcProductDefinitionShape, IfcRepresentationMap)):
+    pass
+
+
+class IfcProductSelect(SELECT (IfcProduct, IfcTypeProduct)):
+    pass
+
+
+class IfcPropertySetDefinitionSelect(SELECT (IfcPropertySetDefinition, IfcPropertySetDefinitionSet)):
+    pass
+
+
+class IfcResourceObjectSelect(SELECT (IfcActorRole, IfcAppliedValue, IfcApproval, IfcConstraint, IfcContextDependentUnit, IfcConversionBasedUnit, IfcExternalInformation, IfcExternalReference, IfcMaterialDefinition, IfcOrganization, IfcPerson, IfcPersonAndOrganization, IfcPhysicalQuantity, IfcProfileDef, IfcPropertyAbstraction, IfcShapeAspect, IfcTimeSeries)):
+    pass
+
+
+class IfcResourceSelect(SELECT (IfcResource, IfcTypeResource)):
+    pass
+
+
+class IfcRotationalStiffnessSelect(SELECT (IfcBoolean, IfcRotationalStiffnessMeasure)):
+    pass
+
+
+class IfcSegmentIndexSelect(SELECT (IfcArcIndex, IfcLineIndex)):
+    pass
+
+
+class IfcShell(SELECT (IfcClosedShell, IfcOpenShell)):
+    pass
+
+
+class IfcSimpleValue(SELECT (IfcBinary, IfcBoolean, IfcDate, IfcDateTime, IfcDuration, IfcIdentifier, IfcInteger, IfcLabel, IfcLogical, IfcPositiveInteger, IfcReal, IfcText, IfcTime, IfcTimeStamp)):
+    pass
+
+
+class IfcSizeSelect(SELECT (IfcDescriptiveMeasure, IfcLengthMeasure, IfcNormalisedRatioMeasure, IfcPositiveLengthMeasure, IfcPositiveRatioMeasure, IfcRatioMeasure)):
+    pass
+
+
+class IfcSolidOrShell(SELECT (IfcClosedShell, IfcSolidModel)):
+    pass
+
+
+class IfcSpaceBoundarySelect(SELECT (IfcExternalSpatialElement, IfcSpace)):
+    pass
+
+
+class IfcSpecularHighlightSelect(SELECT (IfcSpecularExponent, IfcSpecularRoughness)):
+    pass
+
+
+class IfcStructuralActivityAssignmentSelect(SELECT (IfcElement, IfcStructuralItem)):
+    pass
+
+
+class IfcStyleAssignmentSelect(SELECT (IfcPresentationStyle, IfcPresentationStyleAssignment)):
+    pass
+
+
+class IfcSurfaceOrFaceSurface(SELECT (IfcFaceBasedSurfaceModel, IfcFaceSurface, IfcSurface)):
+    pass
+
+
+class IfcSurfaceStyleElementSelect(SELECT (IfcExternallyDefinedSurfaceStyle, IfcSurfaceStyleLighting, IfcSurfaceStyleRefraction, IfcSurfaceStyleShading, IfcSurfaceStyleWithTextures)):
+    pass
+
+
+class IfcTextFontSelect(SELECT (IfcExternallyDefinedTextFont, IfcPreDefinedTextFont)):
+    pass
+
+
+class IfcTimeOrRatioSelect(SELECT (IfcDuration, IfcRatioMeasure)):
+    pass
+
+
+class IfcTranslationalStiffnessSelect(SELECT (IfcBoolean, IfcLinearStiffnessMeasure)):
+    pass
+
+
+class IfcTrimmingSelect(SELECT (IfcCartesianPoint, IfcParameterValue)):
+    pass
+
+
+class IfcUnit(SELECT (IfcDerivedUnit, IfcMonetaryUnit, IfcNamedUnit)):
+    pass
+
+
+class IfcValue(SELECT (IfcDerivedMeasureValue, IfcMeasureValue, IfcSimpleValue)):
+    pass
+
+
+class IfcVectorOrDirection(SELECT (IfcDirection, IfcVector)):
+    pass
+
+
+class IfcWarpingStiffnessSelect(SELECT (IfcBoolean, IfcWarpingMomentMeasure)):
+    pass
+
+

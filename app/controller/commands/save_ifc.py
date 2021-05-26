@@ -6,7 +6,7 @@ http://academy.ifcopenshell.org/creating-a-simple-wall-with-property-set-and-qua
 """
 from app import app
 from app.controller.console import command
-from app.controller import ifc_tools
+import ifc_tools
 
 import tkinter as tk
 from tkinter import filedialog
@@ -16,17 +16,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     # Imports only for IDE type hints
-    from app.view.interface.console_ui import ConsoleUI
-    from app.model import *
+    pass
 
-import ifcopenshell
-
-import math
-import numpy as np
-from numpy import array
-from numpy import matrix
-
-import uuid
 import time
 import tempfile
 import ifcopenshell
@@ -171,7 +162,7 @@ def save_ifc():
     """
 
     product_shape = ifcfile.createIfcProductDefinitionShape(None, None, [axis_representation, body_representation])
-    placement = ifc_tools.create_ifclocalplacement(ifcfile, relative_to=storey_placement,point=(0.,2.,0.), dir1=(0.,1.,1.))
+    placement = ifc_tools.create_ifclocalplacement(ifcfile, relative_to=storey_placement, point=(0., 2., 0.), dir1=(0., 1., 1.))
     polyline = ifc_tools.create_ifcpolyline(ifcfile, [(0.0, 0.0, 0.0), (1.0, 0.0, 0.0)])
     axis_representation = ifcfile.create_entity(type="IfcShapeRepresentation",
                                                 ContextOfItems=context,
@@ -255,7 +246,7 @@ def save_ifc():
     point_list_opening_extrusion_area = [(0.0, -0.1, 0.0), (3.0, -0.1, 0.0), (3.0, 0.1, 0.0), (0.0, 0.1, 0.0),
                                          (0.0, -0.1, 0.0)]
     opening_solid = ifc_tools.create_ifcextrudedareasolid(ifcfile, point_list_opening_extrusion_area, opening_extrusion_placement,
-                                                (0.0, 0.0, 1.0), 1.0)
+                                                          (0.0, 0.0, 1.0), 1.0)
     opening_representation = ifcfile.createIfcShapeRepresentation(context, "Body", "SweptSolid", [opening_solid])
     opening_shape = ifcfile.createIfcProductDefinitionShape(None, None, [opening_representation])
     opening_element = ifcfile.createIfcOpeningElement(ifc_tools.create_guid(), owner_history, "Opening", "An awesome opening",

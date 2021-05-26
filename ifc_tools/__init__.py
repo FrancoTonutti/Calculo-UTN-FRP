@@ -7,6 +7,11 @@ import time
 import tempfile
 import ifcopenshell
 
+from .ifc_file import IfcFile
+
+import os
+import sys
+
 O = 0., 0., 0.
 X = 1., 0., 0.
 Y = 0., 1., 0.
@@ -68,7 +73,7 @@ def create_temp_ifc() -> str:
         HEADER;
         FILE_DESCRIPTION(('ViewDefinition [CoordinationView]'),'2;1');
         FILE_NAME('%(filename)s','%(timestring)s',('%(creator)s'),('%(organization)s'),'%(application)s','%(application)s','');
-        FILE_SCHEMA(('IFC2X3'));
+        FILE_SCHEMA(('IFC4'));
         ENDSEC;
         DATA;
         #1=IFCPERSON($,$,'%(creator)s',$,$,$,$,$);
@@ -102,3 +107,14 @@ def create_temp_ifc() -> str:
         f.write(data)
 
     return temp_filename
+
+
+def open_ifc():
+    file = ifcopenshell.ifcopenshell_wrapper.open(os.path.abspath(fn))
+    if file.good():
+        return IfcFile(file)
+    else:
+        raise IOError("Unable to open file for reading")
+
+
+

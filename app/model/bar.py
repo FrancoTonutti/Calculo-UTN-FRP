@@ -1,4 +1,4 @@
-from app.model.entity import Entity, register
+from app.model.entity import Entity
 import numpy as np
 from app.view import draw
 from app import app
@@ -10,7 +10,8 @@ if TYPE_CHECKING:
     # Imports only for IDE type hints
     from app.model import *
 
-from app.controller import ifc_tools
+import ifc_tools
+
 
 class Bar(Entity):
 

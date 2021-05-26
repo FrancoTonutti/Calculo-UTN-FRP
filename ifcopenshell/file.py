@@ -41,12 +41,12 @@ class file(object):
     Class has instance methods for filtering by element Id, Type, etc.
     Instantiated objects can be subscripted by Id or Guid
 
-    Example::
+    Example
 
-        ifc_file = ifcopenshell.open(file_path)
-        products = ifc_file.by_type("IfcProduct")
-        print(products[0].id(), products[0].GlobalId)
-        >>> 122 2XQ$n5SLP5MBLyL442paFx
+        >>>ifc_file = ifc_tools.open(file_path)
+        >>>products = ifc_file.by_type("IfcProduct")
+        >>>print(products[0].id(), products[0].GlobalId)
+        122 2XQ$n5SLP5MBLyL442paFx
         # Subscripting
         print(products[0] == ifc_file[122] == ifc_file['2XQ$n5SLP5MBLyL442paFx'])
         >>> True
