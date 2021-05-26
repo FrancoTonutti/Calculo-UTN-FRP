@@ -1,6 +1,6 @@
 from ifcopenshell.file import file
 # noinspection PyUnresolvedReferences
-from ifc_entities import *
+#from ifc_entities import *
 
 
 class IfcFile(file):
