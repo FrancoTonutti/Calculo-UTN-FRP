@@ -23,9 +23,12 @@ LANG = {
 
 
 class Entity:
-    def __init__(self):
+    def __init__(self, set_id=None):
         #self._entity_id = str(uuid.uuid1())
-        self._entity_id = guid.new()
+        if not set_id:
+            self._entity_id = guid.new()
+        else:
+            self._entity_id = set_id
 
         self._geom = None
         self._editor_properties = []
@@ -40,6 +43,12 @@ class Entity:
         self.ifc_entity = None
 
         self.register()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return None
 
     def set_analysis_results(self, name, value):
         self._analysis_results.update({name: value})
@@ -167,6 +176,19 @@ class Entity:
         # Agregamos el modelo al diccionario
         category_dict.update({self.entity_id: self})
 
+        if self.entity_id in model_reg.entity_register:
+            raise Exception("ID duplicada")
+        else:
+            model_reg.entity_register.update({self.entity_id: self})
+
+    def delete(self):
+        pass
+
+    @staticmethod
+    def create_from_object(obj):
+        print("intentando crear desde objeto")
+        pass
+
 
 def register(entity):
     # Obtenemos el registro del modelo
@@ -183,3 +205,4 @@ def register(entity):
 
     # Agregamos el modelo al diccionario
     category_dict.update({entity.entity_id: entity})
+

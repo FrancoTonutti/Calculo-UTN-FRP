@@ -2,8 +2,20 @@ from app.model.entity import Entity, register
 from app import app
 
 class View(Entity):
-    def __init__(self):
-        super().__init__()
+
+    @staticmethod
+    def create_from_object(obj):
+
+        entity_id = obj.get("entity_id")
+        work_plane_height = obj.get("work_plane_height")
+        work_plane_vect = obj.get("work_plane_height")
+
+        view = View(entity_id)
+        view.work_plane_height = work_plane_height
+        view.work_plane_vect = work_plane_vect
+
+    def __init__(self, set_id=None):
+        super().__init__(set_id)
 
         self.set_prop_name(work_plane_vect="Plano de Trabajo", worl_plane_height="Altura")
         self.show_properties("work_plane_vect", "work_plane_height")

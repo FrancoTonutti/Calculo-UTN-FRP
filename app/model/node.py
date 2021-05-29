@@ -8,8 +8,30 @@ if TYPE_CHECKING:
     from app.model import *
 
 class Node(Entity):
-    def __init__(self, x, y, z=0, name=""):
-        super().__init__()
+
+    @staticmethod
+    def create_from_object(obj):
+
+        entity_id = obj.get("entity_id")
+        x = obj.get("x")
+        y = obj.get("y")
+        z = obj.get("z")
+
+        name = obj.get("name")
+
+        with Node(x, y, z, name, entity_id) as ent:
+
+            ent.fixed_ux = obj.get("fixed_ux")
+            ent.fixed_uy = obj.get("fixed_uy")
+            ent.fixed_uz = obj.get("fixed_uz")
+            ent.fixed_rx = obj.get("fixed_rx")
+            ent.fixed_ry = obj.get("fixed_ry")
+            ent.fixed_rz = obj.get("fixed_rz")
+
+
+
+    def __init__(self, x, y, z=0, name="", set_id=None):
+        super().__init__(set_id)
         self.x: float = x
         self.y: float = y
         self.z: float = z

@@ -2,8 +2,16 @@ from app.model.entity import Entity, register
 
 
 class Section(Entity):
-    def __init__(self, width, height):
-        super().__init__()
+
+    @staticmethod
+    def create_from_object(obj):
+        entity_id = obj.get("entity_id")
+        width, height = obj.get("size")
+
+        Section(width, height, entity_id)
+
+    def __init__(self, width, height, set_id=None):
+        super().__init__(set_id)
         self.size = [width, height]
         register(self)
 

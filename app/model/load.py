@@ -13,8 +13,19 @@ class Load(Entity):
     """
     scale = 0.25
 
-    def __init__(self, parent, value, angle=90, load_type="D"):
-        super().__init__()
+    @staticmethod
+    def create_from_object(obj):
+
+        entity_id = obj.get("entity_id")
+        parent = app.model_reg.get_entity(obj.get("parent"))
+        value = obj.get("value")
+        angle = obj.get("angle")
+        load_type = obj.get("load_type")
+
+        Load(parent, value, angle, load_type, entity_id)
+
+    def __init__(self, parent, value, angle=90, load_type="D", set_id=None):
+        super().__init__(set_id)
         self.parent = parent
         self.value = value
         self.angle = angle

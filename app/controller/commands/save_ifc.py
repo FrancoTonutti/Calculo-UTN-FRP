@@ -28,7 +28,7 @@ Y = 0., 1., 0.
 Z = 0., 0., 1.
 
 
-@command(name="save", shortcut="s")
+@command(name="save_ifc", shortcut="s")
 def save():
     print("----------------------------------------------------")
     print("save()")

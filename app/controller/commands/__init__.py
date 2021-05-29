@@ -1,5 +1,5 @@
 from app.controller.commands import bar, calculate, render, regen_ui, wireframe_toggle, load, matricial, save_ifc, \
-    material_editor
+    material_editor, save, open_file, new_file
 
 """import importlib
 import os

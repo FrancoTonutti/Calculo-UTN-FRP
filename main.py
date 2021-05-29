@@ -1,5 +1,5 @@
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import loadPrcFile
+from panda3d.core import loadPrcFile, AntialiasAttrib
 
 from app import app
 from app.view.ui import MainUI
@@ -24,7 +24,7 @@ class MyProgram(ShowBase):
         # self.render.setRenderMode(5,5,1)
         self.shader_control = shaders.ShaderControlGLSL(self)
 
-
+        #self.render.setAntialias(AntialiasAttrib.MAuto)
         #shaders.add_shadders(self)
 
 

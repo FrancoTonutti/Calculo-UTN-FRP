@@ -15,9 +15,27 @@ import ifc_tools
 
 class Bar(Entity):
 
-    def __init__(self, start, end, section, material=None):
-        super().__init__()
-        self.name = ""
+    @staticmethod
+    def create_from_object(obj):
+
+        def get(string):
+            return app.model_reg.get_entity(obj.get(string))
+    
+        start = get("start")
+        end = get("end")
+        sec = get("section")
+        mat = get("section")
+        entity_id = obj.get("entity_id")
+        name = obj.get("name")
+
+        bar = Bar(start, end, sec, mat, entity_id)
+        bar.name = name
+
+
+
+    def __init__(self, start, end, section, material=None, set_id=None):
+        super().__init__(set_id)
+        self.bar = ""
         self.start: Node = start
         self.end: Node = end
         self.section: Section = section
@@ -264,3 +282,5 @@ class Bar(Entity):
                                                  )
 
         return self.ifc_entity
+
+

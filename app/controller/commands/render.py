@@ -14,9 +14,23 @@ def regen():
     panda3d = app.get_show_base()
     # Obtenemos el registro del modelo
     model_register = app.model_reg
-    print(model_register)
-    print(model_register.get("Node", dict()).items())
-    print("-----t----")
+
+    geoms = panda3d.render.findAllMatches("=entity_id")
+
+    for geom in geoms:
+        entity_id = geom.getTag("entity_id")
+        entity_type = geom.getTag("entity_type")
+
+        category_type = model_register.get(entity_type, dict())
+        entity = category_type.get(entity_id, None)
+
+        if entity is None:
+            geom.removeNode()
+
+    print("geoms")
+    print(geoms)
+
+
     # Recorre todos los nodos del modelo y coloca una esfera en el punto correspondiente
     entities_dict = model_register.get("Node", dict())
     for entity_id in entities_dict:
