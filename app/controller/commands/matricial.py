@@ -65,15 +65,18 @@ def start_analysis():
     bar_element: Bar
     for bar_element in model.get_bars():
 
-        start = bar_element.start.position[0], bar_element.start.position[1]
-        end = bar_element.end.position[0], bar_element.end.position[1]
+        start = bar_element.start.position
+        end = bar_element.end.position
 
         # Creamos la matriz de transformación para estructuras de plano medio
 
         delta_x = end[0] - start[0]
         delta_y = end[1] - start[1]
+        delta_z = end[2] - start[2]
 
-        angle = np.arctan(delta_y / delta_x)
+        if delta_x == 0:
+            delta_x = 0.000000000000001
+        angle = np.arctan(delta_z / delta_x)
 
         s = np.sin(angle)
         c = np.cos(angle)
@@ -91,7 +94,7 @@ def start_analysis():
 
         e = bar_element.material.elastic_modulus
         a = bar_element.section.area()
-        long = np.linalg.norm([delta_x, delta_y])
+        long = bar_element.longitude()
         inertia = bar_element.section.inertia_x()
 
         c2 = c**2
@@ -357,6 +360,22 @@ def start_analysis():
             normal = lambda x: f[0, 0] - load_x * x
             moment = lambda x: f[2, 0] - f[1, 0] * x + load_y * x * x / 2
 
+            print("ec: {} - {} * x + {} * x * x / 2".format(f[2, 0], f[1, 0], load_y))
+
+            points = 15
+
+            v_shear = list()
+            v_normal = list()
+            v_moment = list()
+            v_x_coord = list()
+
+            for x_pos in np.linspace(0, 1, points):
+                v_shear.append(shear(x_pos*long))
+                v_normal.append(normal(x_pos * long))
+                v_moment.append(moment(x_pos * long))
+                v_x_coord.append(x_pos * long),
+
+            """
             v_shear = [shear(0.00*long),
                        shear(0.25*long),
                        shear(0.50*long),
@@ -379,7 +398,10 @@ def start_analysis():
                          0.25 * long,
                          0.50 * long,
                          0.75 * long,
-                         1.00 * long]
+                         1.00 * long]"""
+
+            bar_element.max_moment = round(np.max(v_moment), 2)
+            bar_element.min_moment = round(np.min(v_moment), 2)
 
             v_shear = np.column_stack([v_x_coord, v_shear])
             v_normal = np.column_stack([v_x_coord, v_normal])
@@ -388,6 +410,8 @@ def start_analysis():
             bar_element.set_analysis_results("v_shear", v_shear)
             bar_element.set_analysis_results("v_normal", v_normal)
             bar_element.set_analysis_results("v_moment", v_moment)
+
+
 
             Diagram(bar_element, v_moment)
 

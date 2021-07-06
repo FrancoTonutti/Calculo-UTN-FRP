@@ -96,7 +96,8 @@ class ModelReg(dict):
                 keys_priority.append(key)
 
         for key in keys_priority:
-
+            print("start load {}".format(key))
+            i=0
             for entity_id, entity_data in dict_data[key].items():
                 class_obj = class_register.get(key)
 
@@ -104,8 +105,11 @@ class ModelReg(dict):
                     raise Exception(key)
                 else:
                     class_obj.create_from_object(entity_data)
+                    i +=1
+            print("loaded {} {}".format(i, key))
 
 
+from numpy import ndarray
 
 def convert_value(value):
     if isinstance(value, Entity):
@@ -122,7 +126,8 @@ def convert_value(value):
                 for key, elem in value.items():
                     new_dict.update({key: convert_value(elem)})
                 value = new_dict
-
+            elif isinstance(value, ndarray):
+                value = value.tolist()
             else:
                 value = type(value).__name__
 

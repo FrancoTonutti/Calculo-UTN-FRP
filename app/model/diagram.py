@@ -27,9 +27,17 @@ class Diagram(Entity):
     """
     gformat = GeomVertexFormat.get_v3c4()
 
+    @staticmethod
+    def create_from_object(obj):
+        entity_id = obj.get("entity_id")
+        values = obj.get("values")
+        parent = app.model_reg.get_entity(obj.get("parent"))
 
-    def __init__(self, parent, values):
-        super().__init__()
+        with Diagram(parent, values, entity_id) as ent:
+            pass
+
+    def __init__(self, parent, values, set_id=None):
+        super().__init__(set_id)
         self.parent = parent
         self.values = values
         self.show = True
@@ -40,7 +48,7 @@ class Diagram(Entity):
         self.bind_to_model("value", "angle")
         self.parent.add_child_model(self)
 
-        register(self)
+
         self.create_model()
 
     def create_model(self):
@@ -61,7 +69,13 @@ class Diagram(Entity):
             color.addData4(0, 0, 1, 1)
             prim.addVertex(i+1)
 
+            print("Diagram point: {}; {}".format(x, z/100))
+
             i += 2
+
+        print("longitude: {}".format(self.parent.longitude()))
+
+
 
         prim.closePrimitive()
 
@@ -88,7 +102,7 @@ class Diagram(Entity):
 
         L = self.parent.longitude()
         h = 1
-        nodePath.setScale(h / parent_scale[2], 1 / parent_scale[1], 1 / parent_scale[0])
+        nodePath.setScale(h / parent_scale[2], 1 / parent_scale[1], 1)
 
         nodePath.wrtReparentTo(node_parent)
         """

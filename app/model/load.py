@@ -22,6 +22,10 @@ class Load(Entity):
         angle = obj.get("angle")
         load_type = obj.get("load_type")
 
+        if parent is None:
+            print(app.model_reg.entity_register)
+            raise Exception("Parent is None : {}".format(obj.get("parent")))
+
         Load(parent, value, angle, load_type, entity_id)
 
     def __init__(self, parent, value, angle=90, load_type="D", set_id=None):
@@ -36,6 +40,7 @@ class Load(Entity):
         self.set_prop_name(value="Valor", angle="Ángulo", load_type="Tipo")
         self.bind_to_model("value", "angle")
         self.parent.add_child_model(self)
+        self.parent.add_load(self)
 
         register(self)
         self.create_model()
@@ -60,6 +65,9 @@ class Load(Entity):
         self.update_model()
 
     def update_model(self):
+        if not self.geom:
+            return None
+
         if isinstance(self.parent, Node):
             x0, y0, z0 = self.parent.position
             x = self.value * Load.scale

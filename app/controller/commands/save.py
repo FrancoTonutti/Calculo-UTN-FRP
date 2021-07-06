@@ -44,8 +44,6 @@ def save():
     print(filename)
 
 
-
-
     model = app.model_reg
 
     ifc_bars = []

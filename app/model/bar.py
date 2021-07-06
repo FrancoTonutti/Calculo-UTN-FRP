@@ -17,6 +17,7 @@ class Bar(Entity):
 
     @staticmethod
     def create_from_object(obj):
+        print("intentando crear desde objeto")
 
         def get(string):
             return app.model_reg.get_entity(obj.get(string))
@@ -24,7 +25,7 @@ class Bar(Entity):
         start = get("start")
         end = get("end")
         sec = get("section")
-        mat = get("section")
+        mat = get("material")
         entity_id = obj.get("entity_id")
         name = obj.get("name")
 
@@ -35,7 +36,7 @@ class Bar(Entity):
 
     def __init__(self, start, end, section, material=None, set_id=None):
         super().__init__(set_id)
-        self.bar = ""
+        self.name = ""
         self.start: Node = start
         self.end: Node = end
         self.section: Section = section
@@ -50,17 +51,22 @@ class Bar(Entity):
 
         self.start.add_child_model(self)
         self.end.add_child_model(self)
+        self.max_moment = 0
+        self.min_moment = 0
 
         self.show_properties("name", "width", "height", "borders")
 
-        self.show_properties("start_x", "start_y", "start_z")
+        self.show_properties("start_x", "start_y", "start_z", "max_moment")
         self.set_prop_name(start_x="Incio x", start_y="Incio y", start_z="Incio z")
         self.show_properties("end_x", "end_y", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
 
-        self.bind_to_model("width", "height", "borders")
+        self.show_properties("max_moment", "min_moment")
+        self.set_prop_name(max_moment="Momento Máx.", min_moment="Momento Min.")
 
-        #register(self)
+        self.bind_to_model("width", "height", "loads")
+
+
 
         self.create_model()
 
@@ -84,19 +90,23 @@ class Bar(Entity):
     def add_load(self, new_load):
         self.loads.append(new_load)
 
+    def set_load(self, new_load):
+        self.loads = [new_load]
+
     def get_loads(self):
         for load_entity in self.loads:
             yield load_entity
 
     def longitude(self):
-        start = self.start.position[0], self.start.position[1]
-        end = self.end.position[0], self.end.position[1]
+        start = self.start.position[0], self.start.position[1], self.start.position[2]
+        end = self.end.position[0], self.end.position[1], self.end.position[2]
 
         delta_x = end[0] - start[0]
         delta_y = end[1] - start[1]
+        delta_z = end[2] - start[2]
 
-        long = np.linalg.norm([delta_x, delta_y])
-
+        long = np.linalg.norm([delta_x, delta_y, delta_z])
+        #long = ( delta_x**2 + delta_y**2)**0.5
         return long
 
 

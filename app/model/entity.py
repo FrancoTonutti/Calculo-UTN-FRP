@@ -161,6 +161,7 @@ class Entity:
             self.update_tree()
 
     def register(self):
+        print("NEW REGISTER {}".format(self.entity_id))
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
 
@@ -191,6 +192,7 @@ class Entity:
 
 
 def register(entity):
+    print("OLD REGISTER {}".format(entity.entity_id))
     # Obtenemos el registro del modelo
     model_reg = app.model_reg
 
