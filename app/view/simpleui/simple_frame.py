@@ -403,3 +403,4 @@ class SimpleFrame(DirectFrame):
                 color = colors[i]
             self.frameStyle[i].setColor(color[0], color[1], color[2], color[3])
         self.updateFrameStyle()
+

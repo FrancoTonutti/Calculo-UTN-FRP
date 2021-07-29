@@ -3,6 +3,10 @@ from app.view.option_bar import OptionBar
 from app.view import interface
 from app.view import draw
 
+from app.view.panda_ui_toolset.stack_panel import StackPanel
+
+
+
 class MainUI:
     def __init__(self):
         draw.draw_set_font()
@@ -18,3 +22,25 @@ class MainUI:
         self.status_bar = interface.StatusBar(self.layout)
 
         interface.ConsoleUI(self.layout)
+
+        """main = StackPanel(orientation="Vertical", width="5 cm", height="5 cm", background="Blue")
+
+        main.set_render_pos(400, 150)
+
+
+        sec = StackPanel(height="1 cm", parent=main, background="Green")
+        sec = StackPanel(height="1 cm", parent=main, background="White", max_width=50, margin=20)
+        sec = StackPanel(height="1 cm", parent=main, background="Green")
+        sec = StackPanel(height="1 cm", parent=main, background="Purple", orientation="Horizontal")
+
+        StackPanel(width="1 cm", parent=sec, background="Red")
+        StackPanel(width="1 cm", parent=sec, background="White")
+        StackPanel(width="1 cm", parent=sec, background="Red")"""
+
+
+
+
+
+
+
+

@@ -49,6 +49,7 @@ def medit_focus_task(task, medit_win: GraphicsWindow):
         properties.setMinimized(True)
         medit_win.request_properties(properties)
         print("minimize")
+        
     elif not base_foreground and medit_props.minimized:
         properties = WindowProperties()
         properties.setZOrder(WindowProperties.Z_top)

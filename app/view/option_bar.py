@@ -5,6 +5,10 @@ from app.view.widgets.wideFrame import WideFrame
 from app.view.widgets.entry import Entry
 from app.controller.console import execute
 from app.view.simpleui.simple_frame import SimpleFrame
+from app.view.simpleui.simple_button import SimpleButton
+from app.view.simpleui import style_template
+from . import panda_ui_toolset
+from .tab_manager import TabManager
 
 
 # Soporte para funcionalidad de traducción en un futuro
@@ -52,6 +56,9 @@ COLOR_MAIN_LIGHT = (66, 66, 66)
 COLOR_SEC_DARK = (43, 43, 43)
 COLOR_SEC_LIGHT = (52, 52, 52)
 
+
+
+
 def new_button(text, x, y, colors=None, command=None, args=None, parent=None, size=None):
     if args is None:
         args = []
@@ -60,10 +67,10 @@ def new_button(text, x, y, colors=None, command=None, args=None, parent=None, si
         col_rollover = draw.merge_color(COLOR_MAIN_DARK, COLOR_MAIN_LIGHT, 0.2)
         colors = [COLOR_MAIN_DARK, COLOR_MAIN_LIGHT, col_rollover, "C_CONCRETE"]
     if size is None:
-        width = font_pil.getsize(text)[0] + 20
-        size = [width, 20]
+        width = font_pil.getsize(text)[0]
+        size = [10+width, 20]
 
-    btn = CustomButton(text=text,
+    btn = SimpleButton(text=text,
                        text_scale=(12, 12),
                        text_font=font_panda3d,
                        text_fg=draw.get_color(COLOR_TEXT_LIGHT, "rgba"),
@@ -72,6 +79,7 @@ def new_button(text, x, y, colors=None, command=None, args=None, parent=None, si
                        extraArgs=args,
                        colorList=colors,
                        position=[x, y],
+                       padding=[20,20,20,20],
                        size=size
                        )
 
