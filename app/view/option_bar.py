@@ -1,15 +1,9 @@
 from app import app
 from app.view import draw
-from app.view.widgets.button import CustomButton
 from app.view.widgets.wideFrame import WideFrame
-from app.view.widgets.entry import Entry
 from app.controller.console import execute
 from app.view.simpleui.simple_frame import SimpleFrame
 from app.view.simpleui.simple_button import SimpleButton
-from app.view.simpleui import style_template
-from . import panda_ui_toolset
-from .tab_manager import TabManager
-
 
 # Soporte para funcionalidad de traducción en un futuro
 import gettext
@@ -44,6 +38,7 @@ INTERFACE = {
     _("Cálculo"): {
         "Cálculo": {
             "Calcular": {"command": "matricial"},
+            "Combinaciones": {"command": "load_combinations"},
         },
     }
 }
@@ -91,7 +86,7 @@ class OptionBar:
 
         self.panda3d = app.get_show_base()
 
-        self.options_frame = WideFrame(position=[0, 150], colorString=COLOR_MAIN_DARK)
+        self.options_frame = WideFrame(position=[0, 125], colorString=COLOR_MAIN_DARK)
         app.add_gui_region("options_frame", self.options_frame)
 
         workspace = SimpleFrame(position=[0, 0], sizeHint=[1, 1], alpha=0, padding=[250, 0, 25, 150])
@@ -110,11 +105,13 @@ class OptionBar:
         x = 0
         for tab, sections in INTERFACE.items():
             index = len(self.tab_btn)
+            # Se crea el botón que permite seleccionar una pestaña del menu
             btn = new_button(tab, x, 5, parent=self.options_frame, command=self.set_active_tab, args=[index])
             self.tab_btn.append(btn)
             width = btn["size"][0]
             x += width + 5
 
+            # Se crea el marco que contendrá los botones de la pestaña y se lo oculta por defecto
             tab_frame = WideFrame(position=[25, 125], colorString=COLOR_MAIN_LIGHT, parent=self.options_frame)
             self.tab_frames.append(tab_frame)
             tab_frame.hide()

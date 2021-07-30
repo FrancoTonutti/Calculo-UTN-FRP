@@ -67,6 +67,9 @@ class SimpleEntry(DirectEntry, SimpleFrame):
         self.accept(self.guiItem.getFocusInEvent(), self.on_focus)
         self.accept(self.guiItem.getFocusOutEvent(), self.on_defocus)
 
+        self.on_defocus()
+
+
 
     def on_enter(self, event):
         # draw.change_cursor("/c/Windows/Cursors/no_rm.cur")

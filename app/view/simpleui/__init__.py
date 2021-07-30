@@ -18,7 +18,6 @@ def resize_gui_childrens(nodepath):
         #print("getPythonTag", obj.getPythonTag("simple_gui"))
         if obj.hasPythonTag('simple_gui'):
             gui_obj = obj.getPythonTag("simple_gui")
-            print("set_size", gui_obj, gui_obj["frameColor"])
             gui_obj.set_size()
             resize_gui_childrens(obj)
 

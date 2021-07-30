@@ -191,11 +191,17 @@ class CameraControl(DirectObject):
             is_over_workspace = True
             mouse_data = self.panda3d.win.getPointer(0)
             mouse_x, mouse_y = mouse_data.getX(), mouse_data.getY()
+            objects_to_clear = list()
 
             for name, gui_obj in gui_objects.items():
 
                 if gui_obj.isHidden():
                     continue
+
+                if gui_obj.is_empty():
+                    objects_to_clear.append(name)
+                    continue
+
 
                 pos = gui_obj.getPos(pixel2d)
                 frame_size = list(gui_obj["frameSize"])
@@ -223,6 +229,10 @@ class CameraControl(DirectObject):
                     # print("mouse is over {}".format(name))
                     is_over_workspace = False
                     break
+
+            for name in objects_to_clear:
+                gui_objects.pop(name)
+
 
         app.mouse_on_workspace = is_over_workspace
         if is_over_workspace:

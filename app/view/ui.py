@@ -20,6 +20,7 @@ class MainUI:
         self.option_bar = OptionBar()
         self.prop_editor = interface.PropertiesEditor(self.layout)
         self.status_bar = interface.StatusBar(self.layout)
+        self.tab_manager = interface.TabManager(self.layout)
 
         interface.ConsoleUI(self.layout)
 

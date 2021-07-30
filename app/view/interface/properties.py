@@ -15,6 +15,12 @@ from direct.gui.DirectScrolledFrame import *
 def execute_console(cmd):
     print(cmd)
 
+COLOR_TEXT_LIGHT = (238/255, 238/255, 238/255, 1)
+COLOR_MAIN_DARK = (35/255, 35/255, 35/255, 255/255)
+COLOR_MAIN_LIGHT = (66/255, 66/255, 66/255, 1)
+COLOR_SEC_DARK = (43, 43, 43)
+COLOR_SEC_LIGHT = (52, 52, 52)
+
 
 class PropertiesEditor(DirectObject):
     def __init__(self, layout: Layout):
@@ -27,7 +33,7 @@ class PropertiesEditor(DirectObject):
         self.accept("control-1", self.toogle_show)
 
         label = SimpleLabel(
-            text_fg=(0, 0, 0, 1),
+            text_fg=COLOR_TEXT_LIGHT,
             orginV="bottom",
             position=[0, 0],
             text_scale=(12, 12),
@@ -58,13 +64,10 @@ class PropertiesEditor(DirectObject):
 
 
     def add_property(self, prop: str, fieldname: str, value=0):
-        print("add_property")
-        print("prop", prop)
-        print("fieldname", fieldname)
-        print("value", value)
+
 
         label = SimpleLabel(
-            text_fg=(0, 0, 0, 1),
+            text_fg=COLOR_TEXT_LIGHT,
             orginV="bottom",
             position=[0, 0],
             text_scale=(12, 12),
@@ -73,6 +76,7 @@ class PropertiesEditor(DirectObject):
             size=[None, 20],
             sizeHint=[0.50, None],
             frameColor="C_WHITE",
+            alpha=0,
             align="left",
             textCenterX=False,
             padding=[15, 0, 0, 0]
@@ -113,9 +117,9 @@ class PropertiesEditor(DirectObject):
         self.fields.append([label, entry])
 
     def entity_set_prop(self, new_value: any, name: str):
-        print("new_value", new_value)
-        print("name", name)
         old_value = getattr(self.entity, name, None)
+
+
 
         if new_value != "" and isinstance(old_value, float):
             new_value = float(new_value)
@@ -125,6 +129,9 @@ class PropertiesEditor(DirectObject):
                 new_value = True
             elif new_value == "False":
                 new_value = False
+
+        if old_value == new_value:
+            return None
 
         if type(old_value) is type(new_value):
             if self.entity is not None:

@@ -69,7 +69,7 @@ class WindowManager(DirectObject.DirectObject):
     def __init__(self):
         super().__init__()
         self.window_list = list()
-        self.accept('mouse1', self.print_hello)
+        #self.accept('mouse1', self.print_hello)
 
         win = Window()
         self.window_list.append(win)

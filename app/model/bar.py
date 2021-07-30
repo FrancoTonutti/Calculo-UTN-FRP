@@ -54,7 +54,7 @@ class Bar(Entity):
         self.max_moment = 0
         self.min_moment = 0
 
-        self.show_properties("name", "width", "height", "borders")
+        self.show_properties("name", "width", "height")
 
         self.show_properties("start_x", "start_y", "start_z", "max_moment")
         self.set_prop_name(start_x="Incio x", start_y="Incio y", start_z="Incio z")

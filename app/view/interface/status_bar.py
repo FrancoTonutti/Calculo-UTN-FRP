@@ -8,7 +8,7 @@ from app.view.simpleui.simple_scrolled_frame import SimpleScrolledFrame
 from panda3d.core import TextNode
 from panda3d.core import WindowProperties
 from direct.gui.DirectScrolledFrame import *
-
+from app.view.interface.color_scheme import *
 from .. import draw
 
 
@@ -22,8 +22,9 @@ class StatusBar(DirectObject):
         self.frame = layout.status_bar_frame
         self.entity_info = None
 
-        self.info_label = SimpleLabel(parent=self.frame,
-                                      text="Prueba",
+        self.info_label = SimpleLabel(text_fg=draw.get_color(COLOR_TEXT_LIGHT, "rgba"),
+                                      parent=self.frame,
+                                      text="",
                                       alpha=0,
                                       frameColor="C_WHITE",
                                       align="left",

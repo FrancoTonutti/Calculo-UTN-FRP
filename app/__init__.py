@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.view.interface.console_ui import ConsoleUI
     from app.model.model_reg import ModelReg
+    from app.view.interface.layout_controller import Layout
+    from app.view.ui import MainUI
 
 
 from direct.showbase.ShowBase import ShowBase
@@ -30,11 +32,15 @@ class App:
         self.console_input: Union[DirectEntry, None] = None
         self.console: ConsoleUI = None
 
+
         self.commands = dict()
         self.cursor = None
 
-        self.main_ui = None
+        self.main_ui: MainUI = None
         self.wireframe = False
+
+        self.layout: Layout = None
+
 
     def set_show_base(self, base):
         self.base = base

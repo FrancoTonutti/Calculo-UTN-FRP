@@ -151,7 +151,8 @@ class SimpleFrame(DirectFrame):
                 size = self.parent_gui["frameSize"]
 
                 if size is None:
-                    print("size is None", self.parent_gui)
+                    pass
+                    #print("size is None", self.parent_gui)
 
                 if hasattr(self.parent_gui, "getCanvas"):
                     size = self.parent_gui["canvasSize"]
@@ -228,13 +229,12 @@ class SimpleFrame(DirectFrame):
             size = child.box_size()
 
             if child["size"] == [None, None] and child["sizeHint"] == [None, None]:
-                print("free_size_widgets")
                 free_size_widgets.append(child)
             else:
                 frame_pos += size[orientation]
 
         free_space = max(total_len - frame_pos, 0) / max(len(free_size_widgets), 1)
-        print(total_len, frame_pos, free_space)
+        #print(total_len, frame_pos, free_space)
         # if free_space > 0:
 
         free_space_hint = free_space / total_len
@@ -326,8 +326,8 @@ class SimpleFrame(DirectFrame):
         filled = [width_filled, height_filled][orientation]
         order = [cols_min_width, row_min_height][orientation]
 
-        print("cols_min_width1", cols_min_width)
-        print("row_min_height1", row_min_height)
+        #print("cols_min_width1", cols_min_width)
+        #print("row_min_height1", row_min_height)
 
         if order != {} and filled < total_len:
             free_space = total_len - filled
@@ -345,8 +345,8 @@ class SimpleFrame(DirectFrame):
                     if value == 0:
                         order[index] += free_space
 
-        print("cols_min_width2", cols_min_width)
-        print("row_min_height2", row_min_height)
+        #print("cols_min_width2", cols_min_width)
+        #print("row_min_height2", row_min_height)
 
 
 

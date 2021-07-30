@@ -19,6 +19,9 @@ class ModelReg(dict):
     def get_all_bars(self):
         return self.get("Bar", {})
 
+    def find_entities(self, name):
+        return self.get(name, {})
+
     def get_bars(self):
         if "Bar" in self:
             for model_id in self["Bar"]:
