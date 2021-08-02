@@ -5,7 +5,7 @@ import numpy as np
 from app import app
 
 
-class LoadType(Entity):
+class LoadCombination(Entity):
     """
     bar: parent bar
     load_type: string  = "D", "L", "W", "S" etc.
@@ -17,18 +17,18 @@ class LoadType(Entity):
 
         entity_id = obj.get("entity_id")
         name = obj.get("name")
-        load_code = obj.get("load_code")
+        equation = obj.get("equation")
         index = obj.get("index")
 
-        LoadType(name, load_code, entity_id, index)
+        LoadCombination(name, equation, entity_id, index)
 
-    def __init__(self, name, load_code="D", set_id=None, index=None):
+    def __init__(self, name, equation="D", set_id=None, index=None):
         super().__init__(set_id)
 
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("LoadType")
+        entities = model_reg.find_entities("LoadCombination")
 
         if not index:
             self.index = len(entities)
@@ -36,8 +36,8 @@ class LoadType(Entity):
             self.index = int(index)
 
         self.name = name
-        self.load_code = load_code
+        self.equation = equation
 
-        self.show_properties("index", "name", "load_code")
+        self.show_properties("index", "name", "equation")
 
         register(self)

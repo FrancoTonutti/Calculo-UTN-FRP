@@ -8,7 +8,10 @@ from app.model.diagram import Diagram
 from app.model.model_reg import ModelReg
 from app.model.material import Material
 from app.model.view_gizmo import ViewGizmoZone
+from app.model.load_type import LoadType
 from app.model import model_reg
+
+
 
 model_reg.class_register = {
     "Entity": Entity,
@@ -19,7 +22,8 @@ model_reg.class_register = {
     "Load": Load,
     "Diagram": Diagram,
     "Material": Material,
-    "ViewGizmoZone": ViewGizmoZone
+    "ViewGizmoZone": ViewGizmoZone,
+    "LoadType": LoadType
 }
 
 

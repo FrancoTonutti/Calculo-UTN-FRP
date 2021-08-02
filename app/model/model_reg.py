@@ -20,7 +20,10 @@ class ModelReg(dict):
         return self.get("Bar", {})
 
     def find_entities(self, name):
-        return self.get(name, {})
+        if name in self.keys():
+            return self[name].values()
+        else:
+            return []
 
     def get_bars(self):
         if "Bar" in self:
@@ -92,7 +95,7 @@ class ModelReg(dict):
 
         dict_data = json.loads(json_string)
 
-        keys_priority = ["View", "Node", "Section", "Material", "Bar", "Load"]
+        keys_priority = ["View", "Node", "Section", "Material", "Bar", "LoadType", "Load"]
 
         for key in dict_data.keys():
             if key not in keys_priority:
@@ -101,6 +104,9 @@ class ModelReg(dict):
         for key in keys_priority:
             print("start load {}".format(key))
             i=0
+            if key not in dict_data.keys():
+                continue
+
             for entity_id, entity_data in dict_data[key].items():
                 class_obj = class_register.get(key)
 
