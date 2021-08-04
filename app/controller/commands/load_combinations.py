@@ -68,7 +68,7 @@ def new_button(text, colors=None, command=None, args=None, parent=None, size=Non
 
 
 class Table:
-    def __init__(self, titles, parent, model, params):
+    def __init__(self, titles, parent, model, params, ev_set_attr=None):
         frame_scrolled = SimpleScrolledFrame(
 
             position=[0, 0],
@@ -82,14 +82,13 @@ class Table:
             alpha=1
         )
         self.canvas = frame_scrolled.getCanvas()
-        for title in titles:
-            label = create_label(title, self.canvas)
-            #btn = new_button(title, parent=canvas)
 
         self.frame = frame_scrolled
         self.model = model
         self.params = params
         self.data_fields = list()
+        self.titles = titles
+        self.ev_set_attr = ev_set_attr
         self.update_table()
 
     def update_table(self):
@@ -98,15 +97,26 @@ class Table:
                 field.destroy()
         self.data_fields.clear()
 
-        panda3d = app.get_show_base()
-        # Obtenemos el registro del modelo
-        model_reg = app.model_reg
-        entities = model_reg.find_entities(self.model)
-        entities = sorted(entities, key=lambda x: x.index)
+        if self.frame["gridCols"] != max(len(self.titles), 1):
+            self.frame["gridCols"] = max(len(self.titles), 1)
+
+        if isinstance(self.model, str):
+            panda3d = app.get_show_base()
+            # Obtenemos el registro del modelo
+            model_reg = app.model_reg
+            entities = model_reg.find_entities(self.model)
+            entities = sorted(entities, key=lambda x: x.index)
+        else:
+            entities = self.model
+            entities = sorted(entities, key=lambda x: x.index)
+
+        field_list = list()
+        for title in self.titles:
+            label = create_label(title, self.canvas)
+            field_list.append(label)
+        self.data_fields.append(field_list)
 
         for entity in entities:
-
-            print("entity", entity)
             field_list = list()
             for param in self.params:
                 field = self.add_field(entity, param, entity.prop_name(param), getattr(entity, param))
@@ -130,7 +140,7 @@ class Table:
             elif new_value == "False":
                 new_value = False
 
-        if old_value == new_value:
+        if old_value == new_value or new_value == "None":
             return None
 
         if type(old_value) is type(new_value):
@@ -139,6 +149,10 @@ class Table:
                 setattr(entity, name, new_value)
                 print("verif {}: {}".format(name, getattr(entity, name,
                                                           "undefined")))
+
+
+                if self.ev_set_attr:
+                    self.ev_set_attr()
         else:
             if entity is not None:
                 print("El tipo de asignación no corresponde: {},{}->{}".format(
@@ -157,6 +171,7 @@ class Table:
                 frameColor="C_WHITE",
                 maxSize=16
             )
+
         else:
             entry = SimpleEntry(
                 text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
@@ -177,7 +192,6 @@ class Table:
                 frameColor="C_WHITE",
                 alpha=0,
                 initialText=str(value)
-
             )
         return entry
 
@@ -195,24 +209,53 @@ class UI:
                           command=self.create_load_type)
 
         self.load_table = Table(["Nº", "Descripción", "Nombre"], frame, "LoadType",
-                                ["index", "name", "load_code"])
+                                ["index", "name", "load_code"],
+                                ev_set_attr=self.update_load_types)
 
         create_label("Combinaciones de cargas", frame)
 
         btn1 = new_button("Agregar Combinación", parent=frame,
                           command=self.create_load_combination)
 
-        self.combination_table = Table(["Nº", "Designación", "Ecuación"], frame, "LoadCombination",
-                                ["index", "name", "equation"])
+        self.combination_table = Table(["Nº", "Designación"], frame, "LoadCombination",
+                                ["index", "name"],
+                                ev_set_attr=self.update_load_combinations)
+
+        self.update_load_combinations()
 
         execute("regen_ui")
 
     def create_load_type(self):
         LoadType("Carga1", "D")
         self.load_table.update_table()
+        self.update_load_combinations()
 
     def create_load_combination(self):
         LoadCombination("12-1", "1.4*D")
+        self.combination_table.update_table()
+        self.update_load_combinations()
+
+    def update_load_types(self):
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_load_types")
+        self.load_table.update_table()
+        self.update_load_combinations()
+
+    def update_load_combinations(self):
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_load_combinations")
+        titles = ["Nº", "Designación"]
+        params = ["index", "name"]
+
+        panda3d = app.get_show_base()
+        # Obtenemos el registro del modelo
+        model_reg = app.model_reg
+        entities = model_reg.find_entities("LoadType")
+        for entity in entities:
+            titles.append(entity.load_code)
+            params.append(entity.load_code)
+
+        self.combination_table.titles = titles
+        self.combination_table.params = params
+
         self.combination_table.update_table()
 
 

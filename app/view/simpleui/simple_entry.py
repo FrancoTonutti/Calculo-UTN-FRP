@@ -97,19 +97,20 @@ class SimpleEntry(DirectEntry, SimpleFrame):
 
     def on_defocus(self, event=None):
         self.focusOutCommandFunc()
-        self["focus"] = False
-        if self["label"] is not None and self.get() is "":
-            self.enterText(self["label"])
-        elif self.get() is not "":
-            func = self["typeFunc"]
-            if func is not None:
+        if not self.isEmpty():
+            self["focus"] = False
+            if self["label"] is not None and self.get() is "":
+                self.enterText(self["label"])
+            elif self.get() is not "":
+                func = self["typeFunc"]
+                if func is not None:
 
-                self.enter_value(func(self.get()))
-                prefix = self["prefix"]
-                txt = self.get()
-                suffix = self["suffix"]
+                    self.enter_value(func(self.get()))
+                    prefix = self["prefix"]
+                    txt = self.get()
+                    suffix = self["suffix"]
 
-                self.enterText("{}{}{}".format(prefix, txt, suffix))
+                    self.enterText("{}{}{}".format(prefix, txt, suffix))
 
     def focus_task(self, task):
         panda3d = app.get_show_base()
@@ -186,9 +187,10 @@ class SimpleEntry(DirectEntry, SimpleFrame):
     def focusOutCommandFunc(self):
         if self['focusOutCommand']:
             self['focusOutCommand'](*[self.get()] + self['focusOutExtraArgs'])
-        if self['autoCapitalize']:
-            self.ignore(self.guiItem.getTypeEvent())
-            self.ignore(self.guiItem.getEraseEvent())
+        if not self.isEmpty():
+            if self['autoCapitalize']:
+                self.ignore(self.guiItem.getTypeEvent())
+                self.ignore(self.guiItem.getEraseEvent())
 
     def enter_value(self, value):
         self["value"] = value
