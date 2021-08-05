@@ -110,9 +110,16 @@ class Entity:
         self._namespace.update(kwargs)
 
     def get_properties(self):
-
         for prop in self._editor_properties:
             yield prop
+
+    def set_read_only(self, *args):
+        for arg in args:
+            if arg not in self._read_only:
+                self._read_only.append(arg)
+
+    def is_read_only(self, prop_name: str):
+        return prop_name in self._read_only
 
     def load_model(self, model, set_id=True, parent=None):
         if parent is None:
@@ -182,8 +189,22 @@ class Entity:
         else:
             model_reg.entity_register.update({self.entity_id: self})
 
+    def unregister(self):
+        model_reg = app.model_reg
+        # Leemos el nombre de la clase
+        name = type(self).__name__
+
+        # Extraemos el diccionario con todos los elementos de la categoría
+        category_dict = model_reg.get(name, None)
+
+        # Eliminamos la entidad del diccionario
+        category_dict.pop(self.entity_id)
+        model_reg.entity_register.pop(self.entity_id)
+
     def delete(self):
-        pass
+        self.unregister()
+
+        del self
 
     @staticmethod
     def create_from_object(obj):

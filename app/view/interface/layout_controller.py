@@ -26,6 +26,8 @@ class Layout:
                                        layout="BoxLayout",
                                        layoutDir="Y")
 
+        app.add_gui_region("options_frame", self.options_bar)
+
         self.view_tabs_area = SimpleFrame(position=[0, 125],
                                           frameColor=COLOR_MAIN_DARK,
                                        size=[1366, 150],

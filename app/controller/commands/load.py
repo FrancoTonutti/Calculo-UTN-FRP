@@ -40,6 +40,8 @@ def add_load_task(task):
             load = Load(entity, value, angle)
             #entity.add_child_model(load)
 
+            print(entity, value, angle)
+
 
             app.console.set_arg("entity", None)
             app.console.close_command()

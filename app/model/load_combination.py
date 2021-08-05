@@ -22,18 +22,18 @@ class LoadCombination(Entity):
 
         LoadCombination(name, equation, entity_id, index)
 
-    def __init__(self, name, equation="D", set_id=None, index=None):
+    def __init__(self, name, set_id=None, index=None):
         super().__init__(set_id)
 
         self._index = 100
         self.index = 100
 
         self.name = name
-        self.equation = equation
 
         self.factors = dict()
 
         self.show_properties("index", "name", "equation")
+        self.set_read_only("equation")
 
         register(self)
 
@@ -42,6 +42,30 @@ class LoadCombination(Entity):
 
     def get_factor(self, load: LoadType):
         return self.factors.get(load.entity_id, 0.0)
+
+    @property
+    def equation(self):
+        eq = ""
+
+        panda3d = app.get_show_base()
+        # Obtenemos el registro del modelo
+        model_reg = app.model_reg
+        entities = model_reg.find_entities("LoadType")
+
+        sorted_entities = []
+        for entity in entities:
+            sorted_entities.append(entity)
+
+        sorted_entities = sorted(sorted_entities, key=lambda x: x.index)
+
+        for entity in sorted_entities:
+            factor = self.get_factor(entity)
+            if factor > 0:
+                if eq != "":
+                    eq += " + "
+                eq += "{} {}".format(factor, entity.load_code)
+
+        return eq
 
     @property
     def index(self):
@@ -74,7 +98,7 @@ class LoadCombination(Entity):
             i += 1
 
     def __setattr__(self, key, value):
-        try:
+        '''try:
             super().__setattr__(key, value)
         except AttributeError as ex:
             panda3d = app.get_show_base()
@@ -83,10 +107,24 @@ class LoadCombination(Entity):
             entities = model_reg.find_entities("LoadType")
             for entity in entities:
                 if entity.load_code == key:
+                    print("set_factor")
                     self.set_factor(entity, value)
                     break
             else:
-                raise AttributeError(ex)
+                raise AttributeError(ex)'''
+
+        panda3d = app.get_show_base()
+        # Obtenemos el registro del modelo
+        model_reg = app.model_reg
+        entities = model_reg.find_entities("LoadType")
+        for entity in entities:
+            if entity.load_code == key:
+                print("set_factor")
+                self.set_factor(entity, value)
+                break
+        else:
+            super().__setattr__(key, value)
+
 
     def __getattr__(self, key):
         panda3d = app.get_show_base()

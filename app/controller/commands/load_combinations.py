@@ -68,7 +68,7 @@ def new_button(text, colors=None, command=None, args=None, parent=None, size=Non
 
 
 class Table:
-    def __init__(self, titles, parent, model, params, ev_set_attr=None):
+    def __init__(self, titles, parent, model, params, ev_set_attr=None, ev_delete_entity=None):
         frame_scrolled = SimpleScrolledFrame(
 
             position=[0, 0],
@@ -89,13 +89,19 @@ class Table:
         self.data_fields = list()
         self.titles = titles
         self.ev_set_attr = ev_set_attr
+        self.enable_detete = True
         self.update_table()
+
+        self.ev_delete_entity = ev_delete_entity
 
     def update_table(self):
         for fields in self.data_fields:
             for field in fields:
                 field.destroy()
         self.data_fields.clear()
+
+        if self.enable_detete and self.titles[-1] != "Eliminar":
+            self.titles.append("Eliminar")
 
         if self.frame["gridCols"] != max(len(self.titles), 1):
             self.frame["gridCols"] = max(len(self.titles), 1)
@@ -121,9 +127,24 @@ class Table:
             for param in self.params:
                 field = self.add_field(entity, param, entity.prop_name(param), getattr(entity, param))
                 field_list.append(field)
+
+            if self.enable_detete:
+                close_btn = new_button("x", parent=self.canvas, padding=[5,5,5,5],
+                                       command=self.delete_enity, args=[entity])
+                field_list.append(close_btn)
+
             self.data_fields.append(field_list)
+
+
         self.frame["gridRows"] = len(self.data_fields)+1
         simpleui.update_ui()
+
+    def delete_enity(self, entity):
+        entity.delete()
+        self.update_table()
+
+        if self.ev_delete_entity:
+            self.ev_delete_entity()
 
     def entity_set_prop(self, new_value: any, entity, name: str):
         old_value = getattr(entity, name, None)
@@ -173,26 +194,30 @@ class Table:
             )
 
         else:
-            entry = SimpleEntry(
-                text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
-                orginH="center",
-                position=[0, 0],
-                text_scale=(12, 12),
-                width=20,
-                align="left",
-                textCenterX=False,
-                command=self.entity_set_prop,
-                extraArgs=[entity, prop],
-                focusOutCommand=self.entity_set_prop,
-                focusOutExtraArgs=[entity, prop],
-                parent=self.canvas,
-                size=[None, 20],
-                padding=[15, 0, 0, 0],
-                sizeHint=[1, None],
-                frameColor="C_WHITE",
-                alpha=0,
-                initialText=str(value)
-            )
+
+            if entity.is_read_only(prop):
+                entry = create_label(str(value), self.canvas)
+            else:
+                entry = SimpleEntry(
+                    text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+                    orginH="center",
+                    position=[0, 0],
+                    text_scale=(12, 12),
+                    width=20,
+                    align="left",
+                    textCenterX=False,
+                    command=self.entity_set_prop,
+                    extraArgs=[entity, prop],
+                    focusOutCommand=self.entity_set_prop,
+                    focusOutExtraArgs=[entity, prop],
+                    parent=self.canvas,
+                    size=[None, 20],
+                    padding=[15, 0, 0, 0],
+                    sizeHint=[1, None],
+                    frameColor="C_WHITE",
+                    alpha=0,
+                    initialText=str(value)
+                )
         return entry
 
 
@@ -210,7 +235,8 @@ class UI:
 
         self.load_table = Table(["Nº", "Descripción", "Nombre"], frame, "LoadType",
                                 ["index", "name", "load_code"],
-                                ev_set_attr=self.update_load_types)
+                                ev_set_attr=self.update_load_types,
+                                ev_delete_entity=self.update_load_combinations)
 
         create_label("Combinaciones de cargas", frame)
 
@@ -231,7 +257,7 @@ class UI:
         self.update_load_combinations()
 
     def create_load_combination(self):
-        LoadCombination("12-1", "1.4*D")
+        LoadCombination("12-1")
         self.combination_table.update_table()
         self.update_load_combinations()
 
@@ -252,6 +278,9 @@ class UI:
         for entity in entities:
             titles.append(entity.load_code)
             params.append(entity.load_code)
+
+        titles.append("Ecuación")
+        params.append("equation")
 
         self.combination_table.titles = titles
         self.combination_table.params = params

@@ -87,7 +87,7 @@ class OptionBar:
         self.panda3d = app.get_show_base()
 
         self.options_frame = WideFrame(position=[0, 125], colorString=COLOR_MAIN_DARK)
-        app.add_gui_region("options_frame", self.options_frame)
+
 
         workspace = SimpleFrame(position=[0, 0], sizeHint=[1, 1], alpha=0, padding=[250, 0, 25, 150])
 

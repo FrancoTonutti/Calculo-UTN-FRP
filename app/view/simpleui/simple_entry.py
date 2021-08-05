@@ -67,7 +67,7 @@ class SimpleEntry(DirectEntry, SimpleFrame):
         self.accept(self.guiItem.getFocusInEvent(), self.on_focus)
         self.accept(self.guiItem.getFocusOutEvent(), self.on_defocus)
 
-        self.on_defocus()
+        #self.on_defocus()
 
 
 

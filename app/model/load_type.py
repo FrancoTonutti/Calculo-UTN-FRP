@@ -72,7 +72,18 @@ class LoadType(Entity):
             entity._index = i
             i += 1
 
+    def delete(self):
+        panda3d = app.get_show_base()
+        # Obtenemos el registro del modelo
+        model_reg = app.model_reg
+        entities = model_reg.find_entities("LoadCombination")
 
+        for entity in entities:
+
+            if self.entity_id in entity.factors.keys():
+                entity.factors.pop(self.entity_id)
+
+        super(LoadType, self).delete()
 
     @property
     def load_code(self):
