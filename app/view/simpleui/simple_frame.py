@@ -123,8 +123,11 @@ class SimpleFrame(DirectFrame):
         width, height = self["size"]
         hint_x, hint_y = self["sizeHint"]
 
-        if hint_x is None and hint_y is None:
-            hint_x, hint_y = self.layout_size_hint
+        if hint_x is None:
+            hint_x, _ = self.layout_size_hint
+
+        if hint_y is None:
+            _, hint_y = self.layout_size_hint
 
         if width is None:
             width = 0
@@ -220,6 +223,8 @@ class SimpleFrame(DirectFrame):
 
         size = self["frameSize"]
         frame_size = [size[1] - size[0], size[3] - size[2]]
+
+        frame_size = self.box_size()
         total_len = frame_size[orientation]
 
         free_size_widgets = list()

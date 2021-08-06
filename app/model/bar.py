@@ -216,6 +216,7 @@ class Bar(Entity):
             #line.setLight(panda3d.plight_node)
 
         else:
+            geom.show()
             line = self.geom[1]
             if line is not None:
                 line.removeNode()

@@ -16,22 +16,20 @@ INTERFACE = {
             "Nuevo": {"command": "new_file"},
             "Abrir": {"command": "open_file"},
             "Guardar": {"command": "save"},
-            "Exportar IFC": {"command": "save_ifc"},
+            #"Exportar IFC": {"command": "save_ifc"},
         }
     },
     _("Estructura"): {
         "Construir": {
-            "Muro de carga": {},
+            #"Muro de carga": {},
+            "Barra": {"command": "barra"},
             "Pilar": {"command": "barra"},
             "Viga": {"command": "barra"},
         },
-        "Circulación": {
-            "Rampa": {},
-            "Escalera": {},
-        },
         "Modelo": {
             "Agregar carga": {"command": "load"},
-            "Regen": {"command": "regen"},
+            "Combinaciones": {"command": "load_combinations"},
+            # "Regen": {"command": "regen"},
             "Ver secciones": {"command": "wire"}
         },
     },
@@ -39,6 +37,7 @@ INTERFACE = {
         "Cálculo": {
             "Calcular": {"command": "matricial"},
             "Combinaciones": {"command": "load_combinations"},
+            "Resultados": {"command": "view_results"},
         },
     }
 }

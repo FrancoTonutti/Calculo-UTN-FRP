@@ -17,16 +17,18 @@ class LoadCombination(Entity):
 
         entity_id = obj.get("entity_id")
         name = obj.get("name")
-        equation = obj.get("equation")
         index = obj.get("index")
 
-        LoadCombination(name, equation, entity_id, index)
+        LoadCombination(name, entity_id, index)
 
     def __init__(self, name, set_id=None, index=None):
         super().__init__(set_id)
 
-        self._index = 100
-        self.index = 100
+        if index:
+            self._index = index
+        else:
+            self._index = 100
+            self.index = 100
 
         self.name = name
 

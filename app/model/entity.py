@@ -50,11 +50,35 @@ class Entity:
     def __exit__(self, exc_type, exc_val, exc_tb):
         return None
 
-    def set_analysis_results(self, name, value):
-        self._analysis_results.update({name: value})
+    def set_analysis_results(self, load_combination, name, value):
 
-    def get_analysis_results(self, name):
-        return self._analysis_results.get(name, None)
+        if isinstance(load_combination, str):
+            comb_id = load_combination
+        else:
+            comb_id = load_combination.entity_id
+
+        combination_results = self._analysis_results.get(comb_id, None)
+
+        if combination_results is None:
+            combination_results = dict()
+
+        combination_results.update({name: value})
+
+        self._analysis_results.update({comb_id: combination_results})
+
+    def get_analysis_results(self, load_combination, name):
+
+        if isinstance(load_combination, str):
+            comb_id = load_combination
+        else:
+            comb_id = load_combination.entity_id
+
+        combination_results = self._analysis_results.get(comb_id, None)
+
+        if combination_results is None:
+            return None
+
+        return combination_results.get(name, None)
 
     def on_click(self):
         pass

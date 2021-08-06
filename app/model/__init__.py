@@ -9,8 +9,8 @@ from app.model.model_reg import ModelReg
 from app.model.material import Material
 from app.model.view_gizmo import ViewGizmoZone
 from app.model.load_type import LoadType
+from app.model.load_combination import LoadCombination
 from app.model import model_reg
-
 
 
 model_reg.class_register = {
@@ -23,7 +23,8 @@ model_reg.class_register = {
     "Diagram": Diagram,
     "Material": Material,
     "ViewGizmoZone": ViewGizmoZone,
-    "LoadType": LoadType
+    "LoadType": LoadType,
+    "LoadCombination": LoadCombination
 }
 
 

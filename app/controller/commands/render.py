@@ -4,11 +4,29 @@ import numpy as np
 from panda3d.core import LineSegs, NodePath
 from app.view import draw
 
-wireframe = False
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    # Imports only for IDE type hints
+    from app.view.interface.console_ui import ConsoleUI
+    from app.model import *
 
+wireframe = False
 
 @command("regen")
 def regen():
+    print("regen")
+    # Accede a la interfaz de kivy para obtener la información de panda3d
+    panda3d = app.get_show_base()
+    # Obtenemos el registro del modelo
+    model_register = app.model_reg
+
+    node_list = model_register.find_entities("Node")
+
+    for node_entity in node_list:  # type: Node
+        node_entity.update_tree()
+
+
+def regen_old():
     print("regen")
     # Accede a la interfaz de kivy para obtener la información de panda3d
     panda3d = app.get_show_base()
