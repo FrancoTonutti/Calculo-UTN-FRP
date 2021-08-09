@@ -38,6 +38,7 @@ INTERFACE = {
             "Calcular": {"command": "matricial"},
             "Combinaciones": {"command": "load_combinations"},
             "Resultados": {"command": "view_results"},
+            "Borrar": {"command": "remove_diagrams"},
         },
     }
 }

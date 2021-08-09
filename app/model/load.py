@@ -28,12 +28,16 @@ class Load(Entity):
 
         Load(parent, value, angle, load_type, entity_id)
 
-    def __init__(self, parent, value, angle=90, load_type="D", set_id=None):
+    def __init__(self, parent, value, angle=90, load_type=None, set_id=None):
         super().__init__(set_id)
         self.parent = parent
         self.value = value
         self.angle = angle
-        self.load_type = load_type
+
+        if load_type:
+            self.load_type = load_type
+        else:
+            self.load_type = app.show_load
 
         self._scheme = dict()
         self.show_properties("value", "angle", "load_type")
@@ -67,6 +71,13 @@ class Load(Entity):
     def update_model(self):
         if not self.geom:
             return None
+
+        if app.show_load != self.load_type:
+            model = self.geom[0]
+            model.hide()
+        else:
+            model = self.geom[0]
+            model.show()
 
         if isinstance(self.parent, Node):
             x0, y0, z0 = self.parent.position
@@ -124,7 +135,3 @@ class Load(Entity):
             model.setLightOff()
             print("L", L)
             print("h", h)
-
-
-    def delete_model(self):
-        pass

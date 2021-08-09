@@ -18,10 +18,11 @@ class LoadCombination(Entity):
         entity_id = obj.get("entity_id")
         name = obj.get("name")
         index = obj.get("index")
+        factors = obj.get("factors")
 
-        LoadCombination(name, entity_id, index)
+        LoadCombination(name, entity_id, index, factors)
 
-    def __init__(self, name, set_id=None, index=None):
+    def __init__(self, name, set_id=None, index=None, factors=None):
         super().__init__(set_id)
 
         if index:
@@ -32,7 +33,10 @@ class LoadCombination(Entity):
 
         self.name = name
 
-        self.factors = dict()
+        if factors is None:
+            self.factors = dict()
+        else:
+            self.factors = factors
 
         self.show_properties("index", "name", "equation")
         self.set_read_only("equation")
@@ -62,7 +66,7 @@ class LoadCombination(Entity):
 
         for entity in sorted_entities:
             factor = self.get_factor(entity)
-            if factor > 0:
+            if factor != 0:
                 if eq != "":
                     eq += " + "
                 eq += "{} {}".format(factor, entity.load_code)

@@ -1,5 +1,5 @@
 from app import app
-from app.controller.console import command
+from app.controller.console import command, execute
 from app.model import Diagram
 from app.controller.commands.Tomas import calculo
 
@@ -30,6 +30,10 @@ def start_analysis():
         sorted_entities.append(combination)
 
     load_combinations = sorted(sorted_entities, key=lambda x: x.index)
+
+    max_moment = 0
+
+    execute("remove_diagrams")
 
     for combination in load_combinations:  # type: LoadCombination
         print("----------------------------------------------------")
@@ -376,9 +380,9 @@ def start_analysis():
                 print("load_y {}".format(load_y))
                 long = bar_element.longitude()
 
-                shear = lambda x: f[1, 0] - load_y * x
-                normal = lambda x: f[0, 0] - load_x * x
-                moment = lambda x: f[2, 0] - f[1, 0] * x + load_y * x * x / 2
+                shear = lambda x: float(f[1, 0] - load_y * x)
+                normal = lambda x: float(f[0, 0] - load_x * x)
+                moment = lambda x: float(f[2, 0] - f[1, 0] * x + load_y * x * x / 2)
 
                 print("ec: {} - {} * x + {} * x * x / 2".format(f[2, 0], f[1, 0], load_y))
 
@@ -394,6 +398,8 @@ def start_analysis():
                     v_normal.append(normal(x_pos * long))
                     v_moment.append(moment(x_pos * long))
                     v_x_coord.append(x_pos * long),
+
+                max_moment = max(max_moment, abs(max(v_moment)), abs(min(v_moment)))
 
                 """
                 v_shear = [shear(0.00*long),
@@ -431,12 +437,27 @@ def start_analysis():
                 bar_element.set_analysis_results(combination, "v_normal", v_normal)
                 bar_element.set_analysis_results(combination, "v_moment", v_moment)
 
-                if combination.index == 1:
-                    Diagram(bar_element, v_moment)
+                app.diagram_scale = max(float(100/max_moment), 20)
+
+                #diagram = bar_element.get_analysis_results(combination,"moment_diagram")
+                #if diagram is not None:
+                #    diagram.delete()
+
+                diagram = Diagram(bar_element, combination, "S", v_shear)
+                diagram = Diagram(bar_element, combination, "N", v_normal)
+                diagram = Diagram(bar_element, combination, "M", v_moment)
+                #bar_element.set_analysis_results(combination, "moment_diagram",diagram)
+
+
 
         else:
             print("Matriz singular, vinculos insuficientes: mecanismo")
 
+    entities = app.model_reg.get("View")
+    entity = list(entities.values())[0]
+    prop_editor = app.main_ui.prop_editor
+
+    prop_editor.entity_read(entity, update=True)
 
 
 

@@ -12,6 +12,11 @@ class WidProperties:
 
         self.fields = []
 
+        entities = app.model_reg.get("View")
+        entity = list(entities.values())[0]
+
+        self.entity_read(entity)
+
     def add_property(self, prop, name, value=0):
         """lb = Label(text=name)
         self.add_widget(lb)
@@ -51,10 +56,17 @@ class WidProperties:
     def entity_set_prop(self, name, value):
         last_value = getattr(self.entity, name, None)
         val = value
-        if isinstance(last_value, float):
+
+        if val != "" and isinstance(last_value, float):
             val = float(val)
+
+        if val != "" and isinstance(last_value, int):
+            val = int(val)
+
+
         if type(last_value) is type(val):
             setattr(self.entity, name, val)
         else:
-            print("El tipo de asignación no corresponde1: {},{}->{}".format(name, type(self.entity.__dict__[name]),
+            print("El tipo de asignación no corresponde1: {},{}->{}".format(name, type(last_value),
                                                                            type(val)))
+            print("isinstance(last_value, int)", isinstance(last_value, int))

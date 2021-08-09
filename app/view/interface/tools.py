@@ -7,10 +7,16 @@ from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
 from app.view import simpleui
 
 
-def create_label(text, parent):
+def create_label(text, parent, padding = None):
     font_panda3d, font_pil = draw.draw_get_font()
     width = font_pil.getsize(text)[0]
     size = [20 + width, 19]
+
+    if padding is None:
+        padding = [0, 0, 0, 0]
+
+    size = [20 + width, 19 + padding[2] + padding[3]]
+
 
     label = SimpleLabel(
         text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
@@ -24,7 +30,7 @@ def create_label(text, parent):
         alpha=0,
         align="left",
         textCenterX=False,
-        padding=[15, 0, 0, 0]
+        padding=padding
 
     )
 
@@ -60,7 +66,7 @@ def new_button(text, colors=None, command=None, args=None, parent=None, size=Non
 
 
 class Table:
-    def __init__(self, titles, parent, model, params, ev_set_attr=None, ev_delete_entity=None):
+    def __init__(self, titles, parent, model, params, enable_detete=True, ev_set_attr=None, ev_delete_entity=None):
         frame_scrolled = SimpleScrolledFrame(
 
             position=[0, 0],
@@ -81,7 +87,7 @@ class Table:
         self.data_fields = list()
         self.titles = titles
         self.ev_set_attr = ev_set_attr
-        self.enable_detete = True
+        self.enable_detete = enable_detete
         self.update_table()
 
         self.ev_delete_entity = ev_delete_entity
@@ -117,7 +123,7 @@ class Table:
         for entity in entities:
             field_list = list()
             for param in self.params:
-                field = self.add_field(entity, param, entity.prop_name(param), getattr(entity, param))
+                field = self.add_field(entity, param, getattr(entity, param))
                 field_list.append(field)
 
             if self.enable_detete:
@@ -171,7 +177,7 @@ class Table:
                 print("El tipo de asignación no corresponde: {},{}->{}".format(
                     name, type(old_value), type(new_value)))
 
-    def add_field(self, entity, prop: str, fieldname: str, value=0):
+    def add_field(self, entity, prop: str, value=0):
         if isinstance(value, bool):
             entry = SimpleCheckBox(
                 position=[0, 0],

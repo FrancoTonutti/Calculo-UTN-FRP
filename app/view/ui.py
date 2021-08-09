@@ -16,13 +16,13 @@ class MainUI:
         base.setBackgroundColor(1, 1, 1)
 
         self.layout = interface.Layout()
+        interface.ConsoleUI(self.layout)
 
         self.option_bar = OptionBar()
         self.prop_editor = interface.PropertiesEditor(self.layout)
         self.status_bar = interface.StatusBar(self.layout)
-        self.tab_manager = interface.TabManager(self.layout)
-
         interface.ConsoleUI(self.layout)
+        self.tab_manager = interface.TabManager(self.layout)
 
         """main = StackPanel(orientation="Vertical", width="5 cm", height="5 cm", background="Blue")
 

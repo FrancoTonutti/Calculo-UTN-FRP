@@ -1,5 +1,5 @@
 win-size 1280 720
-window-title Software de Cálculo
+window-title Software de Cálculo UTN FRP 0.0.1
 show-frame-rate-meter False
 
 undecorated False

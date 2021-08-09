@@ -1,3 +1,5 @@
+from panda3d.core import GeomNode
+
 from app import app
 import uuid
 
@@ -165,7 +167,21 @@ class Entity:
         pass
 
     def delete_model(self):
-        pass
+        if self.geom:
+            num = len(self.geom)
+        else:
+            num = 0
+        print("delete models {}".format(num))
+        if self.geom:
+            for geomnode in self.geom:  # type: GeomNode
+                if geomnode:
+                    print("delete model", geomnode)
+
+                    geomnode.removeNode()
+
+
+
+
 
     def update_tree(self):
         self.update_model()
@@ -174,6 +190,10 @@ class Entity:
 
     def add_child_model(self, child):
         self._child_models.append(child)
+
+    def remove_child_model(self, child):
+        if child in self._child_models:
+            self._child_models.remove(child)
 
     def bind_to_model(self, *args):
         for prop in args:
@@ -214,6 +234,7 @@ class Entity:
             model_reg.entity_register.update({self.entity_id: self})
 
     def unregister(self):
+        print("unregister entity")
         model_reg = app.model_reg
         # Leemos el nombre de la clase
         name = type(self).__name__
@@ -225,10 +246,13 @@ class Entity:
         category_dict.pop(self.entity_id)
         model_reg.entity_register.pop(self.entity_id)
 
+
     def delete(self):
+        print("delete entity {}".format(self))
+        self.delete_model()
         self.unregister()
 
-        del self
+
 
     @staticmethod
     def create_from_object(obj):

@@ -1,3 +1,4 @@
+from app.controller.console import execute
 from app.model.entity import Entity, register
 from app import app
 
@@ -17,9 +18,83 @@ class View(Entity):
     def __init__(self, set_id=None):
         super().__init__(set_id)
 
-        self.set_prop_name(work_plane_vect="Plano de Trabajo", worl_plane_height="Altura")
-        self.show_properties("work_plane_vect", "work_plane_height")
+        #self.set_prop_name(work_plane_vect="Plano de Trabajo", worl_plane_height="Altura")
+        #self.show_properties("work_plane_vect", "work_plane_height")
+
+        self.set_prop_name(show_load="Carga visible")
+        self.show_properties("show_load")
+
+        self.set_prop_name(show_combination="Comb. visible")
+        self.show_properties("show_combination")
+
+        self.show_properties("scale")
+        self.set_prop_name(scale="Escala Diagramas")
+
+        self.show_properties("show_moment", "show_shear", "show_normal")
+        self.set_prop_name(show_moment="Momento", show_shear="Corte", show_normal="Normal")
+
         register(self)
+
+        entities = app.model_reg.get("View")
+        entity = list(entities.values())[0]
+        prop_editor = app.main_ui.prop_editor
+
+        prop_editor.entity_read(entity, update=True)
+
+    @property
+    def scale(self):
+        return round(app.diagram_scale, 2)
+
+    @scale.setter
+    def scale(self, value):
+        app.diagram_scale = value
+
+        execute("regen")
+
+    @property
+    def show_load(self):
+        return app.show_load
+
+    @show_load.setter
+    def show_load(self, value: str):
+        app.show_load = value
+        execute("regen")
+
+    @property
+    def show_moment(self):
+        return app.show_moment
+
+    @show_moment.setter
+    def show_moment(self, value: str):
+        app.show_moment = value
+        execute("regen")
+
+    @property
+    def show_shear(self):
+        return app.show_shear
+
+    @show_shear.setter
+    def show_shear(self, value: str):
+        app.show_shear = value
+        execute("regen")
+
+    @property
+    def show_normal(self):
+        return app.show_normal
+
+    @show_normal.setter
+    def show_normal(self, value: str):
+        app.show_normal = value
+        execute("regen")
+
+    @property
+    def show_combination(self):
+        return app.show_combination
+
+    @show_combination.setter
+    def show_combination(self, value: str):
+        app.show_combination = value
+        execute("regen")
 
     @property
     def work_plane_vect(self):

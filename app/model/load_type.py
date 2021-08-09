@@ -30,8 +30,11 @@ class LoadType(Entity):
         model_reg = app.model_reg
         entities = model_reg.find_entities("LoadType")
 
-        self._index = 100
-        self.index = 100
+        if index:
+            self._index = index
+        else:
+            self._index = 100
+            self.index = 100
 
         self._load_code = load_code
 

@@ -18,6 +18,7 @@ class ConsoleUI(DirectObject):
         self.font_size = 14
         self.args_size = 15
         self.entry = self.create_input(20, "Ingrese un comando", pos=0, command=execute)
+        self.entry.hide()
 
         app.console_input = self.entry
         app.console = self
@@ -34,7 +35,8 @@ class ConsoleUI(DirectObject):
     def active_command(self, value):
 
         if value is None:
-            self.entry.show()
+            #self.entry.show()
+            print("ACTIVE COMMAND SETTER")
 
             for entry in self._args_input.values():
                 entry.detachNode()
@@ -50,6 +52,8 @@ class ConsoleUI(DirectObject):
                 if args is not None:
 
                     self.entry.hide()
+                    print("entry hide", self.entry.get_value())
+
                     total_width = (self.args_size * self.font_size) * len(args) + 40 * (len(args) - 1)
                     x0 = -total_width / 2
                     print("x0", x0)

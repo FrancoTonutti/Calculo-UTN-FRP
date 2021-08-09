@@ -55,7 +55,7 @@ setup(
                 ]
             },
             'platforms': [
-                'win_amd64',
+                'win_amd64', 'win32'
             ],
             'package_data_dirs': {
                 'numpy': [('numpy.libs/*', '', {'PKG_DATA_MAKE_EXECUTABLE'})],

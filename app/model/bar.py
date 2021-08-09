@@ -61,8 +61,8 @@ class Bar(Entity):
         self.show_properties("end_x", "end_y", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
 
-        self.show_properties("max_moment", "min_moment")
-        self.set_prop_name(max_moment="Momento Máx.", min_moment="Momento Min.")
+        #self.show_properties("max_moment", "min_moment")
+        #self.set_prop_name(max_moment="Momento Máx.", min_moment="Momento Min.")
 
         self.bind_to_model("width", "height", "loads")
 
@@ -202,7 +202,7 @@ class Bar(Entity):
 
         if app.wireframe is True:
             geom.hide()
-            geom.setScale(0.1, norm, 0.1)
+            geom.setScale(0.01, norm, 0.05)
 
             line = self.geom[1]
             if line is not None:

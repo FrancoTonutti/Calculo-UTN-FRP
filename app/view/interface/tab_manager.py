@@ -5,6 +5,7 @@ from ifcopenshell import guid
 from .layout_controller import Layout
 from app.view import simpleui
 from app.view.interface.color_scheme import *
+from ...model import View
 
 
 def new_button(text, x, y, colors=None, command=None, args=None, parent=None, size=None):
@@ -40,6 +41,7 @@ class Tab:
         self.button_frame = None
         self.id = guid.new()
         self.disable_close = False
+        self.ev_focus_in = None
 
     def hide(self):
         if self.frame:
@@ -49,18 +51,30 @@ class Tab:
         if self.frame:
             self.frame.show()
 
+    def focus_in(self):
+        if self.ev_focus_in:
+            self.ev_focus_in()
+
 
 class TabManager:
     def __init__(self, layout: Layout):
         self.layout_area = layout.view_tabs_area
         self.tabs = list()
         tab = Tab("Vista 3D", frame=layout.work_container)
+        View()
         tab.disable_close = True
 
         self.tabs.append(tab)
         self.update_tab_view_buttons()
+        self.main_3d_tab = tab
+        self.active_tab = tab
 
-        self.active_tab = 0
+    def get_active_tab_index(self):
+        i = 0
+        for tab in self.tabs:
+            if tab is self.active_tab:
+                return i
+            i += 1
 
     def close_tab(self, index):
         if not self.tabs[index].disable_close:
@@ -68,9 +82,11 @@ class TabManager:
             tab.button_frame.removeNode()
             tab.frame.removeNode()
 
-            if self.active_tab == index and self.active_tab > 0:
-                self.active_tab -= 1
-                self.set_active_tab(self.active_tab)
+            if self.active_tab and self.get_active_tab_index() == index:
+                #self.active_tab = 1
+                self.set_active_tab(0)
+
+            self.update_tab_view_buttons()
 
 
     def create_new_tab(self, title, fill=True):
@@ -101,15 +117,20 @@ class TabManager:
         col_rollover = draw.merge_color(COLOR_MAIN_DARK, COLOR_MAIN_LIGHT, 0.2)
         btn["colorList"] = [COLOR_MAIN_DARK, COLOR_MAIN_LIGHT, col_rollover,
                             "C_CONCRETE"]'''
-        frame = self.tabs[self.active_tab]
-        frame.hide()
+        print("self.tabs", self.tabs)
 
-        self.active_tab = index
+        #frame = self.tabs[self.active_tab]
+        self.active_tab.hide()
+
+        self.active_tab = self.tabs[index]
+        self.active_tab.show()
+        self.active_tab.focus_in()
+
         '''btn = self.tab_btn[self.active_tab]
         btn["colorList"] = [COLOR_MAIN_LIGHT, COLOR_MAIN_LIGHT]'''
 
-        frame = self.tabs[self.active_tab]
-        frame.show()
+        '''frame = self.tabs[self.active_tab]
+        frame.show()'''
 
 
     def update_tab_view_buttons(self):

@@ -4,6 +4,10 @@ from panda3d.core import loadPrcFile, AntialiasAttrib
 from app import app
 from app.view.ui import MainUI
 from app.view import camera, shaders
+from tkinter import messagebox
+
+import traceback
+import sys
 
 from app.controller import commands
 
@@ -35,4 +39,8 @@ class MyProgram(ShowBase):
 # Inicia el programa
 if __name__ == "__main__":
     program = MyProgram()
-    program.run()
+    try:
+        program.run()
+    except Exception as ex:
+        messagebox.showerror(message='error: "{}" \nUbicación del error:\n{}'.format(ex, traceback.extract_tb(ex.__traceback__)))
+

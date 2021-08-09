@@ -48,8 +48,15 @@ class ModelReg(dict):
     def clear(self):
         keys = list(self.keys())
 
-        self.entity_register.clear()
+        for key in keys:
+            if key != "ViewGizmoZone":
+                entities = self[key].copy().values()
 
+                for entity in entities:
+
+                    entity.delete()
+
+        self.entity_register.clear()
         for key in keys:
             if key != "ViewGizmoZone":
                 self.pop(key, None)
@@ -66,6 +73,9 @@ class ModelReg(dict):
         exclude_attrs = ["geom", "_geom", "is_editable", "is_selectable", "is_selected", "ifc_entity"]
 
         for key in self.keys():
+
+            if key == "Diagram":
+                continue
             dict_data.update({key: dict()})
             subdict_data = dict_data.get(key)
 
@@ -95,7 +105,7 @@ class ModelReg(dict):
 
         dict_data = json.loads(json_string)
 
-        keys_priority = ["View", "Node", "Section", "Material", "Bar", "LoadType", "Load"]
+        keys_priority = ["View", "Node", "Section", "Material", "Bar", "LoadType", "Load", "Diagram"]
 
         for key in dict_data.keys():
             if key not in keys_priority:

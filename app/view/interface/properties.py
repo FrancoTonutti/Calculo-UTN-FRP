@@ -11,6 +11,8 @@ from panda3d.core import TextNode
 from panda3d.core import WindowProperties
 from direct.gui.DirectScrolledFrame import *
 
+from .tools import create_label
+
 
 def execute_console(cmd):
     print(cmd)
@@ -95,40 +97,61 @@ class PropertiesEditor(DirectObject):
                 maxSize=16
             )
         else:
-            entry = SimpleEntry(
-                text_fg=(0, 0, 0, 1),
-                orginH="center",
-                position=[0, 0],
-                text_scale=(12, 12),
-                width=20,
-                align="left",
-                textCenterX=False,
-                command=self.entity_set_prop,
-                extraArgs=[prop],
-                focusOutCommand=self.entity_set_prop,
-                focusOutExtraArgs=[prop],
-                parent=self.frame_scrolled.getCanvas(),
-                size=[None, 20],
-                sizeHint=[0.50, None],
-                frameColor="C_WHITE",
-                initialText=str(value)
+            if self.entity.is_read_only(prop):
+                entry = SimpleLabel(
+                    orginH="center",
+                    orginV="bottom",
+                    position=[0, 0],
+                    text_scale=(12, 12),
+                    text=str(value),
+                    parent=self.frame_scrolled.getCanvas(),
+                    size=[None, 20],
+                    sizeHint=[0.50, None],
+                    frameColor="C_WHITE",
+                    alpha=1,
+                    align="left",
+                    textCenterX=False
 
-            )
+                )
+
+            else:
+                entry = SimpleEntry(
+                    text_fg=(0, 0, 0, 1),
+                    orginH="center",
+                    position=[0, 0],
+                    text_scale=(12, 12),
+                    width=20,
+                    align="left",
+                    textCenterX=False,
+                    command=self.entity_set_prop,
+                    extraArgs=[prop],
+                    focusOutCommand=self.entity_set_prop,
+                    focusOutExtraArgs=[prop],
+                    parent=self.frame_scrolled.getCanvas(),
+                    size=[None, 20],
+                    sizeHint=[0.50, None],
+                    frameColor="C_WHITE",
+                    initialText=str(value)
+
+                )
         self.fields.append([label, entry])
 
     def entity_set_prop(self, new_value: any, name: str):
         old_value = getattr(self.entity, name, None)
 
-
-
-        if new_value != "" and isinstance(old_value, float):
-            new_value = float(new_value)
-
         if isinstance(old_value, bool):
+
             if new_value == "True":
                 new_value = True
             elif new_value == "False":
                 new_value = False
+        elif new_value != "" and isinstance(old_value, float):
+            new_value = float(new_value)
+
+        elif new_value != "" and isinstance(old_value, int):
+            new_value = int(new_value)
+
+
 
         if old_value == new_value:
             return None
@@ -142,11 +165,12 @@ class PropertiesEditor(DirectObject):
             if self.entity is not None:
                 print("El tipo de asignación no corresponde: {},{}->{}".format(name, type(old_value), type(new_value)))
 
-    def entity_read(self, entity=None):
-        if entity != self.entity:
+    def entity_read(self, entity=None, update=False):
+        if entity != self.entity or update:
             for label, entry in self.fields:
-                if entry['focus'] is True:
-                    entry.defocus()
+                if hasattr(entry, "enter_value"):
+                    if entry['focus'] is True:
+                        entry.defocus()
 
             if self.entity:
                 self.entity.is_selected = False
