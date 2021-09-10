@@ -6,6 +6,7 @@ from app.model.view import View
 from app.model.load import Load
 from app.model.diagram import Diagram
 from app.model.model_reg import ModelReg
+from app.model.material_group import MaterialGroup
 from app.model.material import Material
 from app.model.view_gizmo import ViewGizmoZone
 from app.model.load_type import LoadType
@@ -22,6 +23,7 @@ model_reg.class_register = {
     "Load": Load,
     "Diagram": Diagram,
     "Material": Material,
+    "MaterialGroup": MaterialGroup,
     "ViewGizmoZone": ViewGizmoZone,
     "LoadType": LoadType,
     "LoadCombination": LoadCombination

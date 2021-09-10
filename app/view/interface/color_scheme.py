@@ -9,3 +9,6 @@ COLOR_SEC_LIGHT = (52, 52, 52)
 
 def scheme_rgba(color):
     return draw.get_color(color, "rgba")
+
+def scheme_rgb(color):
+    return draw.get_color(color, "rgb")

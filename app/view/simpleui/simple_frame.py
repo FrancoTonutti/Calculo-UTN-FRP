@@ -69,6 +69,7 @@ class SimpleFrame(DirectFrame):
             ('sizeHint', [None, None], self.set_size),
             ('alpha', 255, self.setFrameColor),
             ('padding', [0, 0, 0, 0], self.set_size),
+            ('margin', [0, 0, 0, 0], self.set_size),
             ('layout', "FloatLayout", None),
             ('layoutDir', "X", None),
             ('gridCols', 1, None),
@@ -105,14 +106,14 @@ class SimpleFrame(DirectFrame):
 
     def set_size(self):
 
-        pad = self["padding"]
-        pad_x = pad[0] + pad[1]
-        pad_y = pad[2] + pad[3]
+        margin = self["margin"]
+        margin_x = margin[0] + margin[1]
+        margin_y = margin[2] + margin[3]
 
         width, height = self.box_size()
 
-        width = max(width - pad_x, 0)
-        height = max(height - pad_y, 0)
+        width = max(width - margin_x, 0)
+        height = max(height - margin_y, 0)
 
         self["frameSize"] = (0, width, -height, 0)
 
@@ -129,10 +130,24 @@ class SimpleFrame(DirectFrame):
         if hint_y is None:
             _, hint_y = self.layout_size_hint
 
+        margin = self["margin"]
+        margin_x = margin[0] + margin[1]
+        margin_y = margin[2] + margin[3]
+
+        padding = self["padding"]
+        padding_x = padding[0] + padding[1]
+        padding_y = padding[2] + padding[3]
+
         if width is None:
             width = 0
+        else:
+            width += margin_x + padding_x
+
+
         if height is None:
             height = 0
+        else:
+            height += margin_y + padding_y
 
         parent_width, parent_height = self.get_parent_size()
 
@@ -143,6 +158,9 @@ class SimpleFrame(DirectFrame):
             height = parent_height * hint_y
 
         return [width, height]
+
+    def content_size(self):
+        return self.content_size()
 
     def get_parent_size(self):
         if self.parent == pixel2d:
@@ -210,8 +228,9 @@ class SimpleFrame(DirectFrame):
                 y0 = -parent_height
 
         padding = self["padding"]
+        margin = self["margin"]
 
-        self.setPos(x0 + x + padding[0], 0, y0 - y - padding[3])
+        self.setPos(x0 + x + margin[0], 0, y0 - y - margin[3])
         self.update_text_pos()
 
     def apply_box_layout(self):
@@ -397,8 +416,7 @@ class SimpleFrame(DirectFrame):
             for index, color in enumerate(colors):
                 colors[index] = draw.get_color(color, color_format="rgba", alpha=self["alpha"])
 
-        if type(colors[0]) == int or \
-                type(colors[0]) == float:
+        if type(colors[0]) == int or type(colors[0]) == float:
             colors = (colors,)
 
         for i in range(self['numStates']):
@@ -406,6 +424,10 @@ class SimpleFrame(DirectFrame):
                 color = colors[-1]
             else:
                 color = colors[i]
+
+            if len(color) == 3:
+                color += (self["alpha"],)
+
             self.frameStyle[i].setColor(color[0], color[1], color[2], color[3])
         self.updateFrameStyle()
 

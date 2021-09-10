@@ -1,4 +1,4 @@
-from app.model.entity import Entity, register
+from app.model.entity import Entity
 
 
 class Material(Entity):
@@ -13,7 +13,6 @@ class Material(Entity):
     def __init__(self, elastic_modulus, set_id=None):
         super().__init__(set_id)
         self.elastic_modulus = elastic_modulus
-        register(self)
 
     def __str__(self):
         return "<class 'app.model.core.Material'>"

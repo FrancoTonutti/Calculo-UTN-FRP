@@ -93,25 +93,38 @@ class SimpleButton(DirectButton, SimpleFrame):
 
 
 
-    def set_size(self):
-        # width, height = self["size"]
-        pad = self["padding"]
-        pad_x = pad[0] + pad[1]
-        pad_y = pad[2] + pad[3]
+        """def set_size(self):
+            # width, height = self["size"]
+            pad = self["padding"]
+            pad_x = pad[0] + pad[1]
+            pad_y = pad[2] + pad[3]
+    
+            #width, height = self.box_size()
+    
+            width, height = self["size"]
+            #width = max(width - pad_x, 0)
+            #height = max(height - pad_y, 0)
+            self["frameSize"] = (0, width, -height, 0)
+    
+    
+            if self.initialized:
+                txt_x, txt_y = self["text_pos"]
+                size_x, size_y = self["text_scale"]
+                if self["textCenterX"]:
+                    txt_x = width/2
+                if self["textCenterY"]:
+                    txt_y = -(height/2 + size_y/2)
+                self["text_pos"] = (txt_x, txt_y)"""
 
-        #width, height = self.box_size()
-
-        width, height = self["size"]
-        #width = max(width - pad_x, 0)
-        #height = max(height - pad_y, 0)
-        self["frameSize"] = (0, width, -height, 0)
-
-
+    def update_text_pos(self):
         if self.initialized:
+            _, width, height, _ = self["frameSize"]
+            height = -height
+
             txt_x, txt_y = self["text_pos"]
             size_x, size_y = self["text_scale"]
             if self["textCenterX"]:
-                txt_x = width/2
+                txt_x = width / 2
             if self["textCenterY"]:
-                txt_y = -(height/2 + size_y/2)
+                txt_y = -(height / 2 + size_y / 2)
             self["text_pos"] = (txt_x, txt_y)

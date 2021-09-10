@@ -17,7 +17,7 @@ def new_button(text, x, y, colors=None, command=None, args=None, parent=None, si
         colors = [COLOR_MAIN_DARK, COLOR_MAIN_LIGHT, col_rollover, "C_CONCRETE"]
     if size is None:
         width = font_pil.getsize(text)[0]
-        size = [20+width, 19]
+        size = [width, 19]
 
     btn = SimpleButton(text=text,
                        text_scale=(12, 12),
@@ -28,7 +28,7 @@ def new_button(text, x, y, colors=None, command=None, args=None, parent=None, si
                        extraArgs=args,
                        colorList=colors,
                        position=[x, y],
-                       padding=[20,20,20,20],
+                       padding=[10,10,0,0],
                        size=size
                        )
 
@@ -93,7 +93,7 @@ class TabManager:
         frame = SimpleFrame(position=[0, 0],
                     sizeHint=[1, 1],
                     alpha=1,
-                    padding=[0, 0, 25, 150],
+                    margin=[0, 0, 25, 150],
                     layout="BoxLayout",
                     layoutDir="Y")
 
@@ -143,8 +143,8 @@ class TabManager:
             container = SimpleFrame(position=[0, 0],
                                        size=[150, 19],
                                        sizeHint=[None, None],
-                                       alpha=1,
-                                       padding=[10, 0, 0, 3],
+                                       alpha=0,
+                                       margin=[10, 0, 0, 3],
                                        layout="BoxLayout",
                                        layoutDir="X",
                                     parent=self.layout_area)
@@ -163,7 +163,7 @@ class TabManager:
             size_1 = button1.box_size()
             size_2 = button2.box_size()
 
-            size = [size_1[0]+size_2[0]+10, 19]
+            size = [size_1[0]+size_2[0], 19]
             container["size"] = size
 
             index += 1
