@@ -16,7 +16,7 @@ from app.view.simpleui import window
 
 
 class SimpleButton(DirectButton, SimpleFrame):
-    def __init__(self, parent=None, **kw):
+    def __init__(self, parent=None, override_default=True, **kw):
         self.textures = ()
         self.initialized = False
         optiondefs = (
@@ -43,7 +43,7 @@ class SimpleButton(DirectButton, SimpleFrame):
             parent = pixel2d
 
         DirectButton.__init__(self, parent)
-        SimpleFrame.__init__(self, parent, override_default=True)
+        SimpleFrame.__init__(self, parent, override_default=override_default)
         # Call option initialization functions
         self.initialiseoptions(SimpleButton)
         self.initialized = True

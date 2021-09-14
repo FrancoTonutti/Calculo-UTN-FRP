@@ -1,3 +1,5 @@
+from direct.gui import DirectGuiGlobals as DGG
+
 from app.controller.console import command, execute
 from app.controller.commands import render
 from app import app
@@ -11,6 +13,7 @@ from app.view.interface.tools import *
 __tab_title__ = "Editor de materiales"
 
 from app.view.simpleui import SimpleFrame
+from app.model import MaterialGroup, Material
 
 
 @command("material_editor")
@@ -35,25 +38,79 @@ def section_editor():
 class UI:
     def __init__(self, frame):
 
-        create_label("Materiales", frame, padding=[30, 0, 20, 0])
-        btn_bar  = SimpleFrame(
+        create_label("Materiales", frame, padding=[10, 0, 0, 0], margin=[0, 0, 0, 10])
+        content  = SimpleFrame(
             parent=frame,
             sizeHint=[1, 1],
-            alpha=0,
             layout="BoxLayout",
-            layoutDir="X",
-            padding=[10, 10, 10, 10]
+            layoutDir="Y",
+            margin=[10, 10, 0, 0],
+            alpha=0
         )
 
-        btn_bar.setFrameColor()
+        btn_container = SimpleFrame(
+            parent=content,
+            sizeHint=[1, None],
+            size=[None, 25],
+            layout="BoxLayout",
+            layoutDir="X",
+            alpha=0,
+            margin=[0,0,10,10]
+        )
 
-        btn1 = new_button("Agregar Material", parent=btn_bar,
-                          command=self.create_profile)
-        btn1 = new_button("Agregar Clase", parent=btn_bar,
-                          command=self.create_profile)
+        btn1 = new_button("Agregar Material", parent=btn_container,
+                          command=self.create_material_group)
+        btn2 = new_button("Agregar Clase", parent=btn_container,
+                          command=self.create_material_group, margin=[10, 0, 0, 0])
 
+        btn2['state'] = DGG.DISABLED
+
+        self.col1 = SimpleScrolledFrame(position=[0, 0],
+                                        canvasSize=(0, 100, -200, 0),
+                                        size=[250, None],
+                                        sizeHint=[0.25, 0.9],
+                                        parent=content,
+                                        frameColor=scheme_rgba(
+                                            COLOR_SEC_DARK),
+                                        alpha=1,
+                                        padding=[0, 1, 0, 0],
+                                        layout="GridLayout",
+                                        layoutDir="X",
+                                        gridCols=1,
+                                        gridRows=10)
+
+        self.material_list_btns = []
+
+        self.selected_group = None
+
+        self.update_list()
+
+    def update_list(self):
+
+        for btn in self.material_list_btns:
+            btn.destroy()
+
+        self.material_list_btns.clear()
+
+        model_reg = app.model_reg
+        entities = model_reg.find_entities("MaterialGroup")
+
+        self.selected_group = None
+
+        for group in entities:
+            if self.selected_group is None:
+                self.selected_group = group
+
+            btn = new_button(group.name, parent=self.col1.canvas,
+                             command=self.open_group, args=[group])
+            self.material_list_btns.append(btn)
 
         execute("regen_ui")
 
-    def create_profile(self):
+    def open_group(self, group):
         pass
+
+    def create_material_group(self):
+        mg = MaterialGroup("Material")
+
+        self.update_list()

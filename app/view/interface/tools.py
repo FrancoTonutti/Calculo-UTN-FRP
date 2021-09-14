@@ -7,13 +7,16 @@ from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
 from app.view import simpleui
 
 
-def create_label(text, parent, padding = None):
+def create_label(text, parent, padding=None, margin=None):
     font_panda3d, font_pil = draw.draw_get_font()
     width = font_pil.getsize(text)[0]
     size = [20 + width, 19]
 
     if padding is None:
         padding = [0, 0, 0, 0]
+
+    if margin is None:
+        margin = [0, 0, 0, 0]
 
     size = [20 + width, 19 + padding[2] + padding[3]]
 
@@ -30,24 +33,28 @@ def create_label(text, parent, padding = None):
         alpha=0,
         align="left",
         textCenterX=False,
-        padding=padding
+        padding=padding,
+        margin=margin
 
     )
 
     return label
 
-def new_button(text, colors=None, command=None, args=None, parent=None, size=None, padding=None):
+def new_button(text, colors=None, command=None, args=None, parent=None, size=None, padding=None, margin=None):
     if args is None:
         args = []
     font_panda3d, font_pil = draw.draw_get_font()
     if colors is None:
         col_rollover = draw.merge_color(COLOR_SEC_DARK, COLOR_MAIN_LIGHT, 0.8)
-        colors = [COLOR_SEC_DARK, COLOR_MAIN_LIGHT, col_rollover, "C_CONCRETE"]
+        colors = [COLOR_SEC_DARK, COLOR_MAIN_LIGHT, col_rollover, COLOR_MAIN_LIGHT]
     if size is None:
         width = font_pil.getsize(text)[0]
         size = [20+width, 25]
     if padding is None:
         padding = [20, 20, 0, 0]
+
+    if margin is None:
+        margin = [0, 0, 0, 0]
 
     btn = SimpleButton(text=text,
                        text_scale=(12, 12),
@@ -59,7 +66,8 @@ def new_button(text, colors=None, command=None, args=None, parent=None, size=Non
                        colorList=colors,
                        position=[0, 0],
                        padding=padding,
-                       size=size
+                       size=size,
+                       margin=margin
                        )
 
     return btn

@@ -5,7 +5,7 @@ from app.controller.console import execute
 from app.view.simpleui.simple_entry import SimpleEntry
 from app.view.simpleui.simple_label import SimpleLabel
 from app.view.simpleui.simple_scrolled_frame import SimpleScrolledFrame
-from app.view.simpleui import SimpleCheckBox
+from app.view.simpleui import SimpleCheckBox, SimpleFrame
 
 from panda3d.core import TextNode
 from panda3d.core import WindowProperties
@@ -47,9 +47,16 @@ class PropertiesEditor(DirectObject):
             alpha=0,
             align="left",
             textCenterX=False,
-            padding=[15, 0, 0, 0]
+            margin=[10, 0, 0, 0]
 
         )
+
+        self.name_box = SimpleFrame(
+            parent=self.frame,
+            size=[None, 75],
+            sizeHint=[1, None]
+        )
+
 
         self.frame_scrolled = SimpleScrolledFrame(
 
@@ -81,7 +88,7 @@ class PropertiesEditor(DirectObject):
             alpha=0,
             align="left",
             textCenterX=False,
-            padding=[15, 0, 0, 0]
+            padding=[5, 0, 0, 0]
 
         )
         if isinstance(value, bool):
@@ -110,7 +117,8 @@ class PropertiesEditor(DirectObject):
                     frameColor="C_WHITE",
                     alpha=1,
                     align="left",
-                    textCenterX=False
+                    textCenterX=False,
+                    padding=[5, 0, 0, 0]
 
                 )
 

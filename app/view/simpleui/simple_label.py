@@ -1,9 +1,11 @@
+from direct.gui import DirectGuiGlobals
 from direct.gui.DirectLabel import *
 from app.view.simpleui.simple_frame import SimpleFrame
+from app.view.simpleui.simple_button import SimpleButton
 from app.view import draw
 from panda3d.core import TextProperties
 
-class SimpleLabel(DirectLabel, SimpleFrame):
+class SimpleLabel(SimpleButton):
     """
     label = None
     textCenterX = True
@@ -12,12 +14,12 @@ class SimpleLabel(DirectLabel, SimpleFrame):
     fontSize = 12
     """
     def __init__(self, parent=None, **kw):
-        self.initialized = False
+        self.initialized2 = False
         optiondefs = (
             # Define type of DirectGuiWidget
             ('label', "None", None),
-            ('textCenterX', True, self.update_text_pos),
-            ('textCenterY', True, self.update_text_pos),
+            ('textCenterX', True, None),
+            ('textCenterY', True, None),
             ('align', "center", self.set_align),
             ('fontSize', 12, self.set_font_size)
         )
@@ -27,8 +29,8 @@ class SimpleLabel(DirectLabel, SimpleFrame):
         if parent is None:
             parent = pixel2d
 
-        DirectLabel.__init__(self, parent)
-        SimpleFrame.__init__(self, parent, override_default=True)
+        #DirectLabel.__init__(self, parent)
+        SimpleButton.__init__(self, parent, override_default=True)
 
         self["text_font"] = draw.draw_get_font()[0]
 
@@ -36,23 +38,28 @@ class SimpleLabel(DirectLabel, SimpleFrame):
         self.initialiseoptions(SimpleLabel)
         self.set_position()
 
-        self.initialized = True
+        self.initialized2 = True
         self.set_size()
         self.set_font_size()
 
+        self["state"] = DirectGuiGlobals.DISABLED
+
     def update_text_pos(self):
 
-        if self.initialized:
+        if self.initialized2:
 
-            width, height = self.box_size()
+            _, width, height, _ = self["frameSize"]
+            height = -height
 
             txt_x, txt_y = self["text_pos"]
             size_x, size_y = self["text_scale"]
+            padding = self["padding"]
+
             if self["textCenterX"]:
                 txt_x = width / 2
             if self["textCenterY"]:
                 txt_y = -(height / 2 + size_y / 2)
-            self["text_pos"] = (txt_x, txt_y)
+            self["text_pos"] = (txt_x+padding[0], txt_y)
 
             if self["align"] is "left":
                 self["text_align"] = TextProperties.A_left
@@ -62,6 +69,7 @@ class SimpleLabel(DirectLabel, SimpleFrame):
                 self["text_align"] = TextProperties.A_right
 
     def set_align(self):
+
         if not self.initialized:
             if self["align"] is "left":
                 self["text_align"] = TextProperties.A_left

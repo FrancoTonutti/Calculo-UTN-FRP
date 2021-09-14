@@ -60,7 +60,7 @@ class SimpleCheckBox(SimpleFrame):
 
         if self['command']:
             # Pass any extra args to command
-            print("toggle", self['value'])
+            #print("toggle", self['value'])
             self['command'](self['value'], *self['extraArgs'])
 
     def update_check(self):
@@ -81,5 +81,5 @@ class SimpleCheckBox(SimpleFrame):
         self.comp_frame["position"] = [width/2, height/2]
         self.comp_content["position"] = [width / 2, height / 2]
 
-        print("super().set_size()",  self.comp_frame.getScale())
+        #print("super().set_size()",  self.comp_frame.getScale())
 
