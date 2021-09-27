@@ -15,10 +15,18 @@ class MaterialGroup(Entity):
 
         self._name = "None"
         self.name = name
+        self.materials = []
 
     def __str__(self):
         return "<class 'app.model.core.MaterialGroup'> :%s" % (self.name,)
 
+    def add_material(self, material):
+        if material not in self.materials:
+            self.materials.append(material)
+
+    def remove_material(self, material):
+        if material in self.materials:
+            self.materials.remove(material)
 
     @property
     def name(self):

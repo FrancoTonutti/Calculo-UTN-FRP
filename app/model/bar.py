@@ -41,7 +41,8 @@ class Bar(Entity):
         self.end: Node = end
         self.section: Section = section
         if material is None:
-            material = Material(20 * (10 ** 9))
+            #material = Material(20 * (10 ** 9))
+            material = app.default_material
         self.material: Material = material
         self._width = 0.2
         self._height = 0.3

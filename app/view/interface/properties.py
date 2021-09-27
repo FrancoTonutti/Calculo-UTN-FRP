@@ -159,8 +159,6 @@ class PropertiesEditor(DirectObject):
         elif new_value != "" and isinstance(old_value, int):
             new_value = int(new_value)
 
-
-
         if old_value == new_value:
             return None
 

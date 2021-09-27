@@ -261,6 +261,17 @@ class SimpleFrame(DirectFrame):
         #print(total_len, frame_pos, free_space)
         # if free_space > 0:
 
+        if total_len == 0:
+            print("!!!!!!!!!!!!!!!!!! total_len=0")
+            print(self["frameSize"])
+            print(frame_size)
+            print(orientation)
+            print(self.layout_size_hint)
+
+            print("!!!!!!!!!!!!!!!!!!")
+
+            return None
+
         free_space_hint = free_space / total_len
         for child in free_size_widgets:
             if orientation == 0:

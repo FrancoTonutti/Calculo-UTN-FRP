@@ -47,6 +47,8 @@ class App:
         self.show_shear = False
         self.show_normal = False
 
+        self.default_material = None
+
 
     def set_show_base(self, base):
         self.base = base

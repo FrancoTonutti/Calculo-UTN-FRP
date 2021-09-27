@@ -56,10 +56,17 @@ class SimpleLabel(SimpleButton):
             padding = self["padding"]
 
             if self["textCenterX"]:
-                txt_x = width / 2
+                txt_x = (width - padding[0] - padding[1]) / 2 + padding[0]
+            else:
+                txt_x = padding[0]
+
             if self["textCenterY"]:
-                txt_y = -(height / 2 + size_y / 2)
-            self["text_pos"] = (txt_x+padding[0], txt_y)
+                txt_y = -((height - padding[2] - padding[3]) / 2 + size_y / 2 + padding[2])
+            else:
+                txt_x = -(padding[2])
+
+
+            self["text_pos"] = (txt_x, txt_y)
 
             if self["align"] is "left":
                 self["text_align"] = TextProperties.A_left
