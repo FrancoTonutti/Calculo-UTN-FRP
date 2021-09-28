@@ -15,18 +15,18 @@ class MaterialGroup(Entity):
 
         self._name = "None"
         self.name = name
-        self.materials = []
+        self._materials = []
 
     def __str__(self):
         return "<class 'app.model.core.MaterialGroup'> :%s" % (self.name,)
 
     def add_material(self, material):
-        if material not in self.materials:
-            self.materials.append(material)
+        if material not in self._materials:
+            self._materials.append(material)
 
     def remove_material(self, material):
-        if material in self.materials:
-            self.materials.remove(material)
+        if material in self._materials:
+            self._materials.remove(material)
 
     @property
     def name(self):
@@ -67,3 +67,13 @@ class MaterialGroup(Entity):
                         break
 
         self._name = value
+
+    def delete(self, force_delete=False):
+
+        if len(self._materials) > 0 and not force_delete:
+            return False
+        else:
+            for material in self._materials:
+                material.delete()
+
+        return super(MaterialGroup, self).delete()

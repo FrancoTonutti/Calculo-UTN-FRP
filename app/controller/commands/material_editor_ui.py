@@ -1,3 +1,4 @@
+import pint
 from direct.gui import DirectGuiGlobals as DGG
 
 from app.controller.console import command, execute
@@ -223,7 +224,10 @@ class UI:
         execute("regen_ui")
 
     def delete_group(self, group: MaterialGroup):
-        pass
+
+        group.delete()
+
+        self.update_list()
 
     def open_group(self, group: MaterialGroup, btn):
 
@@ -275,8 +279,11 @@ class UI:
 
         execute("regen_ui")
 
-    def delete_subtype(self, material):
-        pass
+    def delete_subtype(self, material: Material):
+
+        material.delete()
+
+        self.update_list()
 
     def open_subtype(self, material, btn):
 
@@ -316,8 +323,8 @@ class UI:
             parent=self.scroll3.getCanvas(),
             size=[None, 20],
             sizeHint=[0.50, None],
-            frameColor="C_WHITE",
-            alpha=0,
+            frameColor=scheme_rgba(COLOR_MAIN_LIGHT),
+            alpha=1,
             align="left",
             textCenterX=False,
             padding=[5, 0, 0, 0]
@@ -355,8 +362,13 @@ class UI:
                 )
 
             else:
+                initial_value = str(value)
+                value_unit = ""
+                if isinstance(value, pint.quantity.Quantity):
+                    initial_value = str(value.magnitude)
+                    value_unit = " [{}]".format(format(value.u, '~'))
                 entry = SimpleEntry(
-                    text_fg=(0, 0, 0, 1),
+                    text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
                     orginH="center",
                     position=[0, 0],
                     text_scale=(12, 12),
@@ -371,7 +383,10 @@ class UI:
                     size=[None, 20],
                     sizeHint=[0.50, None],
                     frameColor="C_WHITE",
-                    initialText=str(value)
+                    initialText=initial_value,
+                    alpha=0,
+                    padding=[10, 0, 0, 0],
+                    suffix=value_unit
 
                 )
         self.fields.append([label, entry])
@@ -391,6 +406,9 @@ class UI:
         elif new_value != "" and isinstance(old_value, int):
             new_value = int(new_value)
 
+        elif new_value != "" and isinstance(old_value, pint.quantity.Quantity):
+            new_value = float(new_value) * app.ureg(str(old_value.units))
+
         if old_value == new_value:
             return None
 
@@ -399,9 +417,12 @@ class UI:
                 print("atributo establecido {}: {}".format(name, new_value))
                 setattr(self.selected_subtype, name, new_value)
                 print("verif {}: {}".format(name, getattr(self.selected_subtype, name, "undefined")))
+
         else:
             if self.selected_subtype is not None:
                 print("El tipo de asignación no corresponde: {},{}->{}".format(name, type(old_value), type(new_value)))
+
+        self.update_list()
 
     def entity_read(self):
 

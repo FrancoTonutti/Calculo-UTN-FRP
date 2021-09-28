@@ -122,7 +122,7 @@ class Diagram(Entity):
         print("delete override by diagram")
         self.parent.remove_child_model(self)
 
-        super(Diagram, self).delete()
+        return super(Diagram, self).delete()
 
     def create_model(self):
         if not self.is_visible():

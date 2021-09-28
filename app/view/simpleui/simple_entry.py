@@ -67,6 +67,21 @@ class SimpleEntry(DirectEntry, SimpleFrame):
         self.accept(self.guiItem.getFocusInEvent(), self.on_focus)
         self.accept(self.guiItem.getFocusOutEvent(), self.on_defocus)
 
+        if not self.isEmpty():
+            self["focus"] = False
+            if self["label"] is not None and self.get() is "":
+                self.enterText(self["label"])
+            elif self.get() is not "":
+                func = self["typeFunc"]
+                if func is not None:
+
+                    self.enter_value(func(self.get()))
+                    prefix = self["prefix"]
+                    txt = self.get()
+                    suffix = self["suffix"]
+
+                    self.enterText("{}{}{}".format(prefix, txt, suffix))
+
         #self.on_defocus()
 
 

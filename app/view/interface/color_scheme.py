@@ -1,6 +1,8 @@
 from app.view import draw
 
 COLOR_TEXT_LIGHT = (238, 238, 238)
+COLOR_TEXT_DARK = (35, 35, 35)
+
 COLOR_MAIN_DARK = (35, 35, 35)
 COLOR_MAIN_LIGHT = (66, 66, 66)
 COLOR_SEC_DARK = (43, 43, 43)

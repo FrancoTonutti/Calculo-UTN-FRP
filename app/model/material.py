@@ -34,7 +34,10 @@ class Material(Entity):
         if len(entities) == 1:
             self.set_default_material()
 
-        self.show_properties("name", "elastic_modulus")
+        self.char_resistance = 0
+
+        self.show_properties("name", "elastic_modulus", "char_resistance")
+        self.set_prop_name(elastic_modulus="Modulo Elástico E", char_resistance="Resistencia f'c")
 
 
     def __str__(self):
@@ -59,6 +62,28 @@ class Material(Entity):
 
     def set_default_material(self):
         app.default_material = self
+
+    def delete(self, force_delete=False):
+
+        if self.is_default_material:
+            model_reg = app.model_reg
+            entities = model_reg.find_entities("Material")
+
+            for entity in entities:
+                if entity is not self:
+                    entity.set_default_material()
+                    break
+            else:
+                # Prevent for delete last material
+                if not force_delete:
+                    return False
+                else:
+                    app.default_material = None
+
+        if self._material_group:
+            self._material_group.remove_material(self)
+
+        super(Material, self).delete()
 
     @property
     def is_default_material(self):

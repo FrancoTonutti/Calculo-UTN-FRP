@@ -10,6 +10,7 @@ import traceback
 import sys
 
 from app.controller import commands
+from app.controller.console import command, execute
 
 # Carga las configuraciones para la pantalla de panda3d
 loadPrcFile("data/config/config.prc")
@@ -22,6 +23,7 @@ class MyProgram(ShowBase):
         app.set_show_base(self)
 
         MainUI()
+        execute("new_file")
 
         self.shader_control = None
         self.camera_control = camera.CameraControl(self)

@@ -252,6 +252,8 @@ class Entity:
         self.delete_model()
         self.unregister()
 
+        return True
+
 
 
     @staticmethod

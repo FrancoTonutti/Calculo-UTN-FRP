@@ -1,5 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
+import pint
+
 if TYPE_CHECKING:
     from app.view.interface.console_ui import ConsoleUI
     from app.model.model_reg import ModelReg
@@ -48,6 +51,8 @@ class App:
         self.show_normal = False
 
         self.default_material = None
+
+        self.ureg = pint.UnitRegistry()
 
 
     def set_show_base(self, base):

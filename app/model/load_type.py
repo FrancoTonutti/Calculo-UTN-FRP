@@ -86,7 +86,7 @@ class LoadType(Entity):
             if self.entity_id in entity.factors.keys():
                 entity.factors.pop(self.entity_id)
 
-        super(LoadType, self).delete()
+        return super(LoadType, self).delete()
 
     @property
     def load_code(self):
