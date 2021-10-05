@@ -28,6 +28,9 @@ class MaterialGroup(Entity):
         if material in self._materials:
             self._materials.remove(material)
 
+    def get_materials(self):
+        return self._materials
+
     @property
     def name(self):
         return self._name

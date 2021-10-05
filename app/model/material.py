@@ -41,7 +41,7 @@ class Material(Entity):
 
 
     def __str__(self):
-        return "<class 'app.model.Material'> {}".format(self.name)
+        return "{}: {}".format(self.material_group.name, self.name)
 
     @property
     def material_group(self):

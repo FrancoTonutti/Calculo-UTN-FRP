@@ -43,7 +43,8 @@ class Bar(Entity):
         if material is None:
             #material = Material(20 * (10 ** 9))
             material = app.default_material
-        self.material: Material = material
+        self._material: Material = material
+        self.material = str(material)
         self._width = 0.2
         self._height = 0.3
         self.borders = True
@@ -57,10 +58,13 @@ class Bar(Entity):
 
         self.show_properties("name", "width", "height")
 
-        self.show_properties("start_x", "start_y", "start_z", "max_moment")
+        self.show_properties("start_x", "start_y", "start_z")
         self.set_prop_name(start_x="Incio x", start_y="Incio y", start_z="Incio z")
         self.show_properties("end_x", "end_y", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
+
+        self.show_properties("material")
+        self.set_prop_name(material="Material")
 
         #self.show_properties("max_moment", "min_moment")
         #self.set_prop_name(max_moment="Momento Máx.", min_moment="Momento Min.")
@@ -70,6 +74,38 @@ class Bar(Entity):
 
 
         self.create_model()
+
+    @property
+    def material(self):
+        return str(self._material)
+
+    @material.setter
+    def material(self, value: str):
+        if ": " not in value and ":" in value:
+            value = value.replace(":", ": ", 1)
+
+        if ": " in value:
+            group, mat_name = value.split(": ", 1)
+            print("{} : {}".format(group, mat_name))
+            entities = app.model_reg.find_entities("MaterialGroup")
+
+            for material_group in entities:
+                if material_group.name == group:
+                    print("material_group encontrado")
+                    material_list = material_group.get_materials()
+                    for material_elem in material_list:
+                        if material_elem.name == mat_name:
+                            print("material_elem encontrado")
+                            self._material = material_elem
+                            break
+                        else:
+                            print("material_elem no encontrado '{}' != '{}'".format(mat_name, material_elem.name))
+                    break
+            else:
+                print("material_group no encontrado")
+        elif value == "":
+            self._material = app.default_material
+
 
     def __str__(self):
         if self.name is "":

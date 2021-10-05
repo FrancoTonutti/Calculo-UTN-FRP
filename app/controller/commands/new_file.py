@@ -11,6 +11,7 @@ import ifc_tools
 import tkinter as tk
 from tkinter import filedialog
 from app.model import *
+from app.model.profile_sections.profile_section_I import ProfleSectionI
 import pint
 
 from typing import TYPE_CHECKING
@@ -43,5 +44,8 @@ def new_file():
 
         if h_class == 30:
             hor.set_default_material()
+
+    w80 = ProfleSectionI(80, 46, 5.2, 3.8, 5)
+    print("Ix: {}".format(w80.inertia_x()))
 
     execute("regen")
