@@ -11,15 +11,25 @@ class Material(Entity):
 
     @staticmethod
     def create_from_object(obj):
+
+        def get(string):
+            return app.model_reg.get_entity(obj.get(string))
+
         name = obj.get("name")
-        group = obj.get("material_group")
+
+        print("create_from_object material_group1 {}".format(obj.get("material_group")))
+        group = get("material_group")
+        print("create_from_object material_group2 {}".format(
+            group))
         entity_id = obj.get("entity_id")
-        elastic_modulus = obj.get("elastic_modulus")
+        elastic_modulus = app.ureg(obj.get("elastic_modulus"))
         is_default_material = obj.get("is_default_material")
 
         with Material(name, group, elastic_modulus, entity_id) as ent:
             if is_default_material:
                 ent.set_default_material()
+
+            ent.char_resistance = app.ureg(obj.get("char_resistance"))
 
     def __init__(self, name, group, elastic_modulus=None, set_id=None):
         super().__init__(set_id)
@@ -41,7 +51,10 @@ class Material(Entity):
 
 
     def __str__(self):
-        return "{}: {}".format(self.material_group.name, self.name)
+        if self.material_group:
+            return "{}: {}".format(self.material_group.name, self.name)
+        else:
+            return "No group: {}".format(self.name)
 
     @property
     def material_group(self):
@@ -49,16 +62,18 @@ class Material(Entity):
 
     @material_group.setter
     def material_group(self, group):
+        if not group or isinstance(group, str):
+            print("Material group: {}".format(group))
+        else:
+            reset_name = False
+            if self._material_group:
+                reset_name = True
+                self._material_group.remove_material(self)
 
-        reset_name = False
-        if self._material_group:
-            reset_name = True
-            self._material_group.remove_material(self)
-
-        group.add_material(self)
-        self._material_group = group
-        if reset_name:
-            self.name = self._name
+            group.add_material(self)
+            self._material_group = group
+            if reset_name:
+                self.name = self._name
 
     def set_default_material(self):
         app.default_material = self
@@ -96,7 +111,7 @@ class Material(Entity):
     @name.setter
     def name(self, value):
 
-        if value is "":
+        if not value:
             value = "Sin nombre"
 
         panda3d = app.get_show_base()

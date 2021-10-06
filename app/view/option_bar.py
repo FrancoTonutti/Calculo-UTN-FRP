@@ -25,7 +25,7 @@ INTERFACE = {
             #"Muro de carga": {},
             "Barra": {"command": "barra"},
             "Pilar": {"command": "barra"},
-            "Viga": {"command": "barra"},
+            "Viga": {"command": "beam"},
         },
         "Modelo": {
             "Agregar carga": {"command": "load"},

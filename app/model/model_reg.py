@@ -1,3 +1,5 @@
+import pint
+
 from app import app
 import json
 from app.model.entity import Entity
@@ -105,7 +107,7 @@ class ModelReg(dict):
 
         dict_data = json.loads(json_string)
 
-        keys_priority = ["View", "Node", "Section", "Material", "Bar", "LoadType", "Load", "Diagram"]
+        keys_priority = ["View", "Node", "Section", "MaterialGroup", "Material", "Bar", "LoadType", "Load", "Diagram"]
 
         for key in dict_data.keys():
             if key not in keys_priority:
@@ -147,6 +149,8 @@ def convert_value(value):
                 value = new_dict
             elif isinstance(value, ndarray):
                 value = value.tolist()
+            elif isinstance(value, pint.quantity.Quantity):
+                value = format(value, '~')
             else:
                 value = type(value).__name__
 

@@ -31,7 +31,7 @@ class Bar(Entity):
 
         bar = Bar(start, end, sec, mat, entity_id)
         bar.name = name
-
+        bar.behavior = obj.get("behavior")
 
 
     def __init__(self, start, end, section, material=None, set_id=None):
@@ -48,6 +48,7 @@ class Bar(Entity):
         self._width = 0.2
         self._height = 0.3
         self.borders = True
+        self._behavior = "Barra"
 
         self.loads: List[Load] = []
 
@@ -58,13 +59,18 @@ class Bar(Entity):
 
         self.show_properties("name", "width", "height")
 
-        self.show_properties("start_x", "start_y", "start_z")
+        #self.show_properties("start_x", "start_y", "start_z")
+        self.show_properties("start_x", "start_z")
         self.set_prop_name(start_x="Incio x", start_y="Incio y", start_z="Incio z")
-        self.show_properties("end_x", "end_y", "end_z")
+        #self.show_properties("end_x", "end_y", "end_z")
+        self.show_properties("end_x", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
 
         self.show_properties("material")
         self.set_prop_name(material="Material")
+
+        self.show_properties("behavior")
+        self.set_prop_name(behavior="Comportamiento")
 
         #self.show_properties("max_moment", "min_moment")
         #self.set_prop_name(max_moment="Momento Máx.", min_moment="Momento Min.")
@@ -74,6 +80,15 @@ class Bar(Entity):
 
 
         self.create_model()
+
+    @property
+    def behavior(self):
+        return self._behavior
+
+    @behavior.setter
+    def behavior(self, value: str):
+        if value in ["Barra", "Viga", "Columna"]:
+            self._behavior = value
 
     @property
     def material(self):
@@ -113,11 +128,11 @@ class Bar(Entity):
             name_end = self.end.name
 
             if name_start is not "" and name_end is not "":
-                name = "Barra {}-{}".format(name_start, name_end)
+                name = "{} {}-{}".format(self.behavior, name_start, name_end)
             else:
                 name = None
         else:
-            name = "Barra {}".format(self.name)
+            name = "{} {}".format(self.behavior, self.name)
 
         if name is None:
             return super().__str__()
