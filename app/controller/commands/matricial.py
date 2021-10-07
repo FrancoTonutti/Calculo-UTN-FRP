@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     # Imports only for IDE type hints
     from app.view.interface.console_ui import ConsoleUI
     from app.model import *
-
+from app.model import unit_manager
 
 import math
 import numpy as np
@@ -119,6 +119,8 @@ def start_analysis():
             # Procedemos a definir terminos para las submatrices de rigidez
 
             e = bar_element.material.elastic_modulus
+            e = unit_manager.convert_to_MPa(e)
+
             a = bar_element.section.area()
             long = bar_element.longitude()
             inertia = bar_element.section.inertia_x()
@@ -204,8 +206,8 @@ def start_analysis():
                 factor = load_factors.get(distributed_load.load_type, 0)
 
                 load_angle = np.deg2rad(distributed_load.angle) - angle
-                load_y += factor * distributed_load.value * np.sin(load_angle)
-                load_x += factor * distributed_load.value * np.cos(load_angle)
+                load_y += factor * distributed_load.value.magnitude * np.sin(load_angle)
+                load_x += factor * distributed_load.value.magnitude * np.cos(load_angle)
 
                 print("Carga encontrada de {} con {}º".format(distributed_load.value, distributed_load.angle))
                 print("load_angle {}º".format(load_angle))

@@ -68,7 +68,8 @@ setup(
                 'Pillow',
                 'numpy',
                 'tkinter',
-                'tcl'
+                'tcl',
+                'pint'
             ],
         }
     }

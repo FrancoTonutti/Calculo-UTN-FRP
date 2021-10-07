@@ -4,6 +4,8 @@ from app.view import draw
 import numpy as np
 from app import app
 
+from app.model import unit_manager
+
 
 class Load(Entity):
     """
@@ -19,6 +21,11 @@ class Load(Entity):
         entity_id = obj.get("entity_id")
         parent = app.model_reg.get_entity(obj.get("parent"))
         value = obj.get("value")
+        if isinstance(value, str):
+            value = app.ureg(value)
+        else:
+            value = value * app.ureg("kN")
+
         angle = obj.get("angle")
         load_type = obj.get("load_type")
 
@@ -122,7 +129,7 @@ class Load(Entity):
             #model.reparentTo(app.base.render)
             model.reparentTo(model_parent)
 
-            h = self.value * Load.scale
+            h = self.value.magnitude * Load.scale
             x = x1 - x0
             y = y1 - y0
             z = z1 - z0

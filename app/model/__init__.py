@@ -12,7 +12,9 @@ from app.model.material import Material
 from app.model.view_gizmo import ViewGizmoZone
 from app.model.load_type import LoadType
 from app.model.load_combination import LoadCombination
+from app.model.code_check import CodeCheck
 from app.model import model_reg
+from app.model import unit_manager
 
 
 model_reg.class_register = {
@@ -27,7 +29,8 @@ model_reg.class_register = {
     "MaterialGroup": MaterialGroup,
     "ViewGizmoZone": ViewGizmoZone,
     "LoadType": LoadType,
-    "LoadCombination": LoadCombination
+    "LoadCombination": LoadCombination,
+    "CodeCheck": CodeCheck
 }
 
 

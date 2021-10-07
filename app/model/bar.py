@@ -92,7 +92,7 @@ class Bar(Entity):
 
     @property
     def material(self):
-        return str(self._material)
+        return self._material
 
     @material.setter
     def material(self, value: str):

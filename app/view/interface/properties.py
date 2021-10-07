@@ -1,3 +1,5 @@
+import pint
+
 from app import app
 from .layout_controller import Layout
 from direct.showbase.DirectObject import DirectObject
@@ -123,6 +125,12 @@ class PropertiesEditor(DirectObject):
                 )
 
             else:
+                initial_value = str(value)
+                value_unit = ""
+                if isinstance(value, pint.quantity.Quantity):
+                    initial_value = str(value.magnitude)
+                    value_unit = " [{}]".format(format(value.u, '~'))
+
                 entry = SimpleEntry(
                     text_fg=(0, 0, 0, 1),
                     orginH="center",
@@ -139,7 +147,8 @@ class PropertiesEditor(DirectObject):
                     size=[None, 20],
                     sizeHint=[0.50, None],
                     frameColor="C_WHITE",
-                    initialText=str(value)
+                    initialText=initial_value,
+                    suffix=value_unit
 
                 )
         self.fields.append([label, entry])
@@ -158,6 +167,9 @@ class PropertiesEditor(DirectObject):
 
         elif new_value != "" and isinstance(old_value, int):
             new_value = int(new_value)
+
+        elif new_value != "" and isinstance(old_value, pint.quantity.Quantity):
+            new_value = float(new_value) * app.ureg(str(old_value.units))
 
         if old_value == new_value:
             return None

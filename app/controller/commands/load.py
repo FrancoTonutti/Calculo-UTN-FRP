@@ -6,7 +6,9 @@ from panda3d.core import LineSegs, NodePath
 import numpy as np
 
 from app.controller.console import command, execute
+import pint
 
+from app.model import unit_manager
 
 
 
@@ -36,15 +38,28 @@ def add_load_task(task):
         value = app.console.get_arg("value")
         angle = app.console.get_arg("angle")
 
-        if entity and value and angle:
-            load = Load(entity, value, angle)
-            #entity.add_child_model(load)
+        if entity == "entity":
+            entity = None
 
+        if value == "value":
+            value = None
+
+        if angle == "angle":
+            angle = None
+
+        if entity and value and angle:
+            print("Load created")
+
+            value = value * app.ureg(unit_manager.unit_settings.get("load"))
             print(entity, value, angle)
+            load = Load(entity, value, angle)
+            entity.add_child_model(load)
+
+
 
 
             app.console.set_arg("entity", None)
-            app.console.close_command()
+            #app.console.close_command()
 
 
 
