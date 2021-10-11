@@ -214,6 +214,15 @@ def start_analysis():
                 print("load_y {}".format(load_y))
                 print("load_x {}".format(load_x))
 
+            for loadtype in load_types:
+                if loadtype.own_weight:
+                    factor = combination.get_factor(loadtype)
+                    specific_weight = unit_manager.convert_to_kN_m3(bar_element.material.specific_weight)
+
+                    own_weight = bar_element.section.area() * specific_weight
+                    load_y += factor * own_weight
+
+
             fx = load_x * long / 2
             fy = load_y * long / 2
             moment = load_y * long**2/12
@@ -384,7 +393,7 @@ def start_analysis():
 
                 shear = lambda x: float(f[1, 0] - load_y * x)
                 normal = lambda x: float(f[0, 0] - load_x * x)
-                moment = lambda x: float(f[2, 0] - f[1, 0] * x + load_y * x * x / 2)
+                moment = lambda x: -float(f[2, 0] - f[1, 0] * x + load_y * x * x / 2)
 
                 print("ec: {} - {} * x + {} * x * x / 2".format(f[2, 0], f[1, 0], load_y))
 
@@ -439,7 +448,7 @@ def start_analysis():
                 bar_element.set_analysis_results(combination, "v_normal", v_normal)
                 bar_element.set_analysis_results(combination, "v_moment", v_moment)
 
-                app.diagram_scale = max(float(100/max_moment), 20)
+                app.diagram_scale = max(float(100/max_moment), 1)
 
                 #diagram = bar_element.get_analysis_results(combination,"moment_diagram")
                 #if diagram is not None:

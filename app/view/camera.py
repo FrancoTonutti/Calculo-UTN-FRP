@@ -491,33 +491,47 @@ class CameraControl(DirectObject):
                 # This is so we get the closest object.
                 handler.sortEntries()
 
-                entity = handler.getEntry(0).getIntoNodePath()
-                entity = entity.findNetTag('entity_id')
-                if not entity.isEmpty():
-
-                    #print("entity selected: {}".format(entity.getTag("entity_id")))
-
-                    entity_id = entity.getTag("entity_id")
-                    entity_type = entity.getTag("entity_type")
-                    #print(entity_type)
-                    model = app.model_reg
-
-                    category_type = model.get(entity_type, dict())
-                    entity = category_type.get(entity_id, None)
 
 
-                    #print(entity)
-                    if btn.isButtonDown("mouse1"):
-                        entity.on_click()
-                        if entity.is_editable:
-                            prop_editor = app.main_ui.prop_editor
-                            prop_editor.entity_read(entity)
-                    elif entity.is_selectable:
-                        status_bar = app.main_ui.status_bar
-                        status_bar.entity_read(entity)
+                count = handler.getNumEntries()
 
+                for i in range(count):
+                    entity = handler.getEntry(i).getIntoNodePath()
+                    try:
+                        entity.isHidden()
+                    except:
+                        print(entity)
+                        print(type(entity))
+
+
+                    if not entity.isHidden():
+                        entity = entity.findNetTag('entity_id')
+                        if not entity.isEmpty():
+
+                            # print("entity selected: {}".format(entity.getTag("entity_id")))
+
+                            entity_id = entity.getTag("entity_id")
+                            entity_type = entity.getTag("entity_type")
+                            # print(entity_type)
+                            model = app.model_reg
+
+                            category_type = model.get(entity_type, dict())
+                            entity = category_type.get(entity_id, None)
+
+                            # print(entity)
+                            if btn.isButtonDown("mouse1"):
+                                entity.on_click()
+                                if entity.is_editable:
+                                    prop_editor = app.main_ui.prop_editor
+                                    prop_editor.entity_read(entity)
+                            elif entity.is_selectable:
+                                status_bar = app.main_ui.status_bar
+                                status_bar.entity_read(entity)
+
+                            break
                 else:
-                    print("Hay {} entidades bajo el mouse".format(handler.getNumEntries()))
+                    pass
+                    #print("Hay {} entidades sin geometria visible bajo el mouse".format(handler.getNumEntries()))
             else:
                 if btn.isButtonDown("mouse1"):
                     entities = app.model_reg.get("View", {})

@@ -11,7 +11,7 @@ import ifc_tools
 import tkinter as tk
 from tkinter import filedialog
 from app.model import *
-from app.model.profile_sections.profile_section_I import ProfleSectionI
+from app.model.profile_sections.profile_section_I import ProfileSectionI
 import pint
 
 from typing import TYPE_CHECKING
@@ -37,15 +37,17 @@ def new_file():
 
     for h_class in types:
         E = round(4700 * (h_class ** 0.5), 2) * app.ureg("megapascal")
-        print(E)
-        print(isinstance(E, pint.quantity.Quantity))
-        hor = Material("H-{}".format(h_class), concrete, E)
+        #print(E)
+        #print(isinstance(E, pint.quantity.Quantity))
+        hor = Material("H-{}".format(h_class), concrete)
+        hor.elastic_modulus = E
         hor.char_resistance = h_class * app.ureg("megapascal")
+        hor.specific_weight = 22 * app.ureg("(kN)/(m**3)")
 
         if h_class == 30:
             hor.set_default_material()
 
-    w80 = ProfleSectionI(80, 46, 5.2, 3.8, 5)
+    w80 = ProfileSectionI(80, 46, 5.2, 3.8, 5)
     print("Ix: {}".format(w80.inertia_x()))
 
     execute("regen")

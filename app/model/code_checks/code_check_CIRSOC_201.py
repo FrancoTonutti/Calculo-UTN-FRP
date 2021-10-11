@@ -4,6 +4,7 @@ from app.model.entity import Entity
 from typing import TYPE_CHECKING
 from typing import List
 from app import app
+import numpy as np
 
 from app.model import unit_manager
 
@@ -21,20 +22,54 @@ class CodeCheckCIRSOC201(Entity):
     def __init__(self, set_id=None):
         super().__init__(set_id)
         self.name = None
+        self.enabled_save = False
+
+        self.reinforcement_bars = {
+            "6": {
+                "diameter": 0.6,
+                "area": np.pi * 0.3 ** 2,
+                "cost": 740
+            },
+            "8": {
+                "diameter": 0.8,
+                "area": np.pi * 0.4 ** 2,
+                "cost": 1205
+            },
+            "10": {
+                "diameter": 1,
+                "area": np.pi * 0.5 ** 2,
+                "cost": 1932
+            },
+            "12": {
+                "diameter": 1.2,
+                "area": np.pi * 0.6 ** 2,
+                "cost": 2600
+            },
+            "16": {
+                "diameter": 1.6,
+                "area": np.pi * 0.8 ** 2,
+                "cost": 5000
+            },
+            "20": {
+                "diameter": 2,
+                "area": np.pi * 1 ** 2,
+                "cost": 6600
+            }
+        }
 
     @staticmethod
     def verify_column(element):
         return "Verificación no implementada"
 
-    @staticmethod
-    def verify_beam(element):
+
+    def verify_beam(self, element):
         """
 
         Parameters
         ----------
         element : Bar
         """
-        log = "####### %s #######\n\n" % str(element)
+        log = ""
 
         mat = element.material
         fc = unit_manager.convert_to_MPa(mat.char_resistance)
@@ -44,9 +79,11 @@ class CodeCheckCIRSOC201(Entity):
 
         cc = 0.02
         dbe = 0.006
-        db = 0.01
+        db = 0.02
 
         d = h - cc - dbe - db/2
+
+        d = math.floor(d * 100)/100
 
         if fc <= 30:
             beta1 = 0.85
@@ -75,6 +112,7 @@ class CodeCheckCIRSOC201(Entity):
                         min_combination = combination
 
         if not max_combination:
+            log += "No se encontraron resultados del cálculo"
             return log
 
         log += "h = %s [m]\n" % round(h, 2)
@@ -83,8 +121,6 @@ class CodeCheckCIRSOC201(Entity):
 
         log += "f'c = %s [MPa]\n" % round(fc, 2)
         log += "fy = %s [MPa]\n\n" % round(fy, 2)
-
-
 
         Mu = max_value
 
@@ -122,8 +158,10 @@ class CodeCheckCIRSOC201(Entity):
         if Ka < Ka_max:
             """Armadura simple"""
 
-            As = fc * bw * Ka * d/fy * (100**2)  # [cm2]
-            log += "As = %s [cm2]\n" % round(Ka_max, 2)
+            As = 0.85 * fc * bw * Ka * d/fy * (100**2)  # [cm2]
+            log += "As = %s [cm2]\n\n" % round(As, 2)
+
+            log += self.generate_reinforcement(As, bw, 2.5, 2.5)
 
         else:
             """Armadura doble"""
@@ -133,5 +171,47 @@ class CodeCheckCIRSOC201(Entity):
         log += "\n##############"
 
         return log
+
+    def generate_reinforcement(self, area, width, tmn, cc):
+        options = ""
+
+        for size, data in self.reinforcement_bars.items():
+            n = 2
+
+            while n*data.get("area") < area:
+
+                for size2, data2 in self.reinforcement_bars.items():
+                    if size2 is size:
+                        continue
+
+                    if data.get("diameter") < data2.get("diameter"):
+                        continue
+
+
+                    n2 = 1
+
+                    combinated_area = n * data.get("area") + n2 * data2.get("area")
+
+                    while combinated_area < area:
+                        n2 += 1
+                        combinated_area = n * data.get("area") + n2 * data2.get("area")
+
+                    combinated_area = round(combinated_area, 2)
+                    combinated_cost = n * data.get("cost") + n2 * data2.get("cost")
+                    reinforcement_width = n * data.get("diameter") + n2 * data2.get("diameter") + cc * 2 + (n + n2-1) *2.5
+                    if reinforcement_width <= width*100:
+                        options += "{}Ø{} + {}Ø{} ({} [cm2]) $ {} - {} cm \n".format(n, size, n2, size2,combinated_area, combinated_cost, reinforcement_width)
+
+                n += 1
+
+            reinforcement_width = n * data.get("diameter") + cc * 2 + (n - 1) * 2.5
+            if reinforcement_width <= width * 100:
+                options += "{}Ø{} ({} [cm2]) $ {}\n".format(n, size, round(n*data.get("area"), 2), n*data.get("cost"))
+
+
+        return options
+
+
+
 
 

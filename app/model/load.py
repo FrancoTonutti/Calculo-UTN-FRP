@@ -80,11 +80,14 @@ class Load(Entity):
             return None
 
         if app.show_load != self.load_type:
-            model = self.geom[0]
-            model.hide()
+            for model in self.geom:
+                if model:
+                    model.hide()
+
         else:
-            model = self.geom[0]
-            model.show()
+            for model in self.geom:
+                if model:
+                    model.showThrough()
 
         if isinstance(self.parent, Node):
             x0, y0, z0 = self.parent.position

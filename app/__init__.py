@@ -45,7 +45,7 @@ class App:
         self.layout: Layout = None
         self.show_load = "D"
         self.show_combination = 1
-        self.diagram_scale = 10
+        self.diagram_scale = 1
         self.show_moment = True
         self.show_shear = False
         self.show_normal = False

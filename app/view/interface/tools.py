@@ -6,20 +6,16 @@ from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
 
 from app.view import simpleui
 
-
-def create_label(text, parent, padding=None, margin=None):
-    font_panda3d, font_pil = draw.draw_get_font()
-    width = font_pil.getsize(text)[0]
-    size = [20 + width, 19]
+def create_label_fullsize(text, parent, padding=None, margin=None, alpha=0):
+    #font_panda3d, font_pil = draw.draw_get_font()
+    #width, height = font_pil.getsize(text)
+    #size = [20 + width, 19]
 
     if padding is None:
         padding = [0, 0, 0, 0]
 
     if margin is None:
         margin = [0, 0, 0, 0]
-
-    size = [20 + width, 19 + padding[2] + padding[3]]
-
 
     label = SimpleLabel(
         text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
@@ -28,9 +24,43 @@ def create_label(text, parent, padding=None, margin=None):
         text_scale=(12, 12),
         text=text,
         parent=parent,
+        sizeHint=[None, None],
+        size=[None, None],
+        frameColor="C_WHITE",
+        alpha=alpha,
+        align="left",
+        textCenterX=False,
+        padding=padding,
+        margin=margin
+
+    )
+
+    return label
+
+
+def create_label(text, parent, padding=None, margin=None, alpha=0, font_size=12):
+    font_panda3d, font_pil = draw.draw_get_font(font_size=font_size)
+    width, height = font_pil.getsize(text)
+    size = [20 + width, 19]
+
+    if padding is None:
+        padding = [0, 0, 0, 0]
+
+    if margin is None:
+        margin = [0, 0, 0, 0]
+
+    size = [20 + width, height + padding[2] + padding[3]]
+
+    label = SimpleLabel(
+        text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+        orginV="bottom",
+        position=[0, 0],
+        fontSize=font_size,
+        text=text,
+        parent=parent,
         size=size,
         frameColor="C_WHITE",
-        alpha=0,
+        alpha=alpha,
         align="left",
         textCenterX=False,
         padding=padding,

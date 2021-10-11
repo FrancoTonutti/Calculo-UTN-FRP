@@ -156,9 +156,9 @@ class Table:
             new_value = int(new_value)
 
         if isinstance(old_value, bool):
-            if new_value == "True":
+            if new_value == "True" or new_value == 1:
                 new_value = True
-            elif new_value == "False":
+            elif new_value == "False" or new_value == 0:
                 new_value = False
 
         if old_value == new_value or new_value == "None":
@@ -190,6 +190,7 @@ class Table:
                 extraArgs=[entity, prop],
                 value=value,
                 frameColor="C_WHITE",
+                alpha=0,
                 maxSize=16
             )
 
@@ -233,8 +234,8 @@ class UI:
         btn1 = new_button("Agregar Tipo", parent=frame,
                           command=self.create_load_type)
 
-        self.load_table = Table(["Nº", "Descripción", "Nombre"], frame, "LoadType",
-                                ["index", "name", "load_code"],
+        self.load_table = Table(["Nº", "Descripción", "Nombre", "Peso propio"], frame, "LoadType",
+                                ["index", "name", "load_code", "own_weight"],
                                 ev_set_attr=self.update_load_types,
                                 ev_delete_entity=self.update_load_combinations)
 

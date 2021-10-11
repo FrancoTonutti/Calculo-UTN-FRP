@@ -50,10 +50,21 @@ Type[DynamicTextFont], Type[ImageFont.FreeTypeFont]):
         font_pil = ImageFont.truetype("data/fonts/{}.ttf".format(font_name), font_size)
         fonts[font_name] = {"panda3d": font_panda3d, "pil{}".format(font_size): font_pil}
 
+        #fonts.update({font_name: {"panda3d": font_panda3d, "pil{}".format(font_size): font_pil}})
+
     else:
         font = fonts.get(font_name)
         font_panda3d = font.get("panda3d")
         font_pil = font.get("pil{}".format(font_size))
+
+        if not font_pil:
+            font_pil = ImageFont.truetype(
+                "data/fonts/{}.ttf".format(font_name), font_size)
+
+            font_data = fonts.get(font_name)
+            font_data.update({"pil{}".format(font_size): font_pil})
+
+
 
     fonts.update({"_active": font_name})
 

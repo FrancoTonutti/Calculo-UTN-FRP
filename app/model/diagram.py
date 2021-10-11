@@ -150,7 +150,7 @@ class Diagram(Entity):
                 color.addData4(193/255, 0, 1, 1)
             prim.addVertex(i)
 
-            vertex.addData3(0, x, z/100)
+            vertex.addData3(0, x, -z/100)
             #color.addData4(0, 0, 1, 1)
             if self.diagram_type == "M":
                 color.addData4(1, 125/255, 0, 1)

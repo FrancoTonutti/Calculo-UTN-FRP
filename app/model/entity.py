@@ -43,6 +43,7 @@ class Entity:
         self.is_editable = True
         self.is_selected = False
         self.ifc_entity = None
+        self.enabled_save = True
 
         self.register()
 

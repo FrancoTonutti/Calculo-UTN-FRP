@@ -44,7 +44,7 @@ INTERFACE = {
             "Combinaciones": {"command": "load_combinations"},
             "Resultados": {"command": "view_results"},
             "Borrar": {"command": "remove_diagrams"},
-            "Dimesionado": {"command": "view_design"},
+            "Dimensionado": {"command": "view_design"},
         },
     }
 }

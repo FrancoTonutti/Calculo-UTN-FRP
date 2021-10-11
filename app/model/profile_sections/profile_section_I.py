@@ -2,14 +2,21 @@ from app.model.entity import Entity, register
 from .profile_section import ProfileSection
 import numpy
 
-class ProfleSectionI(ProfileSection):
+
+class ProfileSectionI(ProfileSection):
 
     @staticmethod
     def create_from_object(obj):
         entity_id = obj.get("entity_id")
-        width, height = obj.get("size")
+        d = obj.get("d")
+        bf = obj.get("bf")
+        tf = obj.get("tf")
+        tw = obj.get("tw")
+        r = obj.get("r")
 
-        Section(width, height, entity_id)
+        #width, height = obj.get("size")
+
+        ProfileSectionI(d, bf, tf, tw, r, entity_id)
 
     def __init__(self, d, bf, tf, tw, r, set_id=None):
         super().__init__(set_id)

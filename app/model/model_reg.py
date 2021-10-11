@@ -83,6 +83,8 @@ class ModelReg(dict):
 
             for model_id in self[key]:
                 entity = self[key][model_id]
+                if not entity.enabled_save:
+                    continue
 
                 entity_dict = dict()
 

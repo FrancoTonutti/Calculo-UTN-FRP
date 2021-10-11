@@ -7,6 +7,8 @@ if TYPE_CHECKING:
     # Imports only for IDE type hints
     from app.model import *
 
+from app.model import unit_manager
+
 class Material(Entity):
 
     @staticmethod
@@ -22,18 +24,22 @@ class Material(Entity):
         print("create_from_object material_group2 {}".format(
             group))
         entity_id = obj.get("entity_id")
-        elastic_modulus = app.ureg(obj.get("elastic_modulus"))
+
         is_default_material = obj.get("is_default_material")
 
-        with Material(name, group, elastic_modulus, entity_id) as ent:
+        with Material(name, group, entity_id) as ent:
             if is_default_material:
                 ent.set_default_material()
 
+            ent.elastic_modulus = app.ureg(obj.get("elastic_modulus"))
             ent.char_resistance = app.ureg(obj.get("char_resistance"))
+            if obj.get("specific_weight"):
+                ent.specific_weight = app.ureg(obj.get("specific_weight"))
 
-    def __init__(self, name, group, elastic_modulus=None, set_id=None):
+    def __init__(self, name, group, set_id=None):
         super().__init__(set_id)
-        self.elastic_modulus = elastic_modulus
+        self.elastic_modulus = 1 * unit_manager.default_ureg("stress")
+
         self._material_group = None
         self.material_group = group
 
@@ -44,10 +50,16 @@ class Material(Entity):
         if len(entities) == 1:
             self.set_default_material()
 
-        self.char_resistance = 0
+        self.char_resistance = 1 * unit_manager.default_ureg("stress")
+        self.specific_weight = 1 * unit_manager.default_ureg("specific_weight")
+        self.tmn = 25 * unit_manager.ureg("mm")
 
         self.show_properties("name", "elastic_modulus", "char_resistance")
         self.set_prop_name(elastic_modulus="Modulo Elástico E", char_resistance="Resistencia f'c")
+
+        self.show_properties("specific_weight", "tmn")
+        self.set_prop_name(specific_weight="Peso específico")
+        self.set_prop_name(tmn="Tamaño máximo nominal")
 
 
     def __str__(self):

@@ -19,10 +19,11 @@ class LoadType(Entity):
         name = obj.get("name")
         load_code = obj.get("load_code")
         index = obj.get("index")
+        own_weight = obj.get("own_weight")
 
-        LoadType(name, load_code, entity_id, index)
+        LoadType(name, load_code, entity_id, index, own_weight)
 
-    def __init__(self, name, load_code="D", set_id=None, index=None):
+    def __init__(self, name, load_code="D", set_id=None, index=None, own_weight=False):
         super().__init__(set_id)
 
         panda3d = app.get_show_base()
@@ -40,8 +41,10 @@ class LoadType(Entity):
 
         self.name = name
         self.load_code = load_code
+        self.own_weight = own_weight
 
-        self.show_properties("index", "name", "load_code")
+
+        self.show_properties("index", "name", "load_code", "own_weight")
 
         register(self)
 

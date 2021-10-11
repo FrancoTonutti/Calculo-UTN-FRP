@@ -13,6 +13,11 @@ from app.model.view_gizmo import ViewGizmoZone
 from app.model.load_type import LoadType
 from app.model.load_combination import LoadCombination
 from app.model.code_check import CodeCheck
+from app.model.profile_sections import ProfileSection
+from app.model.profile_sections import ProfileSectionI
+from app.model.code_checks import CodeCheckCIRSOC201
+
+
 from app.model import model_reg
 from app.model import unit_manager
 
@@ -30,7 +35,10 @@ model_reg.class_register = {
     "ViewGizmoZone": ViewGizmoZone,
     "LoadType": LoadType,
     "LoadCombination": LoadCombination,
-    "CodeCheck": CodeCheck
+    "CodeCheck": CodeCheck,
+    "ProfileSection": ProfileSection,
+    "ProfileSectionI": ProfileSectionI,
+    "CodeCheckCIRSOC201": CodeCheckCIRSOC201
 }
 
 
