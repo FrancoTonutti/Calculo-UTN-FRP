@@ -101,8 +101,7 @@ class UI:
         new_button("Flexión", parent=self.btn_container2)
         new_button("Corte", parent=self.btn_container2)
 
-        create_label("Memoria de cálculo", self.col2,
-                                 margin=[0, 0, 10, 0], font_size=16)
+
 
         self.selected_bar = None
         self.bar_list_buttons = list()
@@ -118,7 +117,41 @@ class UI:
         model = []
 
         execute("regen_ui")
-        self.log_label = create_label("LOG", self.col2, margin=[0, 0, 0, 0], alpha=0)
+        self.subcol_container = SimpleFrame(position=[0, 0],
+                                    parent=self.col2,
+                                    # frameColor=scheme_rgba(COLOR_SEC_LIGHT),
+                                    padding=[1, 0, 0, 0],
+                                    alpha=1,
+                                    layout="BoxLayout",
+                                    layoutDir="X")
+
+        self.subcol_1 = SimpleFrame(sizeHint=[0.4, 1],
+                                parent=self.subcol_container,
+                                frameColor=scheme_rgba(COLOR_SEC_LIGHT),
+                                padding=[1, 0, 0, 0],
+                                alpha=0.5,
+                                layout="BoxLayout",
+                                layoutDir="Y")
+
+        create_label("Memoria de cálculo", self.subcol_1,
+                     margin=[0, 0, 10, 0], font_size=16)
+
+        self.subcol_2 = SimpleFrame(sizeHint=[0.3, 1],
+                                    parent=self.subcol_container,
+                                    frameColor=scheme_rgba(COLOR_SEC_LIGHT),
+                                    padding=[1, 0, 0, 0],
+                                    alpha=0.5,
+                                    layout="BoxLayout",
+                                    layoutDir="Y")
+        self.subcol_3 = SimpleFrame(sizeHint=[0.3, 1],
+                                    parent=self.subcol_container,
+                                    frameColor=scheme_rgba(COLOR_SEC_LIGHT),
+                                    padding=[1, 0, 0, 0],
+                                    alpha=0.5,
+                                    layout="BoxLayout",
+                                    layoutDir="Y")
+
+        self.log_label = create_label("LOG", self.subcol_1, margin=[0, 0, 0, 0], alpha=0)
 
         self.explore_bar(self.selected_bar)
 
