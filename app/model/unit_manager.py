@@ -3,6 +3,7 @@ import pint
 ureg = app.ureg
 
 unit_settings = {
+    "longitude": "m",
     "load": "kN",
     "load_lineal": "(kN) / (m)",
     "specific_weight": "(kN) / (m**3)",

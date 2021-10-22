@@ -55,6 +55,8 @@ class Node(Entity):
 
         self.bind_to_model("x", "y", "z", "fixed_ry", "fixed_ux", "fixed_uz")
 
+        self.set_temp_properties("position_str", "position")
+
         register(self)
         self.create_model()
 

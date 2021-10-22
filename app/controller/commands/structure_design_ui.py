@@ -1,4 +1,5 @@
 from app.controller.console import command, execute
+from app.model import RebarSet
 from app.model.code_checks.code_check_CIRSOC_201 import CodeCheckCIRSOC201
 from app.view.interface.tools import *
 from app.view.simpleui import SimpleFrame
@@ -81,10 +82,8 @@ class UI:
                                                      layout="BoxLayout",
                                                      layoutDir="X",
                                          margin=[0,0, 0, 15])
+        self.btn_container2_list = list()
 
-        new_button("Tramo", parent=self.btn_container1)
-        new_button("Apoyo 1", parent=self.btn_container1)
-        new_button("Apoyo 2", parent=self.btn_container1)
 
         self.btn_container2 = SimpleFrame(position=[0, 0],
                                           sizeHint=[1, None],
@@ -98,12 +97,22 @@ class UI:
                                           layoutDir="X",
                                           margin=[0, 0, 0, 0])
 
-        new_button("Flexión", parent=self.btn_container2)
-        new_button("Corte", parent=self.btn_container2)
+        col_rollover = draw.merge_color(COLOR_SEC_DARK, COLOR_MAIN_LIGHT, 0.8)
+        self.default_colors = [COLOR_SEC_DARK, COLOR_MAIN_LIGHT, col_rollover,
+                               COLOR_MAIN_LIGHT]
+        self.selected_colors = [COLOR_MAIN_LIGHT, COLOR_MAIN_LIGHT,
+                                col_rollover,
+                                COLOR_MAIN_LIGHT]
 
-
+        new_button("Flexión", parent=self.btn_container1, colors=self.selected_colors)
+        new_button("Corte", parent=self.btn_container1)
 
         self.selected_bar = None
+        self.selected_bar_btn = None
+
+        self.selected_rebar = None
+        self.selected_rebar_btn = None
+
         self.bar_list_buttons = list()
 
         for bar in entities:
@@ -119,41 +128,57 @@ class UI:
         execute("regen_ui")
         self.subcol_container = SimpleFrame(position=[0, 0],
                                     parent=self.col2,
-                                    # frameColor=scheme_rgba(COLOR_SEC_LIGHT),
+                                    frameColor=scheme_rgba(COLOR_SEC_LIGHT),
                                     padding=[1, 0, 0, 0],
                                     alpha=1,
                                     layout="BoxLayout",
                                     layoutDir="X")
 
-        self.subcol_1 = SimpleFrame(sizeHint=[0.4, 1],
-                                parent=self.subcol_container,
-                                frameColor=scheme_rgba(COLOR_SEC_LIGHT),
-                                padding=[1, 0, 0, 0],
-                                alpha=0.5,
-                                layout="BoxLayout",
-                                layoutDir="Y")
-
-        create_label("Memoria de cálculo", self.subcol_1,
-                     margin=[0, 0, 10, 0], font_size=16)
-
-        self.subcol_2 = SimpleFrame(sizeHint=[0.3, 1],
+        self.subcol_1 = SimpleFrame(size=[300, None],
+                                    sizeHint=[None, 1],
                                     parent=self.subcol_container,
-                                    frameColor=scheme_rgba(COLOR_SEC_LIGHT),
-                                    padding=[1, 0, 0, 0],
-                                    alpha=0.5,
-                                    layout="BoxLayout",
-                                    layoutDir="Y")
-        self.subcol_3 = SimpleFrame(sizeHint=[0.3, 1],
-                                    parent=self.subcol_container,
-                                    frameColor=scheme_rgba(COLOR_SEC_LIGHT),
-                                    padding=[1, 0, 0, 0],
-                                    alpha=0.5,
+                                    frameColor=scheme_rgba(COLOR_SEC_DARK),
+                                    padding=[10, 10, 10, 10],
+                                    alpha=1,
                                     layout="BoxLayout",
                                     layoutDir="Y")
 
-        self.log_label = create_label("LOG", self.subcol_1, margin=[0, 0, 0, 0], alpha=0)
+        self.subcol_2 = SimpleFrame(#sizeHint=[None, 1],
+                                    parent=self.subcol_container,
+                                    frameColor=scheme_rgba(COLOR_SEC_DARK),
+                                    margin=[10, 0, 0, 0],
+                                    padding=[10, 10, 10, 10],
+                                    alpha=1,
+                                    layout="BoxLayout",
+                                    layoutDir="Y")
+        self.subcol_3 = SimpleFrame(#sizeHint=[0.3, 1],
+                                    parent=self.subcol_container,
+                                    frameColor=scheme_rgba(COLOR_SEC_DARK),
+                                    margin=[10, 0, 0, 0],
+                                    padding=[10, 10, 10, 10],
+                                    alpha=0,
+                                    layout="BoxLayout",
+                                    layoutDir="Y")
 
-        self.explore_bar(self.selected_bar)
+        create_label("Configuración", self.subcol_1,
+                     margin=[5, 0, 10, 5], font_size=16)
+
+        self.prop_editor = PropEditor(self.subcol_1, 300, self.update)
+
+        create_label("Memoria de cálculo", self.subcol_2,
+                     margin=[5, 0, 10, 5], font_size=16)
+
+        create_label("Esquemas", self.subcol_3,
+                     margin=[5, 0, 10, 5], font_size=16)
+
+        self.log_label = create_label("LOG", self.subcol_2, margin=[10, 0, 0, 0], alpha=0)
+
+
+
+
+        #self.explore_bar(self.selected_bar)
+
+        self.update()
 
         execute("regen_ui")
 
@@ -171,22 +196,69 @@ class UI:
         self.selected_bar = None
 
         for bar in entities:
-            if self.selected_bar is None:
-                self.selected_bar = bar
+
 
             btn = new_button(str(bar), parent=self.col1.canvas,
                              command=self.explore_bar, args=[bar])
+
+            btn["extraArgs"] = [bar, btn]
+
             self.bar_list_buttons.append(btn)
 
-        self.explore_bar(self.selected_bar)
+            if self.selected_bar is None:
+                self.explore_bar(bar, btn)
+            elif self.selected_bar is bar:
+                self.explore_bar(bar, btn)
+
 
         execute("regen_ui")
 
-    def explore_bar(self, bar_entity):
+    def explore_bar(self, bar_entity, btn):
         if bar_entity:
+            if bar_entity is not self.selected_bar:
+                self.open_rebar_set(None, None)
+
             self.selected_bar = bar_entity
+            if self.selected_bar_btn and not self.selected_bar_btn.isEmpty():
+                self.selected_bar_btn["colorList"] = self.default_colors
+
+            self.selected_bar_btn = btn
+            if not btn.isEmpty():
+                self.selected_bar_btn["colorList"] = self.selected_colors
 
             self.title["text"] = str(bar_entity)
+
+            if bar_entity.behavior == "Viga" and not bar_entity.rebar_sets:
+                RebarSet(bar_entity, "Tramo", 0)
+                RebarSet(bar_entity, "Perchas", 1)
+
+                '''rebar_start = RebarSet(bar_entity, "Apoyo 1")
+                rebar_start.end = app.ureg("20 percent")
+                rebar_end = RebarSet(bar_entity, "Apoyo 2")
+                rebar_end.start = app.ureg("80 percent")'''
+
+            for btn in self.btn_container2_list:
+                btn.destroy()
+            self.btn_container2_list.clear()
+
+            rebars = sorted(bar_entity.rebar_sets, key=lambda x: x.name)
+
+            for rebar in rebars:
+                btn = new_button(rebar.name, parent=self.btn_container2,
+                                 command=self.open_rebar_set, args=[rebar])
+                self.btn_container2_list.append(btn)
+
+                btn["extraArgs"] = [rebar, btn]
+
+                if self.selected_rebar is None:
+                    self.open_rebar_set(rebar, btn)
+                elif self.selected_rebar is rebar:
+                    self.open_rebar_set(rebar, btn)
+
+            execute("regen_ui")
+            #new_button("Tramo", parent=self.btn_container1)
+            #new_button("Apoyo 1", parent=self.btn_container1)
+            #new_button("Apoyo 2", parent=self.btn_container1)
 
             if self.selected_bar.behavior == "Viga":
                 self.log_label["text"] = self.code_check.verify_beam(
@@ -194,6 +266,17 @@ class UI:
             else:
                 self.log_label["text"] = self.code_check.verify_column(
                     self.selected_bar)
+
+    def open_rebar_set(self, rebar_set, btn):
+        self.selected_rebar = rebar_set
+        if self.selected_rebar_btn:
+            self.selected_rebar_btn["colorList"] = self.default_colors
+
+        self.selected_rebar_btn = btn
+        if self.selected_rebar_btn:
+            self.selected_rebar_btn["colorList"] = self.selected_colors
+
+        self.prop_editor.entity_read(rebar_set)
 
 
 @command(name="view_design")

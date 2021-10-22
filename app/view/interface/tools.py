@@ -1,3 +1,7 @@
+from enum import Enum
+
+import pint
+
 from app import app
 
 from app.view.interface.color_scheme import *
@@ -5,6 +9,7 @@ from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
     SimpleCheckBox, SimpleEntry
 
 from app.view import simpleui
+from app.controller.console import command, execute
 
 def create_label_fullsize(text, parent, padding=None, margin=None, alpha=0):
     #font_panda3d, font_pil = draw.draw_get_font()
@@ -20,7 +25,6 @@ def create_label_fullsize(text, parent, padding=None, margin=None, alpha=0):
     label = SimpleLabel(
         text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
         orginV="bottom",
-        position=[0, 0],
         text_scale=(12, 12),
         text=text,
         parent=parent,
@@ -255,3 +259,188 @@ class Table:
                     initialText=str(value)
                 )
         return entry
+
+
+class PropEditor:
+    def __init__(self, parent, width=300, update_event=None):
+        self.frame = SimpleScrolledFrame(#position=[0, 0],
+                                         canvasSize=(0, width, -100, 0),
+                                         size=[None, None],
+                                         sizeHint=[None, None],
+                                         parent=parent,
+                                         frameColor=scheme_rgba(COLOR_SEC_DARK),
+                                         alpha=1,
+                                         margin=[0, 0, 0, 0],
+                                         layout="GridLayout",
+                                         layoutDir="X",
+                                         gridCols=2,
+                                         gridRows=10)
+
+        self.fields = []
+        self.entity = None
+        self.update_event = update_event
+
+    def add_property(self, prop: str, fieldname: str, value=0):
+
+        label = SimpleLabel(
+            text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+            orginV="bottom",
+            position=[0, 0],
+            text_scale=(12, 12),
+            text=fieldname,
+            parent=self.frame.getCanvas(),
+            size=[None, 20],
+            sizeHint=[0.50, None],
+            frameColor=scheme_rgba(COLOR_MAIN_LIGHT),
+            alpha=0,
+            align="left",
+            textCenterX=False,
+            padding=[10, 0, 0, 0]
+
+        )
+        if isinstance(value, bool):
+            entry = SimpleCheckBox(
+                position=[0, 0],
+                size=[None, 20],
+                sizeHint=[0.50, None],
+                parent=self.frame.getCanvas(),
+                command=self.entity_set_prop,
+                extraArgs=[prop],
+                value=value,
+                frameColor="C_WHITE",
+                maxSize=16
+            )
+        else:
+            if self.entity.is_read_only(prop):
+                if isinstance(value, pint.quantity.Quantity):
+                    set_text = "\1slant\1{}\2".format(format(value, '~'))
+
+                else:
+                    set_text = str(value)
+
+                entry = SimpleLabel(
+                    text_fg=scheme_rgba(COLOR_TEXT_LIGHT_FADE),
+                    orginH="center",
+                    orginV="bottom",
+                    position=[0, 0],
+                    text_scale=(12, 12),
+                    text=set_text,
+                    parent=self.frame.getCanvas(),
+                    size=[None, 20],
+                    sizeHint=[0.50, None],
+                    frameColor="C_WHITE",
+                    alpha=0,
+                    align="left",
+                    textCenterX=False,
+                    padding=[10, 0, 0, 0]
+
+                )
+
+            else:
+                initial_value = str(value)
+                value_unit = ""
+                if isinstance(value, pint.quantity.Quantity):
+                    initial_value = str(value.magnitude)
+                    value_unit = " [{}]".format(format(value.u, '~'))
+                elif isinstance(value, Enum):
+                    initial_value = str(value.value)
+                    value_unit = " ({})".format(value.name)
+
+                entry = SimpleEntry(
+                    text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+                    orginH="center",
+                    position=[0, 0],
+                    text_scale=(12, 12),
+                    width=20,
+                    align="left",
+                    textCenterX=False,
+                    command=self.entity_set_prop,
+                    extraArgs=[prop],
+                    focusOutCommand=self.entity_set_prop,
+                    focusOutExtraArgs=[prop],
+                    parent=self.frame.getCanvas(),
+                    size=[None, 20],
+                    sizeHint=[0.50, None],
+                    frameColor="C_WHITE",
+                    initialText=initial_value,
+                    alpha=0,
+                    padding=[10, 0, 0, 0],
+                    suffix=value_unit
+
+                )
+        self.fields.append([label, entry])
+
+    def entity_set_prop(self, new_value: any, name: str):
+        old_value = getattr(self.entity, name, None)
+        force_set = False
+
+        if isinstance(old_value, bool):
+
+            if new_value == "True":
+                new_value = True
+            elif new_value == "False":
+                new_value = False
+        elif new_value != "" and isinstance(old_value, float) and new_value.isnumeric():
+            new_value = float(new_value)
+
+        elif new_value != "" and isinstance(old_value, int) and new_value.isnumeric():
+            new_value = int(new_value)
+
+        elif new_value != "" and isinstance(old_value,
+                                            pint.quantity.Quantity) and new_value.isnumeric():
+            new_value = float(new_value) * app.ureg(str(old_value.units))
+
+        if isinstance(old_value, Enum):
+            if new_value.isnumeric():
+                try:
+                    new_value = type(old_value)(int(new_value))
+                except ValueError:
+                    new_value = old_value
+                    force_set = True
+
+        if old_value == new_value and not force_set:
+            return None
+
+        if type(old_value) is type(new_value):
+            if self.entity is not None:
+                print(
+                    "atributo establecido {}: {}".format(name, new_value))
+                setattr(self.entity, name, new_value)
+                print("verif {}: {}".format(name,
+                                            getattr(self.entity,
+                                                    name, "undefined")))
+
+                if isinstance(old_value, Enum):
+                    self.entity_read(self.entity)
+
+        else:
+            if self.entity is not None:
+                print(
+                    "El tipo de asignación no corresponde: {},{}->{}".format(
+                        name, type(old_value), type(new_value)))
+
+        if self.update_event:
+            self.update_event()
+        #self.update_list()
+
+    def entity_read(self, entity):
+
+        for label, entry in self.fields:
+            if hasattr(entry, "enter_value"):
+                if entry['focus'] is True:
+                    entry.defocus()
+
+        for label, entry in self.fields:
+            label.destroy()
+            entry.destroy()
+
+        self.fields.clear()
+        print("entity_read")
+
+        self.entity = entity
+        if entity:
+            for prop in self.entity.get_properties():
+                self.add_property(prop, self.entity.prop_name(prop),
+                                  getattr(self.entity, prop))
+
+        execute("regen_ui")

@@ -1,3 +1,5 @@
+from enum import Enum
+
 import pint
 
 from app import app
@@ -6,7 +8,7 @@ from app.model.entity import Entity
 
 primitive = (int, str, bool, float)
 class_register = {}
-
+keys_priority = []
 
 def is_primitive(thing):
     return isinstance(thing, primitive)
@@ -72,7 +74,7 @@ class ModelReg(dict):
     def toJSON(self):
         dict_data = dict()
 
-        exclude_attrs = ["geom", "_geom", "is_editable", "is_selectable", "is_selected", "ifc_entity"]
+        exclude_attrs = ["geom", "_geom", "is_editable", "is_selectable", "is_selected", "ifc_entity", "enabled_save"]
 
         for key in self.keys():
 
@@ -88,7 +90,7 @@ class ModelReg(dict):
 
                 entity_dict = dict()
 
-                entity_attrs = [a for a in dir(entity) if not a.startswith('_') and not callable(getattr(entity, a))]
+                entity_attrs = [a for a in dir(entity) if not a.startswith('_') and not callable(getattr(entity, a)) and not entity.is_temp_property(a)]
 
                 for attr in entity_attrs:
                     if attr in exclude_attrs:
@@ -109,7 +111,7 @@ class ModelReg(dict):
 
         dict_data = json.loads(json_string)
 
-        keys_priority = ["View", "Node", "Section", "MaterialGroup", "Material", "Bar", "LoadType", "Load", "Diagram"]
+
 
         for key in dict_data.keys():
             if key not in keys_priority:
@@ -153,6 +155,8 @@ def convert_value(value):
                 value = value.tolist()
             elif isinstance(value, pint.quantity.Quantity):
                 value = format(value, '~')
+            elif isinstance(value, Enum):
+                value = value.value
             else:
                 value = type(value).__name__
 

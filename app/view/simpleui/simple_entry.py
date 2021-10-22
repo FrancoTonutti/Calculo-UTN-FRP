@@ -17,6 +17,8 @@ class SimpleEntry(DirectEntry, SimpleFrame):
     def __init__(self, parent=None, **kw):
         # ('focusInCommand', self.on_focus, None),
         # ('focusOutCommand', self.on_defocus, None),
+
+        self.initialized2 = False
         optiondefs = (
             # Define type of DirectGuiWidget
             ('label', "None", None),
@@ -82,6 +84,7 @@ class SimpleEntry(DirectEntry, SimpleFrame):
 
                     self.enterText("{}{}{}".format(prefix, txt, suffix))
 
+        self.initialized2 = True
         #self.on_defocus()
 
 
@@ -168,11 +171,12 @@ class SimpleEntry(DirectEntry, SimpleFrame):
     def defocus(self):
         self["focus"] = False
         self.on_defocus()
-        PGEntry.setFocus(self.guiItem, self['focus'])
+        if not self.isEmpty():
+            PGEntry.setFocus(self.guiItem, self['focus'])
 
     def update_text_pos(self):
 
-        if hasattr(self, "enterText"):
+        if hasattr(self, "enterText") and self.initialized2:
             width, height = self.box_size()
 
             txt_x, txt_y = self["text_pos"]
@@ -181,6 +185,29 @@ class SimpleEntry(DirectEntry, SimpleFrame):
                 txt_x = width / 2
             if self["textCenterY"]:
                 txt_y = -(height / 2 + size_y / 2)
+
+            ########
+
+            _, width, height, _ = self["frameSize"]
+            height = -height
+
+            txt_x, txt_y = self["text_pos"]
+            size_x, size_y = self["text_scale"]
+            padding = self["padding"]
+
+            if self["textCenterX"]:
+                txt_x = (width - padding[0] - padding[1]) / 2 + padding[0]
+            else:
+                txt_x = padding[0]
+
+            if self["textCenterY"]:
+                txt_y = -((height - padding[2] - padding[3]) / 2 + size_y / 2 +
+                          padding[2])
+            else:
+                txt_x = -(padding[2])
+
+            ####
+
             self["text_pos"] = (txt_x, txt_y)
 
     def set_align(self):

@@ -53,6 +53,8 @@ class App:
         self.default_material = None
 
         self.ureg = pint.UnitRegistry()
+        self.ureg.define('percent = 0.01*count = %')
+        self.ureg.define('@alias percent = %')
 
 
     def set_show_base(self, base):

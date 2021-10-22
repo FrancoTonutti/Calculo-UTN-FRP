@@ -3,6 +3,8 @@ import numpy as np
 from app.view import draw
 from app import app
 from .material import Material
+from .rebar_set import RebarSet
+from . import unit_manager
 
 from typing import TYPE_CHECKING
 from typing import List
@@ -58,6 +60,9 @@ class Bar(Entity):
         self.min_moment = 0
 
         self.show_properties("name", "width", "height")
+        self.set_temp_properties("start_x", "start_y", "start_z")
+        self.set_temp_properties("end_x", "end_y", "end_z")
+        self.set_temp_properties("borders", "height","width", "max_moment", "min_moment")
 
         #self.show_properties("start_x", "start_y", "start_z")
         self.show_properties("start_x", "start_z")
@@ -72,10 +77,16 @@ class Bar(Entity):
         self.show_properties("behavior")
         self.set_prop_name(behavior="Comportamiento")
 
+        self.cc = 2 * unit_manager.ureg("cm")
+        self.set_prop_name(cc="Recubrimiento")
+        self.show_properties("cc")
+
         #self.show_properties("max_moment", "min_moment")
         #self.set_prop_name(max_moment="Momento Máx.", min_moment="Momento Min.")
 
         self.bind_to_model("width", "height", "loads")
+
+        self.rebar_sets = list()
 
 
 
@@ -89,6 +100,10 @@ class Bar(Entity):
     def behavior(self, value: str):
         if value in ["Barra", "Viga", "Columna"]:
             self._behavior = value
+
+
+
+
 
     @property
     def material(self):

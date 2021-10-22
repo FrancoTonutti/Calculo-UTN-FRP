@@ -3,7 +3,16 @@ from direct.gui.DirectLabel import *
 from app.view.simpleui.simple_frame import SimpleFrame
 from app.view.simpleui.simple_button import SimpleButton
 from app.view import draw
-from panda3d.core import TextProperties
+from panda3d.core import TextProperties, TextPropertiesManager
+
+tpRed = TextProperties()
+tpRed.setTextColor(1, 0, 0, 1)
+tpSlant = TextProperties()
+tpSlant.setSlant(0.3)
+
+tpMgr = TextPropertiesManager.getGlobalPtr()
+tpMgr.setProperties("red", tpRed)
+tpMgr.setProperties("slant", tpSlant)
 
 class SimpleLabel(SimpleButton):
     """

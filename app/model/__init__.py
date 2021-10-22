@@ -16,6 +16,7 @@ from app.model.code_check import CodeCheck
 from app.model.profile_sections import ProfileSection
 from app.model.profile_sections import ProfileSectionI
 from app.model.code_checks import CodeCheckCIRSOC201
+from .rebar_set import RebarSet
 
 
 from app.model import model_reg
@@ -38,7 +39,10 @@ model_reg.class_register = {
     "CodeCheck": CodeCheck,
     "ProfileSection": ProfileSection,
     "ProfileSectionI": ProfileSectionI,
-    "CodeCheckCIRSOC201": CodeCheckCIRSOC201
+    "CodeCheckCIRSOC201": CodeCheckCIRSOC201,
+    "RebarSet": RebarSet
 }
+
+model_reg.keys_priority = ["View", "Node", "Section", "MaterialGroup", "Material", "Bar", "RebarSet", "LoadType", "Load", "Diagram"]
 
 

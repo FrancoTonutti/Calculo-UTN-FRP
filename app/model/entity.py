@@ -39,6 +39,7 @@ class Entity:
         self._child_models = list()
         self._bind_model = list()
         self._analysis_results = dict()
+        self._temp_properties = []
         self.is_selectable = True
         self.is_editable = True
         self.is_selected = False
@@ -135,6 +136,14 @@ class Entity:
 
     def set_prop_name(self, **kwargs):
         self._namespace.update(kwargs)
+
+    def set_temp_properties(self, *args):
+        for prop in args:
+            if prop not in self._temp_properties:
+                self._temp_properties.append(prop)
+
+    def is_temp_property(self, prop):
+        return prop in self._temp_properties
 
     def get_properties(self):
         for prop in self._editor_properties:

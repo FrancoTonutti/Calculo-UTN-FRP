@@ -71,6 +71,8 @@ class CodeCheckCIRSOC201(Entity):
         """
         log = ""
 
+        rebar_sets = element.rebar_sets
+
         mat = element.material
         fc = unit_manager.convert_to_MPa(mat.char_resistance)
         fy = 420
