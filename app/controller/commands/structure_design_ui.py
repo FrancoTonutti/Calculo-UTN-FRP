@@ -1,4 +1,4 @@
-from panda3d.core import SamplerState
+from panda3d.core import SamplerState, TransparencyAttrib
 
 import app
 from app.controller.console import command, execute
@@ -177,23 +177,26 @@ class UI:
 
         self.log_label = create_label("LOG", self.subcol_2, margin=[10, 0, 0, 0], alpha=0)
 
-        tex = app.base.loader.loadTexture("data\\img\\logo-utn.png")
-        tex.setMagfilter(SamplerState.FT_nearest)
+        #tex = app.base.loader.loadTexture("data\\img\\logo-utn.png")
+        #tex.setMagfilter(SamplerState.FT_nearest)
 
-        tex = self.code_check.generate_rebar_image()
-        tex.setMagfilter(SamplerState.FT_nearest)
+        tex = None
+
 
         self.image_frame = SimpleFrame(  # sizeHint=[0.3, 1],
             parent=self.subcol_3,
             #frameColor=scheme_rgba(COLOR_SEC_DARK),
             size=[40, 46],
             margin=[10, 0, 0, 0],
-            padding=[10, 10, 10, 10],
-            image=tex,
-            image_scale=(220, 1, 190)
+            #padding=[10, 10, 10, 10],
+            #image=tex,
+            #image_scale=(tex.x_size, tex.z_size, tex.y_size),
+            #image_pos=(tex.x_size, 0, -tex.y_size)
             #image="circle.png"
-            #alpha=0
+            alpha=0
             )
+
+        self.image_frame.setTransparency(TransparencyAttrib.MAlpha)
 
 
 
@@ -277,7 +280,11 @@ class UI:
                 elif self.selected_rebar is rebar:
                     self.open_rebar_set(rebar, btn)
 
-            execute("regen_ui")
+
+
+
+
+
             #new_button("Tramo", parent=self.btn_container1)
             #new_button("Apoyo 1", parent=self.btn_container1)
             #new_button("Apoyo 2", parent=self.btn_container1)
@@ -288,6 +295,23 @@ class UI:
             else:
                 self.log_label["text"] = self.code_check.verify_column(
                     self.selected_bar)
+
+            scale = 240
+
+            tex = self.code_check.generate_rebar_image(self.selected_bar, scale)
+
+            self.image_frame["image"] = tex
+            self.image_frame["image_scale"] = (tex.x_size/2, tex.z_size/2, -tex.y_size/2)
+            #self.image_frame["image_scale"] = (256/2, 1, 256/2)
+            #print("tex.x_size", tex.x_size)
+            #print("tex.z_size", tex.z_size)
+            #print("tex.y_size", tex.y_size)
+
+            self.image_frame["image_pos"] = (tex.x_size/2, 0, -tex.y_size/2)
+            w,h = self.selected_bar.section.size
+            self.image_frame["size"] = (round(w*scale), round(h*scale))
+
+            execute("regen_ui")
 
     def open_rebar_set(self, rebar_set, btn):
         self.selected_rebar = rebar_set
