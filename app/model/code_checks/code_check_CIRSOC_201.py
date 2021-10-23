@@ -1,6 +1,6 @@
 import math
 
-from panda3d.core import Texture
+from panda3d.core import Texture, SamplerState
 
 from app.model.entity import Entity
 from typing import TYPE_CHECKING
@@ -18,7 +18,14 @@ if TYPE_CHECKING:
 
 # importing image object from PIL
 import math
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
+
+
+def apply_scale(val, scale, min_val=1):
+    val *= scale
+    val = max(round(val), min_val)
+    return int(val)
+
 
 class CodeCheckCIRSOC201(Entity):
 
@@ -68,23 +75,80 @@ class CodeCheckCIRSOC201(Entity):
     def verify_column(element):
         return "Verificación no implementada"
 
-    def generate_rebar_image(self):
-        w, h = 220, 190
-        shape = [(40, 40), (w - 10, h - 10)]
+    def generate_rebar_image(self, element, scale):
+
+        draw_color = (255, 255, 255)
+
+        w, h = element.section.size
+        w = apply_scale(w, scale)
+        h = apply_scale(h, scale)
+        cc = unit_manager.convert_to_m(element.cc)
+        cc = apply_scale(cc, scale)
+
+
+        shape = [(0, 0), (w-1 , h -1)]
 
         # creating new Image object
-        img = Image.new("RGB", (w, h))
+        img = Image.new("RGBA", (256, 256), (255, 255, 255, 0))
 
         # create rectangle image
         img1 = ImageDraw.Draw(img)
-        img1.rectangle(shape, fill="#ffff33", outline="red")
+        img1.rectangle(shape, fill=(255, 255, 255, 0), outline=draw_color, width=1)
 
-        data = img.convert("RGBA").tostring("raw", "RGBA")
+
+        #img1.rectangle(shape, fill=(255, 0, 0, 0), outline=draw_color, width=1)
+
+        radius = self.rebar_hook_diameter(6)/2000
+        dbe = apply_scale(0.006, scale)
+        radius = apply_scale(radius, scale)
+        shape = [(cc, cc), (w - cc - dbe, h - cc - dbe)]
+
+        img1.rounded_rectangle(shape, radius, fill=(255, 255, 255, 0), outline=draw_color, width=dbe)
+
+        shape = [(w - 2*radius - cc - dbe, cc), (w - cc - dbe, cc + 2*radius +dbe-1)]
+        img1.arc(shape, 180+45, 45, fill=draw_color, width=dbe)
+
+
+        hook_len = 5
+
+        shape = [(w - cc - 1.7071*radius - dbe, cc + dbe), (w - cc - 1.7071*radius - dbe - hook_len, cc+ dbe +hook_len)]
+        img1.line(shape, fill=draw_color, width=dbe)
+
+        shape = [(w - cc - dbe-1, cc + dbe + 1.7071 * radius),
+                 (w - cc - dbe - hook_len-1, cc + dbe + 1.7071 * radius + hook_len)]
+        img1.line(shape, fill=draw_color, width=dbe)
+
+        db = int(math.ceil(0.01 * scale))
+
+        self.draw_bar(img1, cc + dbe + radius*0.4 + db/2, cc + dbe + db/2+ radius*0.4, db, draw_color)
+
+        #img1.ellipse((5, 5, 8, 8), fill=draw_color, outline=draw_color)
+
+        #img = img.filter(ImageFilter.DETAIL)
+
+        data = img.convert("RGBA").tobytes("raw", "RGBA")
         newtex = Texture('movie')
+        newtex.setup2dTexture(256, 256, Texture.TUnsignedByte, Texture.F_rgba32)
         newtex.setRamImageAs(data, "RGBA")
+        newtex.setMagfilter(SamplerState.FT_nearest_mipmap_nearest)
 
         return newtex
 
+    def draw_bar(self, draw, x, y, db, color):
+        shape = [(x-db/2, y-db/2),
+                 (x+db/2, y+db/2)]
+        draw.ellipse(shape, fill=color, outline=color)
+
+    def rebar_hook_diameter(self, db_mm):
+
+        if db_mm <= 25:
+            d = 6 * db_mm
+        elif db_mm <= 32:
+            d = 8 * db_mm
+        else:
+            d = 10 * db_mm
+
+        return d
 
     def verify_beam(self, element):
         """
@@ -143,7 +207,7 @@ class CodeCheckCIRSOC201(Entity):
 
 
         log_rebar1, options_rebar1 = self.calculate_rebar(h, bw, d, fc, fy, max_value, max_combination.equation, element)
-        log_rebar1, options_rebar2 = self.calculate_rebar(h, bw, d, fc, fy,
+        log_rebar2, options_rebar2 = self.calculate_rebar(h, bw, d, fc, fy,
                                                         abs(min_value),
                                                         min_combination.equation,
                                                         element)
@@ -158,6 +222,7 @@ class CodeCheckCIRSOC201(Entity):
                         rebar.layer1 = options_rebar2[1]["data"]
                     else:
                         rebar.layer1 = "2Ø10"
+
 
         return log
 
