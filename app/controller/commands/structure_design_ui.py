@@ -1,9 +1,13 @@
+from panda3d.core import SamplerState
+
+import app
 from app.controller.console import command, execute
 from app.model import RebarSet
 from app.model.code_checks.code_check_CIRSOC_201 import CodeCheckCIRSOC201
 from app.view.interface.tools import *
 from app.view.simpleui import SimpleFrame
-
+import math
+from PIL import Image, ImageDraw
 
 class UI:
     def __init__(self, frame):
@@ -172,6 +176,24 @@ class UI:
                      margin=[5, 0, 10, 5], font_size=16)
 
         self.log_label = create_label("LOG", self.subcol_2, margin=[10, 0, 0, 0], alpha=0)
+
+        tex = app.base.loader.loadTexture("data\\img\\logo-utn.png")
+        tex.setMagfilter(SamplerState.FT_nearest)
+
+        tex = self.code_check.generate_rebar_image()
+        tex.setMagfilter(SamplerState.FT_nearest)
+
+        self.image_frame = SimpleFrame(  # sizeHint=[0.3, 1],
+            parent=self.subcol_3,
+            #frameColor=scheme_rgba(COLOR_SEC_DARK),
+            size=[40, 46],
+            margin=[10, 0, 0, 0],
+            padding=[10, 10, 10, 10],
+            image=tex,
+            image_scale=(220, 1, 190)
+            #image="circle.png"
+            #alpha=0
+            )
 
 
 

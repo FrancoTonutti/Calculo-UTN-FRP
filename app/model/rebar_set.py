@@ -18,6 +18,11 @@ class RebarLocation(Enum):
     SKIN = 2
 
 
+class RebarType(Enum):
+    DEFAULT = 0
+    EXTRA = 1
+
+
 class RebarSet(Entity):
 
     @staticmethod
@@ -61,13 +66,20 @@ class RebarSet(Entity):
         self._layers = 1
 
         self.set_prop_name(name="Nombre", parent_lenght="Longitud anfitrión", start="Inicio", end="Fin", cc="Recubrimiento", layers="Capas")
-        self.show_properties("name", "parent_lenght", "start", "end", "cc", "layers")
+        self.show_properties("name", "parent_lenght", "cc", "layers")
+        #self.show_properties("start", "end")
 
         self.location = RebarLocation(location)
 
         self.set_prop_name(location="Ubicación")
         self.show_properties("location")
-        #self.set_read_only("location")
+        self.set_read_only("location")
+
+        self.rebar_type = RebarType(0)
+
+        self.set_prop_name(rebar_type="Tipo")
+        self.show_properties("rebar_type")
+        self.set_read_only("rebar_type")
 
         self.shape_code = 0
         self.set_prop_name(shape_code="Código de forma")
