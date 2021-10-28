@@ -39,32 +39,32 @@ class CodeCheckCIRSOC201(Entity):
         self.enabled_save = False
 
         self.reinforcement_bars = {
-            "6": {
+            6: {
                 "diameter": 0.6,
                 "area": np.pi * 0.3 ** 2,
                 "cost": 740/12
             },
-            "8": {
+            8: {
                 "diameter": 0.8,
                 "area": np.pi * 0.4 ** 2,
                 "cost": 1205/12
             },
-            "10": {
+            10: {
                 "diameter": 1,
                 "area": np.pi * 0.5 ** 2,
                 "cost": 1932/12
             },
-            "12": {
+            12: {
                 "diameter": 1.2,
                 "area": np.pi * 0.6 ** 2,
                 "cost": 2600/12
             },
-            "16": {
+            16: {
                 "diameter": 1.6,
                 "area": np.pi * 0.8 ** 2,
                 "cost": 5000/12
             },
-            "20": {
+            20: {
                 "diameter": 2,
                 "area": np.pi * 1 ** 2,
                 "cost": 6600/12
@@ -79,14 +79,14 @@ class CodeCheckCIRSOC201(Entity):
 
         draw_color = (255, 255, 255)
 
-        w, h = element.section.size
-        w = apply_scale(w, scale)
+        bw, h = element.section.size
+        bw = apply_scale(bw, scale)
         h = apply_scale(h, scale)
         cc = unit_manager.convert_to_m(element.cc)
         cc = apply_scale(cc, scale)
 
 
-        shape = [(0, 0), (w-1 , h -1)]
+        shape = [(0, 0), (bw-1 , h -1)]
 
         # creating new Image object
         img = Image.new("RGBA", (256, 256), (255, 255, 255, 0))
@@ -101,26 +101,85 @@ class CodeCheckCIRSOC201(Entity):
         radius = self.rebar_hook_diameter(6)/2000
         dbe = apply_scale(0.006, scale)
         radius = apply_scale(radius, scale)
-        shape = [(cc, cc), (w - cc - dbe, h - cc - dbe)]
+        shape = [(cc, cc), (bw - cc - dbe, h - cc - dbe)]
 
         img1.rounded_rectangle(shape, radius, fill=(255, 255, 255, 0), outline=draw_color, width=dbe)
 
-        shape = [(w - 2*radius - cc - dbe, cc), (w - cc - dbe, cc + 2*radius +dbe-1)]
+        shape = [(bw - 2*radius - cc - dbe, cc), (bw - cc - dbe, cc + 2*radius +dbe-1)]
         img1.arc(shape, 180+45, 45, fill=draw_color, width=dbe)
 
 
         hook_len = 5
 
-        shape = [(w - cc - 1.7071*radius - dbe, cc + dbe), (w - cc - 1.7071*radius - dbe - hook_len, cc+ dbe +hook_len)]
+        shape = [(bw - cc - 1.7071*radius - dbe, cc + dbe), (bw - cc - 1.7071*radius - dbe - hook_len, cc+ dbe +hook_len)]
         img1.line(shape, fill=draw_color, width=dbe)
 
-        shape = [(w - cc - dbe-1, cc + dbe + 1.7071 * radius),
-                 (w - cc - dbe - hook_len-1, cc + dbe + 1.7071 * radius + hook_len)]
+        shape = [(bw - cc - dbe-1, cc + dbe + 1.7071 * radius),
+                 (bw - cc - dbe - hook_len-1, cc + dbe + 1.7071 * radius + hook_len)]
         img1.line(shape, fill=draw_color, width=dbe)
 
-        db = int(math.ceil(0.01 * scale))
+        for rebar in element.rebar_sets:
+            if rebar.rebar_type is RebarType.DEFAULT:
+                if rebar.location is RebarLocation.UPPER:
 
-        self.draw_bar(img1, cc + dbe + radius*0.4 + db/2, cc + dbe + db/2+ radius*0.4, db, draw_color)
+                    if rebar.layer1:
+
+                        b = bw - 2*cc - 2 * dbe - scale*rebar.layer1.diam1/1000 - radius*0.8 -1
+
+                        count_bars = rebar.layer1.count1 + rebar.layer1.count2
+
+                        spacing = b / (count_bars - 1)
+                        db0 = int(math.ceil(
+                            rebar.layer1.diam1 / 1000 * scale))
+
+                        for i in range(count_bars):
+
+                            if i<rebar.layer1.count1/2 or i>= rebar.layer1.count1/2 +rebar.layer1.count2:
+                                db = int(math.ceil(
+                                    rebar.layer1.diam1/1000 * scale))
+                            else:
+                                db = int(math.ceil(
+                                    rebar.layer1.diam2 / 1000 * scale))
+
+
+
+                            self.draw_bar(img1,
+                                          cc + dbe + radius * 0.4 + db0 / 2 + i * spacing,
+                                          cc + dbe + db / 2 + radius * 0.4, db,
+                                          draw_color)
+
+                elif rebar.location is RebarLocation.LOWER:
+                    if rebar.layer1:
+
+                        if isinstance(rebar.layer1.diam1, str):
+                            print("layer1.diam1", rebar.layer1.diam1)
+
+                        b = bw - 2 * cc - 2 * dbe - scale * rebar.layer1.diam1 / 1000 - radius * 0.8 - 1
+
+                        count_bars = rebar.layer1.count1 + rebar.layer1.count2
+
+                        spacing = b / (count_bars - 1)
+                        db0 = int(math.ceil(
+                            rebar.layer1.diam1 / 1000 * scale))
+
+                        for i in range(count_bars):
+
+                            if i < rebar.layer1.count1 / 2 or i >= rebar.layer1.count1 / 2 + rebar.layer1.count2:
+                                db = int(math.ceil(
+                                    rebar.layer1.diam1 / 1000 * scale))
+                            else:
+                                db = int(math.ceil(
+                                    rebar.layer1.diam2 / 1000 * scale))
+
+                            self.draw_bar(img1,
+                                          cc + dbe + radius * 0.4 + db0 / 2 + i * spacing,
+                                          h - cc - dbe - db / 2 - radius * 0.4, db,
+                                          draw_color)
+
+
+
+
+
 
         #img1.ellipse((5, 5, 8, 8), fill=draw_color, outline=draw_color)
 
@@ -216,12 +275,23 @@ class CodeCheckCIRSOC201(Entity):
         for rebar in rebar_sets:
             if rebar.rebar_type is RebarType.DEFAULT:
                 if rebar.location is RebarLocation.LOWER:
-                    rebar.layer1 = options_rebar1[1]["data"]
+                    rebar.layer1.diam1 = options_rebar1[0]["diam1"]
+                    rebar.layer1.count1 = options_rebar1[0]["count1"]
+                    rebar.layer1.diam2 = options_rebar1[0]["diam2"]
+                    rebar.layer1.count2 = options_rebar1[0]["count2"]
+
+
                 elif rebar.location is RebarLocation.UPPER:
                     if min_value<0:
-                        rebar.layer1 = options_rebar2[1]["data"]
+                        rebar.layer1.diam1 = options_rebar2[0]["diam1"]
+                        rebar.layer1.count1 = options_rebar2[0]["count1"]
+                        rebar.layer1.diam2 = options_rebar2[0]["diam2"]
+                        rebar.layer1.count2 = options_rebar2[0]["count2"]
                     else:
-                        rebar.layer1 = "2Ø10"
+                        rebar.layer1.diam1 = 10
+                        rebar.layer1.count1 = 2
+                        rebar.layer1.diam2 = 0
+                        rebar.layer1.count2 = 0
 
 
         return log
@@ -325,14 +395,14 @@ class CodeCheckCIRSOC201(Entity):
                     reinforcement_width = n * data.get("diameter") + n2 * data2.get("diameter") + cc * 2 + (n + n2-1) *2.5
                     if reinforcement_width <= width*100:
                         rebar = "{}Ø{} + {}Ø{} ({} [cm2])".format(n, size, n2, size2, combinated_area)
-                        options.append({"data": rebar, "cost": combinated_cost})
+                        options.append({"data": rebar, "cost": combinated_cost, "diam1": size, "count1": n, "diam2": size2, "count2": n2})
 
                 n += 1
 
             reinforcement_width = n * data.get("diameter") + cc * 2 + (n - 1) * 2.5
             if reinforcement_width <= width * 100:
                 rebar = "{}Ø{} ({} [cm2])".format(n, size, round(n*data.get("area"), 2))
-                options.append({"data": rebar, "cost": n*data.get("cost")})
+                options.append({"data": rebar, "cost": n*data.get("cost"), "diam1": size, "count1": n, "diam2": None, "count2": None})
 
         options = sorted(options, key=lambda x: x["cost"])
 

@@ -8,7 +8,7 @@ from .simple_button import SimpleButton
 
 
 def update_ui():
-    print("simple_ui_manager")
+    #print("simple_ui_manager")
     resize_gui_childrens(pixel2d)
 
 

@@ -6,6 +6,8 @@ from app import app
 from typing import TYPE_CHECKING
 from typing import List
 
+from .rebar_layer import RebarLayer
+
 from . import unit_manager
 if TYPE_CHECKING:
     # Imports only for IDE type hints
@@ -56,6 +58,11 @@ class RebarSet(Entity):
 
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
 
+            layer1 = get("layer1")
+            layer2 = get("layer2")
+            layer3 = get("layer3")
+
+
     def __init__(self, parent, name, location, set_id=None):
         super().__init__(set_id)
         self.name = name
@@ -90,11 +97,12 @@ class RebarSet(Entity):
         self._parent = None
         self.parent = parent
 
-        self.layer1 = ""
-        self.layer2 = ""
-        self.layer3 = ""
+        self.layer1 = RebarLayer()
+        self.layer2 = None
+        self.layer3 = None
 
         self.set_prop_name(layer1="Capa 1", layer2="Capa 2", layer3="Capa 3")
+        self.set_read_only("layer1", "layer2", "layer3")
 
         self.layers = 1
 
@@ -121,10 +129,19 @@ class RebarSet(Entity):
         value = min(value, 3)
 
         for i in range(1, 4):
+            get = getattr(self, "layer%s" % i)
             if i<= value:
                 self.show_properties("layer%s" % i)
+                if get is None:
+                    setattr(self, "layer%s" % i, RebarLayer())
             else:
                 self.hide_properties("layer%s" % i)
+
+                if get is not None:
+                    print("delete value", value, i)
+                    get.delete()
+                    setattr(self, "layer%s" % i, None)
+
 
         self._layers = value
 

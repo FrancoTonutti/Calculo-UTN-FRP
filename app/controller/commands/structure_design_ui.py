@@ -218,7 +218,7 @@ class UI:
         model_reg = app.model_reg
         entities = model_reg.find_entities("Bar")
 
-        self.selected_bar = None
+
 
         for bar in entities:
 
@@ -241,6 +241,7 @@ class UI:
     def explore_bar(self, bar_entity, btn):
         if bar_entity:
             if bar_entity is not self.selected_bar:
+                print("reset open_rebar_set", bar_entity, self.selected_bar)
                 self.open_rebar_set(None, None)
 
             self.selected_bar = bar_entity
@@ -261,6 +262,13 @@ class UI:
                 rebar_start.end = app.ureg("20 percent")
                 rebar_end = RebarSet(bar_entity, "Apoyo 2")
                 rebar_end.start = app.ureg("80 percent")'''
+
+            if self.selected_bar.behavior == "Viga":
+                self.log_label["text"] = self.code_check.verify_beam(
+                    self.selected_bar)
+            else:
+                self.log_label["text"] = self.code_check.verify_column(
+                    self.selected_bar)
 
             for btn in self.btn_container2_list:
                 btn.destroy()
@@ -289,12 +297,7 @@ class UI:
             #new_button("Apoyo 1", parent=self.btn_container1)
             #new_button("Apoyo 2", parent=self.btn_container1)
 
-            if self.selected_bar.behavior == "Viga":
-                self.log_label["text"] = self.code_check.verify_beam(
-                    self.selected_bar)
-            else:
-                self.log_label["text"] = self.code_check.verify_column(
-                    self.selected_bar)
+
 
             scale = 240
 
