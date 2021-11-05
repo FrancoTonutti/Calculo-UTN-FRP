@@ -272,26 +272,30 @@ class CodeCheckCIRSOC201(Entity):
                                                         element)
         log += log_rebar1
 
-        for rebar in rebar_sets:
-            if rebar.rebar_type is RebarType.DEFAULT:
-                if rebar.location is RebarLocation.LOWER:
-                    rebar.layer1.diam1 = options_rebar1[0]["diam1"]
-                    rebar.layer1.count1 = options_rebar1[0]["count1"]
-                    rebar.layer1.diam2 = options_rebar1[0]["diam2"]
-                    rebar.layer1.count2 = options_rebar1[0]["count2"]
+        enable = False
+
+        if enable:
+
+            for rebar in rebar_sets:
+                if rebar.rebar_type is RebarType.DEFAULT:
+                    if rebar.location is RebarLocation.LOWER and options_rebar1:
+                        rebar.layer1.diam1 = options_rebar1[0]["diam1"]
+                        rebar.layer1.count1 = options_rebar1[0]["count1"]
+                        rebar.layer1.diam2 = options_rebar1[0]["diam2"]
+                        rebar.layer1.count2 = options_rebar1[0]["count2"]
 
 
-                elif rebar.location is RebarLocation.UPPER:
-                    if min_value<0:
-                        rebar.layer1.diam1 = options_rebar2[0]["diam1"]
-                        rebar.layer1.count1 = options_rebar2[0]["count1"]
-                        rebar.layer1.diam2 = options_rebar2[0]["diam2"]
-                        rebar.layer1.count2 = options_rebar2[0]["count2"]
-                    else:
-                        rebar.layer1.diam1 = 10
-                        rebar.layer1.count1 = 2
-                        rebar.layer1.diam2 = 0
-                        rebar.layer1.count2 = 0
+                    elif rebar.location is RebarLocation.UPPER and options_rebar2:
+                        if min_value<0:
+                            rebar.layer1.diam1 = options_rebar2[0]["diam1"]
+                            rebar.layer1.count1 = options_rebar2[0]["count1"]
+                            rebar.layer1.diam2 = options_rebar2[0]["diam2"]
+                            rebar.layer1.count2 = options_rebar2[0]["count2"]
+                        else:
+                            rebar.layer1.diam1 = 10
+                            rebar.layer1.count1 = 2
+                            rebar.layer1.diam2 = 0
+                            rebar.layer1.count2 = 0
 
 
         return log
@@ -370,43 +374,62 @@ class CodeCheckCIRSOC201(Entity):
         options = list()
 
         for size, data in self.reinforcement_bars.items():
+
+            diam1 = data.get("diameter")
+            area1 = data.get("area")
             n = 2
 
             while n*data.get("area") < area:
 
                 for size2, data2 in self.reinforcement_bars.items():
+                    diam2 = data2.get("diameter")
+                    area2 = data2.get("area")
+
+
                     if size2 is size:
                         continue
 
-                    if data.get("diameter") < data2.get("diameter"):
+                    if diam1 < diam2:
                         continue
-
 
                     n2 = 1
 
-                    combinated_area = n * data.get("area") + n2 * data2.get("area")
+                    combinated_area = n * area1 + n2 * area2
 
                     while combinated_area < area:
                         n2 += 1
-                        combinated_area = n * data.get("area") + n2 * data2.get("area")
+                        combinated_area = n * area1 + n2 * area2
 
                     combinated_area = round(combinated_area, 2)
                     combinated_cost = n * data.get("cost") + n2 * data2.get("cost")
-                    reinforcement_width = n * data.get("diameter") + n2 * data2.get("diameter") + cc * 2 + (n + n2-1) *2.5
-                    if reinforcement_width <= width*100:
+                    # reinforcement_width = n * data.get("diameter") + n2 * data2.get("diameter") + cc * 2 + (n + n2-1) *2.5
+
+                    if self.is_valid_layer(width*100, cc, diam1, n, diam2, n2):
                         rebar = "{}Ø{} + {}Ø{} ({} [cm2])".format(n, size, n2, size2, combinated_area)
                         options.append({"data": rebar, "cost": combinated_cost, "diam1": size, "count1": n, "diam2": size2, "count2": n2})
 
                 n += 1
 
-            reinforcement_width = n * data.get("diameter") + cc * 2 + (n - 1) * 2.5
-            if reinforcement_width <= width * 100:
+            #reinforcement_width = n * data.get("diameter") + cc * 2 + (n - 1) * 2.5
+            #if reinforcement_width <= width * 100:
+
+            if self.is_valid_layer(width*100, cc, diam1, n):
                 rebar = "{}Ø{} ({} [cm2])".format(n, size, round(n*data.get("area"), 2))
                 options.append({"data": rebar, "cost": n*data.get("cost"), "diam1": size, "count1": n, "diam2": None, "count2": None})
 
         options = sorted(options, key=lambda x: x["cost"])
 
         return options
+
+    @staticmethod
+    def is_valid_layer(bw, cc, diam1, n1, diam2=0, n2=0, max_layers=2):
+        reinforcement_width = n1 * diam1 + n2 * diam2 + cc * 2 + (n1 + n2 - 1) * 2.5
+
+        if reinforcement_width > bw and n2 == 0:
+
+            pass
+
+        return reinforcement_width <= bw
 
 
 

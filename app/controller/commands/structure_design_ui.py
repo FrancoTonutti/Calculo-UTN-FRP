@@ -11,6 +11,8 @@ from PIL import Image, ImageDraw
 
 class UI:
     def __init__(self, frame):
+        self.selected_rebar_layer_btn = None
+        self.selected_rebar_layer = None
         model_reg = app.model_reg
         entities = model_reg.find_entities("CodeCheckCIRSOC201")
         if entities:
@@ -195,6 +197,24 @@ class UI:
             #image="circle.png"
             alpha=0
             )
+        self.layer_btn_list = []
+        self.layer_btn_container = SimpleFrame(position=[0, 0],
+                                          sizeHint=[1, None],
+                                          size=[None, 30],
+                                          parent=self.subcol_3,
+                                          frameColor=scheme_rgba(
+                                              COLOR_SEC_LIGHT),
+                                          padding=[1, 0, 0, 0],
+                                          alpha=0,
+                                          layout="BoxLayout",
+                                          layoutDir="X",
+                                          margin=[0, 0, 0, 0])
+
+        #self.btn_layer1 = new_button("Capa 1", parent=layer_btn_container)
+        #self.btn_layer2 = new_button("Capa 2", parent=layer_btn_container)
+        #self.btn_layer3 = new_button("Capa 3", parent=layer_btn_container)
+
+        self.layer_prop_editor = PropEditor(self.subcol_3, 300, self.update)
 
         self.image_frame.setTransparency(TransparencyAttrib.MAlpha)
 
@@ -317,8 +337,13 @@ class UI:
             execute("regen_ui")
 
     def open_rebar_set(self, rebar_set, btn):
+        if self.selected_bar is not rebar_set:
+            self.open_rebar_layer(None, None)
+
         self.selected_rebar = rebar_set
         if self.selected_rebar_btn:
+
+
             self.selected_rebar_btn["colorList"] = self.default_colors
 
         self.selected_rebar_btn = btn
@@ -326,6 +351,44 @@ class UI:
             self.selected_rebar_btn["colorList"] = self.selected_colors
 
         self.prop_editor.entity_read(rebar_set)
+
+        for layer_btn in self.layer_btn_list:
+            layer_btn.destroy()
+        self.layer_btn_list.clear()
+
+        for i in range(rebar_set.layers):
+            layer = rebar_set.get_layer(i + 1)
+
+            layer_btn = new_button("Capa %s" % (i+1), parent=self.layer_btn_container,
+                                   command=self.open_rebar_layer, args=[layer])
+
+            layer_btn["extraArgs"] = [layer, layer_btn]
+
+            self.layer_btn_list.append(layer_btn)
+
+            if self.selected_rebar_layer is None:
+                self.open_rebar_layer(layer, layer_btn)
+            elif self.selected_rebar_layer is layer:
+                self.open_rebar_layer(layer, layer_btn)
+
+        execute("regen_ui")
+
+
+
+
+
+    def open_rebar_layer(self, rebar_layer, btn):
+        self.selected_rebar_layer = rebar_layer
+        if self.selected_rebar_layer_btn:
+            self.selected_rebar_layer_btn["colorList"] = self.default_colors
+
+        self.selected_rebar_layer_btn = btn
+        if self.selected_rebar_layer_btn:
+            self.selected_rebar_layer_btn["colorList"] = self.selected_colors
+
+        self.layer_prop_editor.entity_read(rebar_layer)
+
+
 
 
 @command(name="view_design")

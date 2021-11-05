@@ -299,17 +299,37 @@ class PropEditor:
 
         )
         if isinstance(value, bool):
-            entry = SimpleCheckBox(
-                position=[0, 0],
-                size=[None, 20],
-                sizeHint=[0.50, None],
-                parent=self.frame.getCanvas(),
-                command=self.entity_set_prop,
-                extraArgs=[prop],
-                value=value,
-                frameColor="C_WHITE",
-                maxSize=16
-            )
+            if self.entity.is_read_only(prop):
+                set_text = str(value)
+                entry = SimpleLabel(
+                    text_fg=scheme_rgba(COLOR_TEXT_LIGHT_FADE),
+                    orginH="center",
+                    orginV="bottom",
+                    position=[0, 0],
+                    text_scale=(12, 12),
+                    text=set_text,
+                    parent=self.frame.getCanvas(),
+                    size=[None, 20],
+                    sizeHint=[0.50, None],
+                    frameColor="C_WHITE",
+                    alpha=0,
+                    align="left",
+                    textCenterX=False,
+                    padding=[10, 0, 0, 0]
+
+                )
+            else:
+                entry = SimpleCheckBox(
+                    position=[0, 0],
+                    size=[None, 20],
+                    sizeHint=[0.50, None],
+                    parent=self.frame.getCanvas(),
+                    command=self.entity_set_prop,
+                    extraArgs=[prop],
+                    value=value,
+                    frameColor="C_WHITE",
+                    maxSize=16
+                )
         else:
             if self.entity.is_read_only(prop):
                 if isinstance(value, pint.quantity.Quantity):
