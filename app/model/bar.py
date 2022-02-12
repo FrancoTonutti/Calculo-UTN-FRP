@@ -3,7 +3,7 @@ import numpy as np
 from app.view import draw
 from app import app
 from .material import Material
-from .rebar_set import RebarSet
+from .rebar_set import RebarSet, RebarType, RebarLocation
 from . import unit_manager
 
 from typing import TYPE_CHECKING
@@ -360,5 +360,17 @@ class Bar(Entity):
                                                  )
 
         return self.ifc_entity
+
+    def get_lower_main_rebar(self):
+        for rebar in self.rebar_sets:
+            if rebar.rebar_type is RebarType.DEFAULT:
+                if rebar.location is RebarLocation.LOWER:
+                    return rebar
+
+    def get_upper_main_rebar(self):
+        for rebar in self.rebar_sets:
+            if rebar.rebar_type is RebarType.DEFAULT:
+                if rebar.location is RebarLocation.UPPER:
+                    return rebar
 
 

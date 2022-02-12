@@ -119,62 +119,77 @@ class CodeCheckCIRSOC201(Entity):
         img1.line(shape, fill=draw_color, width=dbe)
 
         for rebar in element.rebar_sets:
+
+            layer_spacing = unit_manager.convert_to_m(rebar.layer_spacing)
+
+            layer_spacing = apply_scale(layer_spacing, scale)
+
             if rebar.rebar_type is RebarType.DEFAULT:
                 if rebar.location is RebarLocation.UPPER:
 
-                    if rebar.layer1:
+                    for layer_index in range(rebar.layers):
+                        layer = rebar.get_layer(layer_index+1)
 
-                        b = bw - 2*cc - 2 * dbe - scale*rebar.layer1.diam1/1000 - radius*0.8 -1
+                        if layer:
 
-                        count_bars = rebar.layer1.count1 + rebar.layer1.count2
+                            b = bw - 2*cc - 2 * dbe - scale*layer.diam1/1000 - radius*0.8 -1
 
-                        spacing = b / (count_bars - 1)
-                        db0 = int(math.ceil(
-                            rebar.layer1.diam1 / 1000 * scale))
+                            count_bars = layer.count1 + layer.count2
 
-                        for i in range(count_bars):
-
-                            if i<rebar.layer1.count1/2 or i>= rebar.layer1.count1/2 +rebar.layer1.count2:
-                                db = int(math.ceil(
-                                    rebar.layer1.diam1/1000 * scale))
+                            if count_bars > 1:
+                                spacing = b / (count_bars - 1)
                             else:
-                                db = int(math.ceil(
-                                    rebar.layer1.diam2 / 1000 * scale))
+                                spacing = 0
+
+                            db0 = int(math.ceil(
+                                layer.diam1 / 1000 * scale))
+
+                            for i in range(count_bars):
+
+                                if i<layer.count1/2 or i >= layer.count1/2 + layer.count2:
+                                    db = int(math.ceil(
+                                        layer.diam1/1000 * scale))
+                                else:
+                                    db = int(math.ceil(
+                                        layer.diam2 / 1000 * scale))
 
 
 
-                            self.draw_bar(img1,
-                                          cc + dbe + radius * 0.4 + db0 / 2 + i * spacing,
-                                          cc + dbe + db / 2 + radius * 0.4, db,
-                                          draw_color)
+                                self.draw_bar(img1,
+                                              cc + dbe + radius * 0.4 + db0 / 2 + i * spacing,
+                                              cc + dbe + db / 2 + radius * 0.4 + layer_spacing*layer_index, db,
+                                              draw_color)
 
                 elif rebar.location is RebarLocation.LOWER:
-                    if rebar.layer1:
+                    for layer_index in range(rebar.layers):
+                        layer = rebar.get_layer(layer_index+1)
 
-                        if isinstance(rebar.layer1.diam1, str):
-                            print("layer1.diam1", rebar.layer1.diam1)
+                        if layer:
 
-                        b = bw - 2 * cc - 2 * dbe - scale * rebar.layer1.diam1 / 1000 - radius * 0.8 - 1
+                            if isinstance(rebar.layer1.diam1, str):
+                                print("layer1.diam1", rebar.layer1.diam1)
 
-                        count_bars = rebar.layer1.count1 + rebar.layer1.count2
+                            b = bw - 2 * cc - 2 * dbe - scale * layer.diam1 / 1000 - radius * 0.8 - 1
 
-                        spacing = b / (count_bars - 1)
-                        db0 = int(math.ceil(
-                            rebar.layer1.diam1 / 1000 * scale))
+                            count_bars = layer.count1 + layer.count2
 
-                        for i in range(count_bars):
+                            spacing = b / (count_bars - 1)
+                            db0 = int(math.ceil(
+                                layer.diam1 / 1000 * scale))
 
-                            if i < rebar.layer1.count1 / 2 or i >= rebar.layer1.count1 / 2 + rebar.layer1.count2:
-                                db = int(math.ceil(
-                                    rebar.layer1.diam1 / 1000 * scale))
-                            else:
-                                db = int(math.ceil(
-                                    rebar.layer1.diam2 / 1000 * scale))
+                            for i in range(count_bars):
 
-                            self.draw_bar(img1,
-                                          cc + dbe + radius * 0.4 + db0 / 2 + i * spacing,
-                                          h - cc - dbe - db / 2 - radius * 0.4, db,
-                                          draw_color)
+                                if i < layer.count1 / 2 or i >= layer.count1 / 2 + layer.count2:
+                                    db = int(math.ceil(
+                                        layer.diam1 / 1000 * scale))
+                                else:
+                                    db = int(math.ceil(
+                                        layer.diam2 / 1000 * scale))
+
+                                self.draw_bar(img1,
+                                              cc + dbe + radius * 0.4 + db0 / 2 + i * spacing,
+                                              h - cc - dbe - db / 2 - radius * 0.4 - layer_spacing*layer_index, db,
+                                              draw_color)
 
 
 
@@ -230,7 +245,12 @@ class CodeCheckCIRSOC201(Entity):
         dbe = 0.006
         db = 0.02
 
-        d = h - cc - dbe - db/2
+        rebar = element.get_lower_main_rebar()
+        s = rebar.layer_spacing
+        s = unit_manager.convert_to_m(s)
+        layer_count = rebar.layers
+
+        d = h - cc - dbe - db/2 - (layer_count - 1) * (s/2)
 
         d = math.floor(d * 100)/100
 
@@ -364,9 +384,40 @@ class CodeCheckCIRSOC201(Entity):
         else:
             """Armadura doble"""
 
-            log += "Armadura doble"
+            log += "Se requiere armadura doble\n\n"
+            log += "Mn = Mc + ΔMn\n"
+            Mc = fc * bw * Ka_max * d**2 * (1 - Ka_max/2) * 1000
+            log += "Mc = %s [KNm]\n" % round(Mc, 2)
+            delta_Mn = Mn - Mc
+            log += "ΔMn = %s [KNm]\n" % round(delta_Mn, 2)
+            c = 0.375 * d
+            log += "c = %s [m]\n" % round(c, 2)
 
-        log += "\n##############"
+            upper_rebar = element.get_upper_main_rebar()
+            layer_count = upper_rebar.layers
+            s = upper_rebar.layer_spacing
+            s = unit_manager.convert_to_m(s)
+            #db = upper_rebar.layer1.diam1/1000
+            dbe = 0.006
+            db = 0.02
+
+            cc = unit_manager.convert_to_m(element.cc)
+
+            d_prima_s = cc + dbe + db / 2 - (layer_count - 1) * (s / 2)
+
+            d_prima_s = math.floor(d_prima_s * 100) / 100
+
+            epsilon_s = 0.003 * (c - d_prima_s)/c
+            log += "ε´s = %s [m]\n\n" % round(epsilon_s, 4)
+            log += "Se adopta f's = fy\n\n"
+
+            as_prima = delta_Mn / ((fy/10) * (d-d_prima_s))
+            log += "A´s = %s [cm2]\n" % round(as_prima, 2)
+
+            As = 0.85 * fc * bw * Ka_max * d / fy * (100 ** 2) + as_prima # [cm2]
+            log += "As = %s [cm2]\n\n" % round(As, 2)
+
+            #log += "\n##############"
 
         return log, options
 

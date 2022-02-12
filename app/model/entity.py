@@ -243,6 +243,8 @@ class Entity:
         else:
             model_reg.entity_register.update({self.entity_id: self})
 
+        self.registered = True
+
     def unregister(self):
         print("unregister entity")
         model_reg = app.model_reg

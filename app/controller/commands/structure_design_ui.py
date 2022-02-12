@@ -337,7 +337,7 @@ class UI:
             execute("regen_ui")
 
     def open_rebar_set(self, rebar_set, btn):
-        if self.selected_bar is not rebar_set:
+        if self.selected_rebar is not rebar_set:
             self.open_rebar_layer(None, None)
 
         self.selected_rebar = rebar_set

@@ -48,7 +48,8 @@ class RebarSet(Entity):
             ent.start = app.ureg(obj.get("start").replace("%", "percent"))
             ent.end = app.ureg(obj.get("end").replace("%", "percent"))
             ent.shape_code = obj.get("shape_code")
-
+            if obj.get("layer_spacing"):
+                ent.layer_spacing = unit_manager.ureg(obj.get("layer_spacing"))
 
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
 
@@ -58,17 +59,24 @@ class RebarSet(Entity):
 
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
 
-            ent.layer1.delete()
+            layers = obj.get("layers")
+            if layers:
+                layers = int(layers)
+                ent.layers = layers
 
-            ent.layer1 = get("layer1")
-            if ent.layer1:
-                ent.layer1.parent = ent
-            ent.layer2 = get("layer2")
-            if ent.layer2:
-                ent.layer2.parent = ent
-            ent.layer3 = get("layer3")
-            if ent.layer3:
-                ent.layer3.parent = ent
+                #ent.layer1.delete()
+
+                for i in range(layers):
+                    layer = ent.get_layer(i + 1)
+                    layer_name = "layer%s" % (i + 1)
+                    print(layer_name)
+                    layer.delete()
+
+                    layer_entity = get(layer_name)
+
+                    layer_entity.parent = ent
+
+                    setattr(ent, layer_name, layer_entity)
 
 
     def __init__(self, parent, name, location, set_id=None):
@@ -184,6 +192,8 @@ class RebarSet(Entity):
         area = 0
         for i in range(self.layers):
             area += self.get_layer(i+1).area
+
+        area = round(area, 2)
 
         return "{} [cm2]".format(area)
 

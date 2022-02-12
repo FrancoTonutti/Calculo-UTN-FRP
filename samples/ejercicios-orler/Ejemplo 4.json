@@ -1,0 +1,324 @@
+{
+    "Bar": {
+        "04siHq2E11IQXOsSfWv1iE": {
+            "behavior": "Viga",
+            "cc": "2 cm",
+            "end": "2Gbd2UgzP6l8amvU6fBLQW",
+            "entity_id": "04siHq2E11IQXOsSfWv1iE",
+            "loads": [
+                "1E7ARVTs1D0QLh0E762JGl",
+                "230B8jaVz71uO_GZ79gEJM"
+            ],
+            "material": "1LRnCbrfnAYRcieiTF8gSR",
+            "name": "V101",
+            "rebar_sets": [
+                "05VHjpCw1FEB3xwwfiUHk8",
+                "0QdXSkPnDElOYtGrG8mBcK"
+            ],
+            "registered": true,
+            "section": "0HU9hzZcbDk8eeYlsDnt84",
+            "start": "1fTkdV0sr7nvcnTaoAIMn8"
+        }
+    },
+    "CodeCheckCIRSOC201": {},
+    "Load": {
+        "1E7ARVTs1D0QLh0E762JGl": {
+            "angle": 90.0,
+            "entity_id": "1E7ARVTs1D0QLh0E762JGl",
+            "load_type": "D",
+            "parent": "04siHq2E11IQXOsSfWv1iE",
+            "registered": true,
+            "scale": 0.25,
+            "value": "16.0 kN"
+        },
+        "230B8jaVz71uO_GZ79gEJM": {
+            "angle": 90.0,
+            "entity_id": "230B8jaVz71uO_GZ79gEJM",
+            "load_type": "L",
+            "parent": "04siHq2E11IQXOsSfWv1iE",
+            "registered": true,
+            "scale": 0.25,
+            "value": "8.0 kN"
+        }
+    },
+    "LoadCombination": {
+        "07c7d76U1D2uGB4UcJNDLb": {
+            "entity_id": "07c7d76U1D2uGB4UcJNDLb",
+            "equation": "1.4 D",
+            "factors": {
+                "0gtlb4Niv8Kw9fSH8rwUwR": 1.4
+            },
+            "index": 1,
+            "name": "12-1",
+            "registered": true
+        },
+        "1xRXH3xZr6$OuMMEXzApav": {
+            "entity_id": "1xRXH3xZr6$OuMMEXzApav",
+            "equation": "1.2 D + 1.6 L",
+            "factors": {
+                "0gtlb4Niv8Kw9fSH8rwUwR": 1.2,
+                "3AVAQwXoDAFA2yJjB8UURX": 1.6
+            },
+            "index": 2,
+            "name": "12-2",
+            "registered": true
+        }
+    },
+    "LoadType": {
+        "0gtlb4Niv8Kw9fSH8rwUwR": {
+            "entity_id": "0gtlb4Niv8Kw9fSH8rwUwR",
+            "index": 1,
+            "load_code": "D",
+            "name": "Peso propio",
+            "own_weight": true,
+            "registered": true
+        },
+        "3AVAQwXoDAFA2yJjB8UURX": {
+            "entity_id": "3AVAQwXoDAFA2yJjB8UURX",
+            "index": 2,
+            "load_code": "L",
+            "name": "Carga de uso",
+            "own_weight": false,
+            "registered": true
+        }
+    },
+    "Material": {
+        "0X06GGxsTB0g$QOIny0qE4": {
+            "char_resistance": "15 MPa",
+            "elastic_modulus": "18203.02 MPa",
+            "entity_id": "0X06GGxsTB0g$QOIny0qE4",
+            "is_default_material": false,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-15",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        },
+        "1LRnCbrfnAYRcieiTF8gSR": {
+            "char_resistance": "25 MPa",
+            "elastic_modulus": "23500.0 MPa",
+            "entity_id": "1LRnCbrfnAYRcieiTF8gSR",
+            "is_default_material": true,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-25",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        },
+        "1VA4txJdH7LBhXxxg7L5Uc": {
+            "char_resistance": "35 MPa",
+            "elastic_modulus": "27805.57 MPa",
+            "entity_id": "1VA4txJdH7LBhXxxg7L5Uc",
+            "is_default_material": false,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-35",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        },
+        "1d2FFU8cLDru12jV9G9u5v": {
+            "char_resistance": "60 MPa",
+            "elastic_modulus": "36406.04 MPa",
+            "entity_id": "1d2FFU8cLDru12jV9G9u5v",
+            "is_default_material": false,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-60",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        },
+        "20mclxm1r4QAOft41a23Qp": {
+            "char_resistance": "20 MPa",
+            "elastic_modulus": "21019.04 MPa",
+            "entity_id": "20mclxm1r4QAOft41a23Qp",
+            "is_default_material": false,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-20",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        },
+        "22Fa8ajHL32gSxMnEqVzT0": {
+            "char_resistance": "30 MPa",
+            "elastic_modulus": "25742.96 MPa",
+            "entity_id": "22Fa8ajHL32gSxMnEqVzT0",
+            "is_default_material": false,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-30",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        },
+        "2s7NDNpbbDwxbSjNlWXTx1": {
+            "char_resistance": "50 MPa",
+            "elastic_modulus": "33234.02 MPa",
+            "entity_id": "2s7NDNpbbDwxbSjNlWXTx1",
+            "is_default_material": false,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-50",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        },
+        "3dyq7lFOj8vvRGigbeJl41": {
+            "char_resistance": "40 MPa",
+            "elastic_modulus": "29725.41 MPa",
+            "entity_id": "3dyq7lFOj8vvRGigbeJl41",
+            "is_default_material": false,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-40",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        },
+        "3hVAygwCnFNhdNxphwwkHX": {
+            "char_resistance": "45 MPa",
+            "elastic_modulus": "31528.56 MPa",
+            "entity_id": "3hVAygwCnFNhdNxphwwkHX",
+            "is_default_material": false,
+            "material_group": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "H-45",
+            "registered": true,
+            "specific_weight": "24.0 kN / m ** 3",
+            "tmn": "25 mm"
+        }
+    },
+    "MaterialGroup": {
+        "0k5VB0UArFyvKV4WbTFGug": {
+            "entity_id": "0k5VB0UArFyvKV4WbTFGug",
+            "name": "Hormig\u00f3n",
+            "registered": true
+        }
+    },
+    "Node": {
+        "1fTkdV0sr7nvcnTaoAIMn8": {
+            "entity_id": "1fTkdV0sr7nvcnTaoAIMn8",
+            "fixed_rx": false,
+            "fixed_ry": false,
+            "fixed_rz": false,
+            "fixed_ux": true,
+            "fixed_uy": false,
+            "fixed_uz": true,
+            "index": 0,
+            "loads": [],
+            "name": "",
+            "registered": true,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "2Gbd2UgzP6l8amvU6fBLQW": {
+            "entity_id": "2Gbd2UgzP6l8amvU6fBLQW",
+            "fixed_rx": false,
+            "fixed_ry": false,
+            "fixed_rz": false,
+            "fixed_ux": false,
+            "fixed_uy": false,
+            "fixed_uz": true,
+            "index": 1,
+            "loads": [],
+            "name": "",
+            "registered": true,
+            "x": 5.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    },
+    "ProfileSectionI": {
+        "2F0Xpw8an6NxJBVCkrbQq5": {
+            "bf": 46,
+            "d": 80,
+            "entity_id": "2F0Xpw8an6NxJBVCkrbQq5",
+            "r": 5,
+            "registered": true,
+            "tf": 5.2,
+            "tw": 3.8
+        }
+    },
+    "RebarLayer": {
+        "2yvjYh7lf4Bw6E15$2fDpc": {
+            "count1": 2,
+            "count2": 0,
+            "diam1": 10,
+            "diam2": 0,
+            "entity_id": "2yvjYh7lf4Bw6E15$2fDpc",
+            "parent": "05VHjpCw1FEB3xwwfiUHk8",
+            "registered": true
+        },
+        "33W8$OxFPFrwDPGQn99q$C": {
+            "count1": 2,
+            "count2": 1,
+            "diam1": 20,
+            "diam2": 8,
+            "entity_id": "33W8$OxFPFrwDPGQn99q$C",
+            "parent": "0QdXSkPnDElOYtGrG8mBcK",
+            "registered": true
+        }
+    },
+    "RebarSet": {
+        "05VHjpCw1FEB3xwwfiUHk8": {
+            "end": "100 %",
+            "entity_id": "05VHjpCw1FEB3xwwfiUHk8",
+            "layer1": "2yvjYh7lf4Bw6E15$2fDpc",
+            "layer2": "NoneType",
+            "layer3": "NoneType",
+            "layer_spacing": "3 cm",
+            "layers": 1,
+            "location": 1,
+            "name": "Perchas",
+            "parent": "04siHq2E11IQXOsSfWv1iE",
+            "rebar_type": 0,
+            "registered": true,
+            "shape_code": 0,
+            "start": "0 %",
+            "total_section": "1.57 [cm2]"
+        },
+        "0QdXSkPnDElOYtGrG8mBcK": {
+            "end": "100 %",
+            "entity_id": "0QdXSkPnDElOYtGrG8mBcK",
+            "layer1": "33W8$OxFPFrwDPGQn99q$C",
+            "layer2": "NoneType",
+            "layer3": "NoneType",
+            "layer_spacing": "3 cm",
+            "layers": 1,
+            "location": 0,
+            "name": "Tramo",
+            "parent": "04siHq2E11IQXOsSfWv1iE",
+            "rebar_type": 0,
+            "registered": true,
+            "shape_code": 0,
+            "start": "0 %",
+            "total_section": "6.79 [cm2]"
+        }
+    },
+    "Section": {
+        "0HU9hzZcbDk8eeYlsDnt84": {
+            "entity_id": "0HU9hzZcbDk8eeYlsDnt84",
+            "registered": true,
+            "size": [
+                0.2,
+                0.5
+            ]
+        }
+    },
+    "View": {
+        "1e1A2Zyz55jPuta9JtHnEo": {
+            "entity_id": "1e1A2Zyz55jPuta9JtHnEo",
+            "registered": true,
+            "scale": 1,
+            "show_combination": 1,
+            "show_load": "D",
+            "show_moment": true,
+            "show_normal": false,
+            "show_shear": false,
+            "work_plane_height": "0.0",
+            "work_plane_vect": "0, 1, 0"
+        }
+    },
+    "ViewGizmoZone": {
+        "03oN_lFJjEmeUsfrwmljHs": {
+            "entity_id": "03oN_lFJjEmeUsfrwmljHs",
+            "registered": true
+        }
+    }
+}
