@@ -6,6 +6,7 @@ from .layout_controller import Layout
 from app.view import simpleui
 from app.view.interface.color_scheme import *
 from ...model import View
+from app.model.transaction import Transaction
 
 
 def new_button(text, x, y, colors=None, command=None, args=None, parent=None, size=None):
@@ -61,7 +62,12 @@ class TabManager:
         self.layout_area = layout.view_tabs_area
         self.tabs = list()
         tab = Tab("Vista 3D", frame=layout.work_container)
+
+        tr = Transaction()
+        tr.start("Create View")
         View()
+        tr.commit()
+
         tab.disable_close = True
 
         self.tabs.append(tab)

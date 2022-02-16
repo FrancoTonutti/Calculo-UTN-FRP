@@ -14,6 +14,8 @@ from app.model import *
 from app.model.profile_sections.profile_section_I import ProfileSectionI
 import pint
 
+from app.model.transaction import Transaction
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -25,6 +27,8 @@ from app.controller.console import command, execute
 
 @command(name="new_file", shortcut="s")
 def new_file():
+    tr = Transaction()
+    tr.start("Create new file")
 
 
     model = app.model_reg
@@ -47,7 +51,10 @@ def new_file():
         if h_class == 30:
             hor.set_default_material()
 
-    w80 = ProfileSectionI(80, 46, 5.2, 3.8, 5)
-    print("Ix: {}".format(w80.inertia_x()))
+    #w80 = ProfileSectionI(80, 46, 5.2, 3.8, 5)
+    #print("Ix: {}".format(w80.inertia_x()))
+
+    tr.commit()
 
     execute("regen")
+

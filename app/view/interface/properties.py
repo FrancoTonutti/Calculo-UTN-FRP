@@ -14,6 +14,7 @@ from panda3d.core import WindowProperties
 from direct.gui.DirectScrolledFrame import *
 
 from .tools import create_label
+from ...model.transaction import Transaction
 
 
 def execute_console(cmd):
@@ -177,7 +178,12 @@ class PropertiesEditor(DirectObject):
         if type(old_value) is type(new_value):
             if self.entity is not None:
                 print("atributo establecido {}: {}".format(name,new_value))
+
+                tr = Transaction()
+                tr.start("Edit propery")
                 setattr(self.entity, name, new_value)
+                tr.commit()
+
                 print("verif {}: {}".format(name, getattr(self.entity, name, "undefined")))
         else:
             if self.entity is not None:
@@ -191,7 +197,10 @@ class PropertiesEditor(DirectObject):
                         entry.defocus()
 
             if self.entity:
+                tr = Transaction()
+                tr.start("Deselect entity")
                 self.entity.is_selected = False
+                tr.commit()
                 if self.entity.geom:
                     for geom in self.entity.geom:
                         if geom:
@@ -206,7 +215,10 @@ class PropertiesEditor(DirectObject):
             if entity:
                 self.entity = entity
                 if self.entity:
+                    tr = Transaction()
+                    tr.start("Select entity")
                     self.entity.is_selected = True
+                    tr.commit()
                     if self.entity.geom is not None:
                         for geom in self.entity.geom:
                             if geom:

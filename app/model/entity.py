@@ -1,6 +1,7 @@
 from panda3d.core import GeomNode
 
 from app import app
+from .transaction import TM, SetAttrAction
 import uuid
 
 
@@ -25,6 +26,7 @@ LANG = {
 
 
 class Entity:
+    global TM
     def __init__(self, set_id=None):
         #self._entity_id = str(uuid.uuid1())
         if not set_id:
@@ -210,16 +212,26 @@ class Entity:
             if prop not in self._bind_model:
                 self._bind_model.append(prop)
 
-    def __setattr__(self, name, value):
-        update = False
-        if hasattr(self, "_bind_model") and name in self._bind_model:
-            if getattr(self, name) != value:
-                update = True
-                
-        super(Entity, self).__setattr__(name, value)
+    def __setattr__(self, name, new_value):
 
-        if update:
-            self.update_tree()
+        old_value = getattr(self, name)
+
+        if old_value != new_value:
+            active_transaction = TM.get_active_transaction()
+            if active_transaction:
+                update = False
+                if hasattr(self, "_bind_model") and name in self._bind_model:
+                    update = True
+
+                super(Entity, self).__setattr__(name, new_value)
+
+                action = SetAttrAction(self, name, old_value, new_value)
+                active_transaction.register_action(action)
+
+                if update:
+                    self.update_tree()
+            else:
+                raise Exception("No existe una transacción activa")
 
     def register(self):
         print("NEW REGISTER {}".format(self.entity_id))

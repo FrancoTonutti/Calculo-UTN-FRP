@@ -5,6 +5,7 @@ from app import app
 from direct.showbase.DirectObject import DirectObject
 import numpy as np
 from app.model import View
+from app.model.transaction import Transaction
 from app.model.view_gizmo import ViewGizmoZone
 
 """if os.name == 'nt':
@@ -87,8 +88,12 @@ class CameraControl(DirectObject):
             # gizmo_geom.setColorScale(1,1,1,1)
             gizmo_geom.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0.25))
 
+            tr = Transaction()
+            tr.start("Create ViewGizmoZone")
             gizmo = ViewGizmoZone()
+
             gizmo.set_geom(gizmo_geom)
+            tr.commit()
             gizmo_geom.node().setBounds(BoundingSphere(Point3(0, 0, 0), 10))
             gizmo_geom.node().setFinal(True)
 
@@ -537,7 +542,10 @@ class CameraControl(DirectObject):
                     entities = app.model_reg.get("View", {})
 
                     if entities is None or len(entities) is 0:
+                        tr = Transaction("Create")
+                        tr.start("Create View")
                         View()
+                        tr.commit()
 
                     entities = app.model_reg.get("View")
                     entity = list(entities.values())[0]

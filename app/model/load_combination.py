@@ -103,7 +103,7 @@ class LoadCombination(Entity):
             entity._index = i
             i += 1
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, name, new_value):
         '''try:
             super().__setattr__(key, value)
         except AttributeError as ex:
@@ -126,10 +126,10 @@ class LoadCombination(Entity):
         for entity in entities:
             if entity.load_code == key:
                 print("set_factor")
-                self.set_factor(entity, value)
+                self.set_factor(entity, new_value)
                 break
         else:
-            super().__setattr__(key, value)
+            super().__setattr__(key, new_value)
 
 
     def __getattr__(self, key):
