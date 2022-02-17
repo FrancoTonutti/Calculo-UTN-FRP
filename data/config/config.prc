@@ -10,3 +10,4 @@ egg-retesselate-coplanar 0
 egg-mesh 0
 
 textures-power-2 0
+notify-level-glgsg fatal
