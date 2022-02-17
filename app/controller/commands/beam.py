@@ -8,6 +8,7 @@ import numpy as np
 from app.controller.console import command, execute
 
 # Creamos una variable global coredata que almacenará información sobre el modulo
+from app.model.transaction import Transaction
 
 coredata = dict()
 
@@ -51,6 +52,9 @@ def bar_task(task):
         x0, y0, z0 = coredata["start"]
         x1, y1, z1 = coredata["end"]
 
+        tr = Transaction()
+        tr.start("Create beam")
+
         if coredata["last_node"] is None:
             start_node = Node(x0, y0, z0)
         else:
@@ -70,6 +74,8 @@ def bar_task(task):
         coredata["start"] = coredata["end"]
         coredata["line"].setVertex(0, x1, y1, z1)
         coredata["end"] = None
+
+        tr.commit()
 
         #execute("regen")
 

@@ -213,25 +213,28 @@ class Entity:
                 self._bind_model.append(prop)
 
     def __setattr__(self, name, new_value):
+        
+        if hasattr(self, name):
+            old_value = getattr(self, name)
 
-        old_value = getattr(self, name)
+            if old_value != new_value:
+                active_transaction = TM.get_active_transaction()
+                if active_transaction:
+                    update = False
+                    if hasattr(self, "_bind_model") and name in self._bind_model:
+                        update = True
 
-        if old_value != new_value:
-            active_transaction = TM.get_active_transaction()
-            if active_transaction:
-                update = False
-                if hasattr(self, "_bind_model") and name in self._bind_model:
-                    update = True
+                    super(Entity, self).__setattr__(name, new_value)
 
-                super(Entity, self).__setattr__(name, new_value)
+                    action = SetAttrAction(self, name, old_value, new_value)
+                    active_transaction.register_action(action)
 
-                action = SetAttrAction(self, name, old_value, new_value)
-                active_transaction.register_action(action)
-
-                if update:
-                    self.update_tree()
-            else:
-                raise Exception("No existe una transacción activa")
+                    if update:
+                        self.update_tree()
+                else:
+                    raise Exception("No existe una transacción activa")
+        else:
+            super(Entity, self).__setattr__(name, new_value)
 
     def register(self):
         print("NEW REGISTER {}".format(self.entity_id))
