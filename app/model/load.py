@@ -50,11 +50,20 @@ class Load(Entity):
         self.show_properties("value", "angle", "load_type")
         self.set_prop_name(value="Valor", angle="Ángulo", load_type="Tipo")
         self.bind_to_model("value", "angle")
-        self.parent.add_child_model(self)
-        self.parent.add_load(self)
+        if parent:
+            self.parent.add_child_model(self)
+            self.parent.add_load(self)
 
         register(self)
         self.create_model()
+
+    def set_parent(self, parent):
+        self.parent = parent
+        if parent:
+            self.parent.add_child_model(self)
+            self.parent.add_load(self)
+
+            self.create_model()
 
     def create_model(self):
         if isinstance(self.parent, Node):

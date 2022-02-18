@@ -4,6 +4,9 @@ class TransactionManager:
         self.history = list()
         self.history_position = -1
 
+    def get_root_transaction(self):
+        return self.root_transaction
+
     def get_active_transaction(self):
         if self.root_transaction:
             tr = self.root_transaction
@@ -37,6 +40,19 @@ class Action:
     def redo(self):
         pass
 
+class EntityCreationAction(Action):
+    def __init__(self, obj, args=None):
+        super().__init__()
+        self.obj = obj
+        self.args = args
+
+    def undo(self):
+        print("EntityCreationAction undo")
+        print(self)
+        self.obj.delete()
+
+    def redo(self):
+        pass
 
 class SetAttrAction(Action):
     def __init__(self, obj, attr, old_value, new_value):

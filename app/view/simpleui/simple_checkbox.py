@@ -8,7 +8,7 @@ from direct.gui.DirectCheckButton import *
 class SimpleCheckBox(SimpleFrame):
     def __init__(self, parent=None, **kw):
 
-        self.circle = loader.loadModel("data/geom/round_box.egg")
+        self.circle = loader.loadModel("data/geom/square.egg")
 
         # self.circle.node().setAttrib(ShadeModelAttrib.make(ShadeModelAttrib.MSmooth))
 
@@ -26,6 +26,8 @@ class SimpleCheckBox(SimpleFrame):
             ('extraArgs', [], None),
             ('maxSize', 400, None),
             ('focus', False, None),
+            ('colorDisabled', (0, 0, 0, 1), self.set_checkbox_colors),
+            ('colorEnabled', (1, 1, 1, 1), self.set_checkbox_colors),
 
 
         )
@@ -42,7 +44,7 @@ class SimpleCheckBox(SimpleFrame):
                                                geom_scale=(1, 1, 1)
                                                )
 
-        self.comp_frame.setColorScale(0, 0, 0, 1)
+
 
         self.comp_content = self.createcomponent("content", (), None,
                                                  SimpleFrame, (self,),
@@ -50,10 +52,15 @@ class SimpleCheckBox(SimpleFrame):
                                                  geom=self.circle,
                                                  geom_scale=(1, 1, 1)
                                                  )
-        self.comp_content.setColorScale(1, 1, 1, 1)
+
 
         self.initialiseoptions(SimpleCheckBox)
         self.bind(DGG.B1PRESS, self.toggle)
+
+    def set_checkbox_colors(self):
+        self.comp_content.setColorScale(self["colorDisabled"])
+        self.comp_frame.setColorScale(self["colorEnabled"])
+
 
     def toggle(self, args):
         self['value'] = not self['value']
@@ -76,10 +83,12 @@ class SimpleCheckBox(SimpleFrame):
 
         check_size = min(width, height, self['maxSize'])
         self.comp_frame.setScale(check_size, 1, check_size)
-        self.comp_content.setScale(check_size-2, 1, check_size-2)
+        self.comp_content.setScale(check_size, 1, check_size)
 
-        self.comp_frame["position"] = [width/2, height/2]
-        self.comp_content["position"] = [width / 2, height / 2]
+        padding = self["padding"]
+
+        self.comp_frame["position"] = [check_size/2+padding[0], height/2]
+        self.comp_content["position"] = [check_size/2+padding[0], height / 2]
 
         #print("super().set_size()",  self.comp_frame.getScale())
 

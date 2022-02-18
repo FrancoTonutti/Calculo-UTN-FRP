@@ -4,6 +4,9 @@ from app.model import Diagram
 from app.controller.commands.Tomas import calculo
 
 from typing import TYPE_CHECKING
+
+from app.model.transaction import Transaction
+
 if TYPE_CHECKING:
     # Imports only for IDE type hints
     from app.view.interface.console_ui import ConsoleUI
@@ -59,6 +62,8 @@ def start_analysis():
         v_global_references = []
         i = 0
         node_element: Node
+        tr = Transaction()
+        tr.start()
         for node_element in model.get_nodes():
             node_element.index = i
             v_global_references.append({"index": i, "node": node_element, "pos": 0, "name": "x"})
@@ -85,7 +90,7 @@ def start_analysis():
             v_global_fe[i:i + 3, :] += v_forces_ext
 
             i += 1
-
+        tr.commit()
         v_global_references = np.array(v_global_references)
 
         bar_element: Bar
@@ -437,8 +442,11 @@ def start_analysis():
                              0.75 * long,
                              1.00 * long]"""
 
+                tr = Transaction()
+                tr.start()
                 bar_element.max_moment = round(np.max(v_moment), 2)
                 bar_element.min_moment = round(np.min(v_moment), 2)
+
 
                 v_shear = np.column_stack([v_x_coord, v_shear])
                 v_normal = np.column_stack([v_x_coord, v_normal])
@@ -459,6 +467,7 @@ def start_analysis():
                 diagram = Diagram(bar_element, combination, "M", v_moment)
                 #bar_element.set_analysis_results(combination, "moment_diagram",diagram)
 
+                tr.commit()
 
 
         else:

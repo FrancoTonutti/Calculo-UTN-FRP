@@ -1,7 +1,7 @@
 from panda3d.core import GeomNode
 
 from app import app
-from .transaction import TM, SetAttrAction
+from .transaction import TM, SetAttrAction, EntityCreationAction
 import uuid
 
 
@@ -28,27 +28,33 @@ LANG = {
 class Entity:
     global TM
     def __init__(self, set_id=None):
-        #self._entity_id = str(uuid.uuid1())
-        if not set_id:
-            self._entity_id = guid.new()
+        active_transaction = TM.get_active_transaction()
+        if active_transaction:
+            action = EntityCreationAction(self)
+            active_transaction.register_action(action)
+
+            if not set_id:
+                self._entity_id = guid.new()
+            else:
+                self._entity_id = set_id
+
+            self._geom = None
+            self._editor_properties = []
+            self._read_only = []
+            self._namespace = dict()
+            self._child_models = list()
+            self._bind_model = list()
+            self._analysis_results = dict()
+            self._temp_properties = []
+            self.is_selectable = True
+            self.is_editable = True
+            self.is_selected = False
+            self.ifc_entity = None
+            self.enabled_save = True
+
+            self.register()
         else:
-            self._entity_id = set_id
-
-        self._geom = None
-        self._editor_properties = []
-        self._read_only = []
-        self._namespace = dict()
-        self._child_models = list()
-        self._bind_model = list()
-        self._analysis_results = dict()
-        self._temp_properties = []
-        self.is_selectable = True
-        self.is_editable = True
-        self.is_selected = False
-        self.ifc_entity = None
-        self.enabled_save = True
-
-        self.register()
+            raise Exception("No existe una transacción activa")
 
     def __enter__(self):
         return self
@@ -236,8 +242,12 @@ class Entity:
         else:
             super(Entity, self).__setattr__(name, new_value)
 
+    @property
+    def category_name(self):
+        return type(self).__name__
+
     def register(self):
-        print("NEW REGISTER {}".format(self.entity_id))
+        print("NEW REGISTER {}: {}".format(self.entity_id, self.category_name))
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
 
@@ -252,13 +262,19 @@ class Entity:
 
         # Agregamos el modelo al diccionario
         category_dict.update({self.entity_id: self})
+        print("register category_dict")
+        print(category_dict)
 
         if self.entity_id in model_reg.entity_register:
             raise Exception("ID duplicada")
         else:
             model_reg.entity_register.update({self.entity_id: self})
 
+            #action = EntityRegisterAction(self)
+            #active_transaction.register_action(action)
+
         self.registered = True
+
 
     def unregister(self):
         print("unregister entity")
@@ -270,6 +286,8 @@ class Entity:
         category_dict = model_reg.get(name, None)
 
         # Eliminamos la entidad del diccionario
+        print(self.registered)
+        print(category_dict)
         category_dict.pop(self.entity_id)
         model_reg.entity_register.pop(self.entity_id)
 
@@ -290,6 +308,7 @@ class Entity:
 
 
 def register(entity):
+    return None
     print("OLD REGISTER {}".format(entity.entity_id))
     # Obtenemos el registro del modelo
     model_reg = app.model_reg

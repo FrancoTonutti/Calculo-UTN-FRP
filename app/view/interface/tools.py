@@ -3,6 +3,7 @@ from enum import Enum
 import pint
 
 from app import app
+from app.model.transaction import Transaction
 
 from app.view.interface.color_scheme import *
 from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
@@ -261,6 +262,10 @@ class Table:
         return entry
 
 
+
+
+
+
 class PropEditor:
     def __init__(self, parent, width=300, update_event=None):
         self.frame = SimpleScrolledFrame(#position=[0, 0],
@@ -280,6 +285,7 @@ class PropEditor:
         self.entity = None
         self.update_event = update_event
 
+
     def add_property(self, prop: str, fieldname: str, value=0):
 
         label = SimpleLabel(
@@ -292,10 +298,10 @@ class PropEditor:
             size=[None, 20],
             sizeHint=[0.50, None],
             frameColor=scheme_rgba(COLOR_MAIN_LIGHT),
-            alpha=0,
+            alpha=1,
             align="left",
             textCenterX=False,
-            padding=[10, 0, 0, 0]
+            padding=[10, 0, -3, 3]
 
         )
         if isinstance(value, bool):
@@ -306,7 +312,7 @@ class PropEditor:
                     orginH="center",
                     orginV="bottom",
                     position=[0, 0],
-                    text_scale=(12, 12),
+                    fontSize=12,
                     text=set_text,
                     parent=self.frame.getCanvas(),
                     size=[None, 20],
@@ -315,7 +321,7 @@ class PropEditor:
                     alpha=0,
                     align="left",
                     textCenterX=False,
-                    padding=[10, 0, 0, 0]
+                    padding=[10, 0, -3, 3]
 
                 )
             else:
@@ -328,7 +334,11 @@ class PropEditor:
                     extraArgs=[prop],
                     value=value,
                     frameColor="C_WHITE",
-                    maxSize=16
+                    maxSize=14,
+                    alpha=0,
+                    colorDisabled=(102/255, 102/255, 102/255, 1),
+                    colorEnabled=(82 / 255, 120 / 255, 180 / 255, 1),
+                    padding=[10, 0, -3, 3]
                 )
         else:
             if self.entity.is_read_only(prop):
@@ -352,7 +362,7 @@ class PropEditor:
                     alpha=0,
                     align="left",
                     textCenterX=False,
-                    padding=[10, 0, 0, 0]
+                    padding=[10, 0, -3, 3]
 
                 )
 
@@ -384,7 +394,7 @@ class PropEditor:
                     frameColor="C_WHITE",
                     initialText=initial_value,
                     alpha=0,
-                    padding=[10, 0, 0, 0],
+                    padding=[10, 0, -3, 3],
                     suffix=value_unit
 
                 )
@@ -425,7 +435,10 @@ class PropEditor:
             if self.entity is not None:
                 print(
                     "atributo establecido {}: {}".format(name, new_value))
+                tr = Transaction()
+                tr.start("Edit propery")
                 setattr(self.entity, name, new_value)
+                tr.commit()
                 print("verif {}: {}".format(name,
                                             getattr(self.entity,
                                                     name, "undefined")))
@@ -455,7 +468,6 @@ class PropEditor:
             entry.destroy()
 
         self.fields.clear()
-        print("entity_read")
 
         self.entity = entity
         if entity:

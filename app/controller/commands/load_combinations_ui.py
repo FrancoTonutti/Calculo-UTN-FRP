@@ -8,6 +8,7 @@ import numpy as np
 
 from app.controller.console import command, execute
 from app.model.load_combination import LoadCombination
+from app.model.transaction import Transaction
 from app.view.interface.color_scheme import *
 from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
     SimpleCheckBox, SimpleEntry
@@ -38,7 +39,7 @@ def create_label(text, parent):
 
     return label
 
-def new_button(text, colors=None, command=None, args=None, parent=None, size=None, padding=None):
+def new_button(text, colors=None, command=None, args=None, parent=None, size=None, padding=None, margin=None):
     if args is None:
         args = []
     font_panda3d, font_pil = draw.draw_get_font()
@@ -50,6 +51,8 @@ def new_button(text, colors=None, command=None, args=None, parent=None, size=Non
         size = [20+width, 25]
     if padding is None:
         padding = [20, 20, 0, 0]
+    if margin is None:
+        margin = [0, 0, 0, 0]
 
     btn = SimpleButton(text=text,
                        text_scale=(12, 12),
@@ -61,7 +64,8 @@ def new_button(text, colors=None, command=None, args=None, parent=None, size=Non
                        colorList=colors,
                        position=[0, 0],
                        padding=padding,
-                       size=size
+                       size=size,
+                       margin=margin
                        )
 
     return btn
@@ -129,8 +133,8 @@ class Table:
                 field_list.append(field)
 
             if self.enable_detete:
-                close_btn = new_button("x", parent=self.canvas, padding=[5,5,5,5],
-                                       command=self.delete_enity, args=[entity])
+                close_btn = new_button("x", parent=self.canvas, padding=[5,5,-3,3],
+                                       command=self.delete_enity, args=[entity], size=[20,20], margin=[30,0,0,0])
                 field_list.append(close_btn)
 
             self.data_fields.append(field_list)
@@ -167,7 +171,10 @@ class Table:
         if type(old_value) is type(new_value):
             if entity is not None:
                 print("atributo establecido {}: {}".format(name, new_value))
+                tr = Transaction()
+                tr.start("Modify value")
                 setattr(entity, name, new_value)
+                tr.commit()
                 print("verif {}: {}".format(name, getattr(entity, name,
                                                           "undefined")))
 
@@ -190,8 +197,11 @@ class Table:
                 extraArgs=[entity, prop],
                 value=value,
                 frameColor="C_WHITE",
+                maxSize=14,
                 alpha=0,
-                maxSize=16
+                colorDisabled=(102 / 255, 102 / 255, 102 / 255, 1),
+                colorEnabled=(82 / 255, 120 / 255, 180 / 255, 1),
+                padding=[10, 0, -3, 3]
             )
 
         else:

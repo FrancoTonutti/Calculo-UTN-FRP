@@ -528,7 +528,7 @@ class CameraControl(DirectObject):
                                 entity.on_click()
                                 if entity.is_editable:
                                     prop_editor = app.main_ui.prop_editor
-                                    prop_editor.entity_read(entity)
+                                    prop_editor.add_to_selection(entity)
                             elif entity.is_selectable:
                                 status_bar = app.main_ui.status_bar
                                 status_bar.entity_read(entity)
@@ -551,7 +551,7 @@ class CameraControl(DirectObject):
                     entity = list(entities.values())[0]
                     prop_editor = app.main_ui.prop_editor
 
-                    prop_editor.entity_read(entity)
+                    prop_editor.add_to_selection(entity)
                 else:
                     status_bar = app.main_ui.status_bar
                     status_bar.entity_read()

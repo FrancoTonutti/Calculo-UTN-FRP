@@ -1,3 +1,5 @@
+from enum import Enum
+
 import pint
 
 from app import app
@@ -13,21 +15,184 @@ from panda3d.core import TextNode
 from panda3d.core import WindowProperties
 from direct.gui.DirectScrolledFrame import *
 
-from .tools import create_label
+from .tools import create_label, PropEditor
 from ...model.transaction import Transaction
 
+from app.view.interface.color_scheme import *
 
 def execute_console(cmd):
     print(cmd)
 
-COLOR_TEXT_LIGHT = (238/255, 238/255, 238/255, 1)
-COLOR_MAIN_DARK = (35/255, 35/255, 35/255, 255/255)
-COLOR_MAIN_LIGHT = (66/255, 66/255, 66/255, 1)
-COLOR_SEC_DARK = (43, 43, 43)
-COLOR_SEC_LIGHT = (52, 52, 52)
+
+class PropEditorModes(Enum):
+    EDIT = 0
+    CREATE = 1
 
 
 class PropertiesEditor(DirectObject):
+    def __init__(self, layout: Layout):
+        self.frame = layout.prop_frame
+        self.container = layout.work_container
+
+        self.entity = None
+        self.fields = []
+        self.selection = []
+        self.selection_limit = 1
+
+        #self.accept("control-1", self.toogle_show)
+        self.frame = layout.prop_frame
+        label = SimpleLabel(
+            text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+            orginV="bottom",
+            position=[0, 0],
+            fontSize=12,
+            text="Propiedadades",
+            parent=self.frame,
+            size=[None, 20],
+            sizeHint=[0.50, None],
+            frameColor="C_WHITE",
+            alpha=0,
+            align="left",
+            textCenterX=False,
+            margin=[10, 0, 0, 0]
+
+        )
+
+        '''self.name_box = SimpleFrame(
+            parent=self.frame,
+            size=[None, 75],
+            sizeHint=[1, None],
+            frameColor=scheme_rgba(COLOR_MAIN_LIGHT)
+        )
+        '''
+        self.name_label = SimpleLabel(
+            text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+            orginV="bottom",
+            position=[0, 0],
+            fontSize=14,
+            text="Barra",
+            parent=self.frame,
+            size=[None, 20],
+            sizeHint=[1, None],
+            frameColor="C_WHITE",
+            alpha=0,
+            align="left",
+            textCenterX=False,
+            margin=[30, 0, 25, 25]
+
+        )
+
+        self.prop_editor = PropEditor(self.frame, 250, self.update)
+        self.mode = PropEditorModes.EDIT
+
+    def set_mode(self, mode):
+        self.mode = mode
+
+    def add_to_selection(self, entity):
+
+        if entity not in self.selection:
+
+            if len(self.selection) < self.selection_limit:
+                self.selection.append(entity)
+            else:
+                pop = self.selection.pop(0)
+                self.deselect(pop)
+                self.selection.append(entity)
+
+            if len(self.selection) is 1 and self.mode is PropEditorModes.EDIT:
+                print(self.mode, PropEditorModes.EDIT)
+                self.entity_read(self.selection[0])
+            else:
+                self.update_selection()
+
+
+
+    @staticmethod
+    def deselect(entity):
+        tr = Transaction()
+        tr.start("Deselect entity")
+        entity.is_selected = False
+        tr.commit()
+        if entity.geom:
+            for geom in entity.geom:
+                if geom:
+                    geom.setTextureOff(0)
+
+                    geom.clearColorScale()
+                    if "render/lines" in str(geom):
+                        col = geom.getPythonTag('defcolor')
+                        if col is not None:
+                            geom.setColorScale(col)
+
+    def update_selection(self):
+        for entity in self.selection:
+            tr = Transaction()
+            tr.start("Select entity")
+            entity.is_selected = True
+            tr.commit()
+            if entity.geom is not None:
+                for geom in entity.geom:
+                    if geom:
+                        if "render/lines" in str(geom):
+                            # print(geom)
+                            # geom.setColor(1, 0, 0, 0)
+                            geom.setColorScale(1, 0, 0, 1)
+                            # geom.node().setColor(1, 0, 0, 1)
+                        else:
+                            geom.setTextureOff(1)
+                            geom.setColorScale(1, 0, 0, 0.7)
+
+
+    def update(self):
+        pass
+
+    def entity_read(self, entity=None, update=False, mode="edit"):
+
+
+        self.name_label["text"] = entity.category_name
+
+        if entity != self.prop_editor.entity or update:
+
+            if self.entity:
+                tr = Transaction()
+                tr.start("Deselect entity")
+                self.entity.is_selected = False
+                tr.commit()
+                if self.entity.geom:
+                    for geom in self.entity.geom:
+                        if geom:
+                            geom.setTextureOff(0)
+
+                            geom.clearColorScale()
+                            if "render/lines" in str(geom):
+                                col = geom.getPythonTag('defcolor')
+                                if col is not None:
+                                    geom.setColorScale(col)
+
+            if entity:
+                self.entity = entity
+                if self.entity:
+                    tr = Transaction()
+                    tr.start("Select entity")
+                    self.entity.is_selected = True
+                    tr.commit()
+                    if self.entity.geom is not None:
+                        for geom in self.entity.geom:
+                            if geom:
+                                if "render/lines" in str(geom):
+                                    #print(geom)
+                                    #geom.setColor(1, 0, 0, 0)
+                                    geom.setColorScale(1, 0, 0, 1)
+                                    #geom.node().setColor(1, 0, 0, 1)
+                                else:
+                                    geom.setTextureOff(1)
+                                    geom.setColorScale(1, 0, 0, 0.7)
+
+                                #print("!!!!!!!!!!!!!!!!geom", geom, len(self.entity.geom))
+
+        self.prop_editor.entity_read(entity)
+
+class PropertiesEditorOld(DirectObject):
     def __init__(self, layout: Layout):
         self.frame = layout.prop_frame
         self.container = layout.work_container
@@ -38,7 +203,7 @@ class PropertiesEditor(DirectObject):
         self.accept("control-1", self.toogle_show)
 
         label = SimpleLabel(
-            text_fg=COLOR_TEXT_LIGHT,
+            text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
             orginV="bottom",
             position=[0, 0],
             text_scale=(12, 12),
@@ -79,7 +244,7 @@ class PropertiesEditor(DirectObject):
 
 
         label = SimpleLabel(
-            text_fg=COLOR_TEXT_LIGHT,
+            text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
             orginV="bottom",
             position=[0, 0],
             text_scale=(12, 12),

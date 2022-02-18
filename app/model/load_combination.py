@@ -124,12 +124,12 @@ class LoadCombination(Entity):
         model_reg = app.model_reg
         entities = model_reg.find_entities("LoadType")
         for entity in entities:
-            if entity.load_code == key:
+            if entity.load_code == name:
                 print("set_factor")
                 self.set_factor(entity, new_value)
                 break
         else:
-            super().__setattr__(key, new_value)
+            super().__setattr__(name, new_value)
 
 
     def __getattr__(self, key):

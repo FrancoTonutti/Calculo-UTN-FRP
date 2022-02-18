@@ -21,6 +21,7 @@ class StatusBar(DirectObject):
         super().__init__()
         self.frame = layout.status_bar_frame
         self.entity_info = None
+        self._status_hint = ""
 
         self.info_label = SimpleLabel(text_fg=draw.get_color(COLOR_TEXT_LIGHT, "rgba"),
                                       parent=self.frame,
@@ -29,6 +30,12 @@ class StatusBar(DirectObject):
                                       frameColor="C_WHITE",
                                       align="left",
                                       textCenterX=False)
+
+    def set_status_hint(self, hint):
+        self._status_hint = hint
+
+        if self.entity_info is None:
+            self.info_label.setText(self._status_hint)
 
     def entity_read(self, entity=None):
         # Revisa que la entidad leída haya cambiado
@@ -68,4 +75,4 @@ class StatusBar(DirectObject):
             if entity is not None:
                 self.info_label.setText(str(entity))
             else:
-                self.info_label.setText("")
+                self.info_label.setText(self._status_hint)
