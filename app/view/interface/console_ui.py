@@ -4,7 +4,7 @@ from direct.showbase.DirectObject import DirectObject
 from app.view import draw
 from app.view.widgets.entry import Entry
 from app.view.simpleui.simple_entry import SimpleEntry
-from direct.task.Task import TaskManager
+from direct.task.Task import TaskManager, Task
 from app.controller.console import execute
 
 
@@ -144,9 +144,17 @@ class ConsoleUI(DirectObject):
         self._command_name = ""
         app.main_ui.status_bar.command_ended()
 
-    def start_command(self, task, name="Comando"):
+    def start_command(self, task, name="Comando", extra_args=None):
         if not self.tsk.hasTaskNamed("command_task"):
-            self.tsk.add(task, "command_task", uponDeath=self.command_ended)
+            if extra_args:
+
+                if not isinstance(extra_args, list):
+                    extra_args = [extra_args]
+
+                task = Task(task)
+                extra_args.insert(0, task)
+
+            self.tsk.add(task, name="command_task", uponDeath=self.command_ended, extraArgs=extra_args)
             self._command_name = name
             app.main_ui.status_bar.command_start(name)
 

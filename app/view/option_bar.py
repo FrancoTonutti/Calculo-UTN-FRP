@@ -26,6 +26,7 @@ INTERFACE = {
             "Barra": {"command": "barra"},
             "Pilar": {"command": "barra"},
             "Viga": {"command": "beam"},
+            "Nivel": {"command": "create_level"},
         },
         "Modelo": {
             "Agregar carga": {"command": "load"},

@@ -22,9 +22,12 @@ from .rebar_layer import RebarLayer
 from app.model import model_reg
 from app.model import unit_manager
 
+from .level import Level
+from .mouse_event_handler import MouseEventHandler
 
 model_reg.class_register = {
     "Entity": Entity,
+    "Level": Level,
     "Node": Node,
     "Bar": Bar,
     "Section": Section,
@@ -44,6 +47,6 @@ model_reg.class_register = {
     "RebarSet": RebarSet
 }
 
-model_reg.keys_priority = ["View", "Node", "Section", "MaterialGroup", "Material", "Bar", "RebarLayer", "RebarSet", "LoadType", "Load", "Diagram"]
+model_reg.keys_priority = ["View", "Level", "Node", "Section", "MaterialGroup", "Material", "Bar", "RebarLayer", "RebarSet", "LoadType", "Load", "Diagram"]
 
 

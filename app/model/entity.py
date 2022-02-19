@@ -1,4 +1,4 @@
-from panda3d.core import GeomNode
+from panda3d.core import GeomNode, CollisionSegment, CollisionNode
 
 from app import app
 from .transaction import TM, SetAttrAction, EntityCreationAction
@@ -8,6 +8,9 @@ import uuid
 
 from typing import TYPE_CHECKING
 from typing import List
+
+from ..view import draw
+
 if TYPE_CHECKING:
     # Imports only for IDE type hints
     pass
@@ -51,6 +54,7 @@ class Entity:
             self.is_selected = False
             self.ifc_entity = None
             self.enabled_save = True
+            self._units = dict()
 
             self.register()
         else:
@@ -145,6 +149,9 @@ class Entity:
     def set_prop_name(self, **kwargs):
         self._namespace.update(kwargs)
 
+    def set_units(self, **kwargs):
+        self._units.update(kwargs)
+
     def set_temp_properties(self, *args):
         for prop in args:
             if prop not in self._temp_properties:
@@ -177,6 +184,29 @@ class Entity:
 
         node.reparentTo(parent)
         return node
+
+    def draw_line_3d(self, x1, y1, z1, x2, y2, z2, w=1, color=None, parent=None, dynamic=False, set_id=True):
+        result = draw.draw_line_3d(x1, y1, z1, x2, y2, z2, w, color, parent, dynamic)
+
+        if dynamic:
+            node, line = result
+        else:
+            node = result
+
+        if set_id:
+            '''center_x = (x1+x2)/2
+            center_y = (x1 + x2) / 2
+            center_z = (x1 + x2) / 2
+            
+            segment =CollisionBox(Point3(center_x, y1, z1),Point3(maxx, maxy, maxz)) CollisionSegment(x1, y1, z1, x2, y2, z2)
+            cnodePath = node.attachNewNode(CollisionNode('cnode'))
+            cnodePath.node().addSolid(segment)'''
+            print("entity_type", self.__class__.__name__)
+            node.setTag('entity_type', self.__class__.__name__)
+            node.setTag('entity_id', self.entity_id)
+
+
+        return result
 
     def create_model(self):
         pass
@@ -222,6 +252,12 @@ class Entity:
         
         if hasattr(self, name):
             old_value = getattr(self, name)
+
+            unit = self._units.get(name)
+            if unit and (isinstance(new_value, float) or new_value is None):
+                if new_value is None:
+                    new_value = 0
+                new_value = new_value * app.ureg(unit)
 
             if old_value != new_value:
                 active_transaction = TM.get_active_transaction()

@@ -35,7 +35,7 @@ def convert_to_cm(value):
     return value
 
 
-@ureg.wraps(None, 'm')
+@ureg.wraps(None, 'm', strict=False)
 def convert_to_m(value):
     return value
 

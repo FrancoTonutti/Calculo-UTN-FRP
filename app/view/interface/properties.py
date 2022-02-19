@@ -213,7 +213,9 @@ class PropertiesEditor(DirectObject):
                                 if "render/lines" in str(geom):
                                     #print(geom)
                                     #geom.setColor(1, 0, 0, 0)
+                                    print(geom)
                                     geom.setColorScale(1, 0, 0, 1)
+
                                     #geom.node().setColor(1, 0, 0, 1)
                                 else:
                                     geom.setTextureOff(1)

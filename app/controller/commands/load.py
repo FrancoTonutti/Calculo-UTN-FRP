@@ -15,9 +15,9 @@ from app.view.interface.properties import PropEditorModes
 
 @command(name="load")
 def add_load():
-    print("ADD LOAD")
-    tr = TM.get_active_transaction()
-    print(tr)
+    #print("ADD LOAD")
+    #tr = TM.get_active_transaction()
+    #print(tr)
     # Agrega una tarea al TaskManager para agregar una carga
 
     tr = Transaction()

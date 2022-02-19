@@ -263,7 +263,15 @@ class Table:
 
 
 
+def is_number(string):
+    if string.isnumeric():
+        return True
 
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False
 
 
 class PropEditor:
@@ -410,14 +418,14 @@ class PropEditor:
                 new_value = True
             elif new_value == "False":
                 new_value = False
-        elif new_value != "" and isinstance(old_value, float) and new_value.isnumeric():
+        elif new_value != "" and isinstance(old_value, float) and is_number(new_value):
             new_value = float(new_value)
 
-        elif new_value != "" and isinstance(old_value, int) and new_value.isnumeric():
+        elif new_value != "" and isinstance(old_value, int) and is_number(new_value):
             new_value = int(new_value)
 
         elif new_value != "" and isinstance(old_value,
-                                            pint.quantity.Quantity) and new_value.isnumeric():
+                                            pint.quantity.Quantity) and is_number(new_value):
             new_value = float(new_value) * app.ureg(str(old_value.units))
 
         if isinstance(old_value, Enum):
@@ -451,6 +459,11 @@ class PropEditor:
                 print(
                     "El tipo de asignación no corresponde: {},{}->{}".format(
                         name, type(old_value), type(new_value)))
+
+                if "pint" in str(type(old_value)):
+                    print(isinstance(old_value, pint.quantity.Quantity))
+                    print(new_value.isnumeric())
+                    print("'{}'".format(new_value))
 
         if self.update_event:
             self.update_event()

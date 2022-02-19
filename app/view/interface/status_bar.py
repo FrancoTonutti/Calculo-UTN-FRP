@@ -76,8 +76,11 @@ class StatusBar(DirectObject):
                 for geom in self.entity_info.geom:
                     if geom:
                         if "render/lines" in str(geom):
-                            geom.setRenderModeThickness(3)
+                            #geom.setRenderModeThickness(3)
                             geom.setRenderModeFilled(1)
+                            color = geom.getPythonTag('defcolor')
+
+                            geom.setColorScale(color)
                         else:
                             pass
                             # geom.setRenderModeFilled(1)
@@ -91,7 +94,13 @@ class StatusBar(DirectObject):
                 for geom in self.entity_info.geom:
                     if geom:
                         if "render/lines" in str(geom):
-                            geom.setRenderModeThickness(20)
+                            #geom.setRenderModeThickness(20)
+
+                            color = draw.get_color(draw.C_NEPHRITIS,
+                                                   color_format="rgba",
+                                                   alpha=1)
+                            geom.setColorScale(0, 1, 0, 1)
+
                             geom.setRenderModeFilled(1)
                         else:
                             pass

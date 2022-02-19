@@ -522,8 +522,10 @@ class CameraControl(DirectObject):
                         print(entity)
                         print(type(entity))
 
+                    entity = entity.findNetTag('entity_id')
+                    select_hidden = entity.getPythonTag("select_hidden")
 
-                    if not entity.isHidden():
+                    if not entity.isHidden() or select_hidden:
                         entity = entity.findNetTag('entity_id')
                         if not entity.isEmpty():
 

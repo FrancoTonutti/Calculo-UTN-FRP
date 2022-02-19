@@ -233,13 +233,11 @@ def draw_line_3d(x1, y1, z1, x2, y2, z2, w=1, color=None, parent=None, dynamic=F
 
     node = line.create(dynamic=dynamic)
 
-    print("draw_line_3d_1", node)
     base = app.get_show_base()
     if parent is None:
         parent = base.render
 
     np = NodePath(node)
-    print("draw_line_3d_2", np)
     np.reparentTo(parent)
     np.setColorScale(color)
     np.setLightOff()
