@@ -17,6 +17,7 @@ from app.model.view_gizmo import ViewGizmoZone
 class CameraControl(DirectObject):
     def __init__(self, panda3d):
         # Inicialización de variables
+        self.mouse_1_status = 0
         self.winsize = [0, 0]
         self.panda3d = panda3d
         self.panda3d.mouse_on_workspace = False
@@ -462,6 +463,19 @@ class CameraControl(DirectObject):
             cube.setPos(pos[0], pos[1], pos[2])
 
 
+    def mouse1_btn_released(self):
+        mouse_watcher = self.panda3d.mouseWatcherNode
+        if mouse_watcher.hasMouse():
+            if mouse_watcher.isButtonDown("mouse1"):
+                self.mouse_1_status = 1
+            else:
+                if self.mouse_1_status is 1:
+                    self.mouse_1_status = 0
+                    return True
+
+        return False
+
+
 
     def entity_select(self):
         if self.panda3d.mouseWatcherNode.hasMouse():
@@ -524,7 +538,8 @@ class CameraControl(DirectObject):
                             entity = category_type.get(entity_id, None)
 
                             # print(entity)
-                            if btn.isButtonDown("mouse1"):
+                            #if btn.isButtonDown("mouse1"):
+                            if self.mouse1_btn_released():
                                 entity.on_click()
                                 if entity.is_editable:
                                     prop_editor = app.main_ui.prop_editor
@@ -538,7 +553,8 @@ class CameraControl(DirectObject):
                     pass
                     #print("Hay {} entidades sin geometria visible bajo el mouse".format(handler.getNumEntries()))
             else:
-                if btn.isButtonDown("mouse1"):
+                #if btn.isButtonDown("mouse1"):
+                if self.mouse1_btn_released():
                     entities = app.model_reg.get("View", {})
 
                     if entities is None or len(entities) is 0:

@@ -54,7 +54,7 @@ class Load(Entity):
             self.parent.add_child_model(self)
             self.parent.add_load(self)
 
-        register(self)
+        #register(self)
         self.create_model()
 
     def set_parent(self, parent):

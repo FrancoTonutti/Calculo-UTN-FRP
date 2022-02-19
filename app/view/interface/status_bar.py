@@ -9,7 +9,7 @@ from panda3d.core import TextNode
 from panda3d.core import WindowProperties
 from direct.gui.DirectScrolledFrame import *
 from app.view.interface.color_scheme import *
-from .. import draw
+from .. import draw, simpleui
 
 
 def execute_console(cmd):
@@ -23,13 +23,43 @@ class StatusBar(DirectObject):
         self.entity_info = None
         self._status_hint = ""
 
+        self.command_info = SimpleLabel(
+            text_fg=draw.get_color(COLOR_TEXT_LIGHT, "rgba"),
+            parent=self.frame,
+            text="",
+            alpha=1,
+            frameColor=scheme_rgba(COLOR_HIGHLIGHT),
+            align="left",
+            textCenterX=False,
+            padding=[10,0,0,0],
+            size=[None, None],
+            sizeHint=[None, True])
+
+        self.command_info.hide()
+
         self.info_label = SimpleLabel(text_fg=draw.get_color(COLOR_TEXT_LIGHT, "rgba"),
                                       parent=self.frame,
                                       text="",
                                       alpha=0,
                                       frameColor="C_WHITE",
                                       align="left",
-                                      textCenterX=False)
+                                      textCenterX=False,
+                                      padding=[10,0,0,0],)
+
+    def command_start(self, name):
+
+        font_panda3d, font_pil = draw.draw_get_font(font_size=12)
+        width, height = font_pil.getsize(name)
+        self.command_info["text"] = name
+        self.command_info["size"] = [10+width+10, None]
+        self.command_info.show()
+        simpleui.update_ui()
+
+    def command_ended(self):
+        self.command_info["size"] = [None, None]
+        self.command_info.hide()
+        simpleui.update_ui()
+
 
     def set_status_hint(self, hint):
         self._status_hint = hint

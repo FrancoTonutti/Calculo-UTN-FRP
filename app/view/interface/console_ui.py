@@ -26,6 +26,15 @@ class ConsoleUI(DirectObject):
         self._args_input = dict()
         self._activecommand = None
         self._activearg = None
+        self._command_name = ""
+
+    def get_active_command_name(self):
+        if self.tsk.hasTaskNamed("command_task"):
+            return self._command_name
+        else:
+            self._command_name = ""
+            return None
+
 
     @property
     def active_command(self):
@@ -131,9 +140,15 @@ class ConsoleUI(DirectObject):
 
         return entry
 
-    def start_command(self, task):
+    def command_ended(self, task):
+        self._command_name = ""
+        app.main_ui.status_bar.command_ended()
+
+    def start_command(self, task, name="Comando"):
         if not self.tsk.hasTaskNamed("command_task"):
-            self.tsk.add(task, "command_task")
+            self.tsk.add(task, "command_task", uponDeath=self.command_ended)
+            self._command_name = name
+            app.main_ui.status_bar.command_start(name)
 
     def close_command(self):
         print("close_command start")

@@ -131,6 +131,8 @@ class Transaction:
         for action in self.get_actions():
             action.undo()
         self._commited = True
+        if not self.parent:
+            TM.root_transaction = None
 
     def register_action(self, action):
         self._actions.append(action)

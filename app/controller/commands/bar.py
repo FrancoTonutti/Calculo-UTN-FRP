@@ -20,8 +20,9 @@ def create_bar():
 
     print("create_bar")
     man = TaskManager()
-    if not man.hasTaskNamed("create_bar"):
-        man.add(bar_task, "create_bar")
+    if not man.hasTaskNamed("command_task"):
+        #man.add(bar_task, "create_bar")
+        app.console.start_command(bar_task, "Crear barra")
     else:
         if coredata["line_node"] is not None:
             coredata["line_node"].removeNode()
@@ -155,9 +156,10 @@ def bar_task(task):
             print(coredata["line_node"])
             coredata["line_node"].removeNode()
 
-        man = TaskManager()
-        man.remove("create_bar")
-        del man
+        return task.done
+        #man = TaskManager()
+        #man.remove("create_bar")
+        #del man
 
 
 

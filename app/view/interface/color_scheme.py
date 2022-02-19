@@ -9,6 +9,8 @@ COLOR_MAIN_LIGHT = (66, 66, 66)
 COLOR_SEC_DARK = (43, 43, 43)
 COLOR_SEC_LIGHT = (52, 52, 52)
 
+COLOR_HIGHLIGHT = (82, 120, 180)
+
 
 def scheme_rgba(color):
     return draw.get_color(color, "rgba")

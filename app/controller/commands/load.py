@@ -33,24 +33,29 @@ def add_load():
     new_load = Load(entity, value, angle)
 
     prop_editor = app.main_ui.prop_editor
+    prop_editor.deselect_all()
     prop_editor.set_mode(PropEditorModes.CREATE)
     prop_editor.entity_read(new_load)
 
-    app.console.start_command(add_load_task)
+    app.console.start_command(add_load_task, "Agregar carga")
 
 
 def add_load_task(task):
     tr = TM.get_root_transaction()
     if tr.name == "Create load":
         prop_editor = app.main_ui.prop_editor
-
+        load = prop_editor.entity
         for entity in prop_editor.selection:
+
             if isinstance(entity, Bar):
                 status_bar = app.main_ui.status_bar
                 status_bar.set_status_hint("")
-                prop_editor.entity.set_parent(entity)
+                load.set_parent(entity)
+
                 prop_editor.set_mode(PropEditorModes.EDIT)
-                prop_editor.add_to_selection(prop_editor.entity)
+                prop_editor.add_to_selection(load)
+                prop_editor.update_selection()
+
                 tr.commit()
 
                 return task.done
@@ -63,7 +68,7 @@ def add_load_task(task):
             status_bar = app.main_ui.status_bar
             status_bar.set_status_hint("")
             prop_editor.set_mode(PropEditorModes.EDIT)
-            prop_editor.add_to_selection(prop_editor.entity)
+            prop_editor.deselect_all()
             return task.done
 
         return task.cont

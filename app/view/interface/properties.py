@@ -16,6 +16,7 @@ from panda3d.core import WindowProperties
 from direct.gui.DirectScrolledFrame import *
 
 from .tools import create_label, PropEditor
+from ...model import View
 from ...model.transaction import Transaction
 
 from app.view.interface.color_scheme import *
@@ -58,13 +59,9 @@ class PropertiesEditor(DirectObject):
 
         )
 
-        '''self.name_box = SimpleFrame(
-            parent=self.frame,
-            size=[None, 75],
-            sizeHint=[1, None],
-            frameColor=scheme_rgba(COLOR_MAIN_LIGHT)
-        )
-        '''
+
+
+
         self.name_label = SimpleLabel(
             text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
             orginV="bottom",
@@ -82,21 +79,52 @@ class PropertiesEditor(DirectObject):
 
         )
 
+        self.mode_status_bar = SimpleFrame(
+            parent=self.frame,
+            size=[None, 4],
+            sizeHint=[1, None],
+            frameColor=scheme_rgba(COLOR_MAIN_LIGHT)
+        )
+
         self.prop_editor = PropEditor(self.frame, 250, self.update)
         self.mode = PropEditorModes.EDIT
 
     def set_mode(self, mode):
         self.mode = mode
 
+        if self.mode is PropEditorModes.EDIT:
+            self.mode_status_bar["frameColor"] = scheme_rgba(COLOR_MAIN_LIGHT)
+        elif self.mode is PropEditorModes.CREATE:
+            self.mode_status_bar["frameColor"] = scheme_rgba(COLOR_HIGHLIGHT)
+
+    def deselect_all(self):
+        for entity in self.selection:
+            self.deselect(entity)
+
+        entities = app.model_reg.get("View", {})
+
+        if entities is None or len(entities) is 0:
+            tr = Transaction("Create")
+            tr.start("Create View")
+            View()
+            tr.commit()
+
+        entities = app.model_reg.get("View")
+        entity = list(entities.values())[0]
+        prop_editor = app.main_ui.prop_editor
+
+        self.add_to_selection(entity)
+
     def add_to_selection(self, entity):
+        print("add_to_selection", entity)
 
         if entity not in self.selection:
 
             if len(self.selection) < self.selection_limit:
                 self.selection.append(entity)
             else:
-                pop = self.selection.pop(0)
-                self.deselect(pop)
+                #pop = self.selection.pop(0)
+                self.deselect(self.selection[0])
                 self.selection.append(entity)
 
             if len(self.selection) is 1 and self.mode is PropEditorModes.EDIT:
@@ -105,15 +133,17 @@ class PropertiesEditor(DirectObject):
             else:
                 self.update_selection()
 
+    def deselect(self, entity):
+        if entity:
+            tr = Transaction()
+            tr.start("Deselect entity")
+            entity.is_selected = False
+            tr.commit()
 
+        if entity in self.selection:
+            self.selection.remove(entity)
 
-    @staticmethod
-    def deselect(entity):
-        tr = Transaction()
-        tr.start("Deselect entity")
-        entity.is_selected = False
-        tr.commit()
-        if entity.geom:
+        if entity and entity.geom:
             for geom in entity.geom:
                 if geom:
                     geom.setTextureOff(0)
@@ -148,9 +178,10 @@ class PropertiesEditor(DirectObject):
 
     def entity_read(self, entity=None, update=False, mode="edit"):
 
-
-        self.name_label["text"] = entity.category_name
-
+        if entity:
+            self.name_label["text"] = entity.category_name
+        else:
+            self.name_label["text"] = ""
         if entity != self.prop_editor.entity or update:
 
             if self.entity:
