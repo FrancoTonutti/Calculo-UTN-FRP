@@ -1,6 +1,7 @@
 from app import app
 from PIL import ImageFont
-from panda3d.core import DynamicTextFont, TextNode, LineSegs, NodePath, WindowProperties, Filename
+from panda3d.core import DynamicTextFont, TextNode, LineSegs, NodePath, \
+    WindowProperties, Filename, BitMask32
 from typing import Type
 import builtins
 from direct.showbase.Loader import Loader
@@ -243,6 +244,8 @@ def draw_line_3d(x1, y1, z1, x2, y2, z2, w=1, color=None, parent=None, dynamic=F
     np.setLightOff()
     np.setPythonTag('line', line)
     np.setPythonTag('defcolor', color)
+    np.hide(BitMask32.bit(1))
+
     if dynamic:
         return np, line
     else:

@@ -247,7 +247,7 @@ class Bar(Entity):
         print("CREATE MODEL")
         self.geom = [None, None]
         self.geom[0] = self.load_model("data/geom/beam")
-
+        #self.geom[0].set_two_sided(True)
         self.update_model()
 
     def update_model(self):

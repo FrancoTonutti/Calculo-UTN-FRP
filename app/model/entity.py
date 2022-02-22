@@ -51,7 +51,8 @@ class Entity:
             self._temp_properties = []
             self.is_selectable = True
             self.is_editable = True
-            self.is_selected = False
+            self._is_selected = False
+            #self.is_selected = False
             self.ifc_entity = None
             self.enabled_save = True
             self._units = dict()
@@ -65,6 +66,26 @@ class Entity:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         return None
+
+    @property
+    def is_selected(self):
+        return self._is_selected
+
+    @is_selected.setter
+    def is_selected(self, value: bool):
+        if self._is_selected != value:
+            if value:
+                self.on_select()
+            else:
+                self.on_deselect()
+
+        self._is_selected = value
+
+    def on_select(self):
+        pass
+
+    def on_deselect(self):
+        pass
 
     def set_analysis_results(self, load_combination, name, value):
 
@@ -168,6 +189,11 @@ class Entity:
         for arg in args:
             if arg not in self._read_only:
                 self._read_only.append(arg)
+
+    def unset_read_only(self, *args):
+        for arg in args:
+            if arg in self._read_only:
+                self._read_only.remove(arg)
 
     def is_read_only(self, prop_name: str):
         return prop_name in self._read_only

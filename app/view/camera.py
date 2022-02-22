@@ -1,5 +1,7 @@
-from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, AmbientLight, CollisionTraverser, \
-    CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode, LVecBase4, DirectionalLight, BoundingSphere
+from panda3d.core import Point3, OrthographicLens, PerspectiveLens, PointLight, \
+    AmbientLight, CollisionTraverser, \
+    CollisionHandlerQueue, CollisionNode, CollisionRay, GeomNode, LVecBase4, \
+    DirectionalLight, BoundingSphere, BitMask32
 import math
 from app import app
 from direct.showbase.DirectObject import DirectObject
@@ -35,6 +37,7 @@ class CameraControl(DirectObject):
         self.panda3d.cam_target.set_pos(target_pos)
         self.panda3d.camera.reparent_to(self.panda3d.cam_target)
         self.panda3d.camera.set_y(-50.)
+        self.panda3d.camera.getChildren()[0].node().setCameraMask(BitMask32.bit(0))
         
         # Definimos la cambinación de teclas para el control de la camara
         self.camera_active = False
@@ -448,19 +451,7 @@ class CameraControl(DirectObject):
             # gizmo_geom.setShaderInput("colorborders", LVecBase4(0, 0, 0, 0))
             # gizmo_geom.setShaderInput("separation", LVecBase4(separation, 0, separation, 0))
 
-    def add_cube(self):
-        """
-        Función de prueba, coloca cubos en la ubicación del cursor
-        """
-        if self.panda3d.mouse_on_workspace:
-            print("add_cube")
-            pos = self.panda3d.work_plane_mouse
-            cube = self.panda3d.loader.loadModel("models/box")
-            # Reparent the model to render.
-            cube.reparentTo(self.panda3d.render)
-            # Apply scale and position transforms on the model.
-            cube.setScale(0.25, 0.25, 0.25)
-            cube.setPos(pos[0], pos[1], pos[2])
+
 
 
     def mouse1_btn_released(self):
@@ -515,24 +506,20 @@ class CameraControl(DirectObject):
                 count = handler.getNumEntries()
 
                 for i in range(count):
-                    entity = handler.getEntry(i).getIntoNodePath()
-                    try:
-                        entity.isHidden()
-                    except:
-                        print(entity)
-                        print(type(entity))
+                    geom_node = handler.getEntry(i).getIntoNodePath()
 
-                    entity = entity.findNetTag('entity_id')
-                    select_hidden = entity.getPythonTag("select_hidden")
+                    node_ancestor = geom_node.findNetTag('entity_id')
+                    select_hidden = node_ancestor.getPythonTag("select_hidden")
 
-                    if not entity.isHidden() or select_hidden:
-                        entity = entity.findNetTag('entity_id')
-                        if not entity.isEmpty():
+                    if not node_ancestor.isHidden() or select_hidden:
+
+                        #entity = node_ancestor.findNetTag('entity_id')
+                        if not node_ancestor.isEmpty() and node_ancestor.hasTag("entity_id"):
 
                             # print("entity selected: {}".format(entity.getTag("entity_id")))
 
-                            entity_id = entity.getTag("entity_id")
-                            entity_type = entity.getTag("entity_type")
+                            entity_id = node_ancestor.getTag("entity_id")
+                            entity_type = node_ancestor.getTag("entity_type")
                             # print(entity_type)
                             model = app.model_reg
 
@@ -552,7 +539,8 @@ class CameraControl(DirectObject):
 
                             break
                 else:
-                    pass
+                    status_bar = app.main_ui.status_bar
+                    status_bar.entity_read()
                     #print("Hay {} entidades sin geometria visible bajo el mouse".format(handler.getNumEntries()))
             else:
                 #if btn.isButtonDown("mouse1"):

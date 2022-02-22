@@ -1,4 +1,4 @@
-from app.model import Node, Bar, Section
+from app.model import Node, Bar, Section, Level
 from direct.task.Task import TaskManager
 from app import app
 
@@ -88,6 +88,12 @@ def bar_task(task):
                 if isinstance(selection, Node):
                     coredata["start"] = selection.position
                     coredata["last_node"] = selection
+                elif isinstance(selection, Level):
+                    x, y, _ = app.work_plane_mouse
+                    z = selection.z
+                    coredata["start"] = x, y, z
+                    coredata["last_node"] = selection
+
                 else:
                     coredata["start"] = app.work_plane_mouse
                 coredata["press"] = True

@@ -453,6 +453,8 @@ class PropEditor:
 
                 if isinstance(old_value, Enum):
                     self.entity_read(self.entity)
+                elif isinstance(old_value, str):
+                    self.entity_read(self.entity)
 
         else:
             if self.entity is not None:

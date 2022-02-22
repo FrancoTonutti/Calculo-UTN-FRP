@@ -1,4 +1,4 @@
-from panda3d.core import NodePath, PandaNode
+from panda3d.core import NodePath, PandaNode, BitMask32
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import LVecBase4
 from pandac.PandaModules import Texture, TextureStage
@@ -116,6 +116,7 @@ class ShaderControlGLSL:
         buffer.setClearColor(color)
         camera_lens = self.panda3d.cam.node().getLens()
         camera = self.panda3d.makeCamera(buffer, lens=camera_lens)
+        camera.node().setCameraMask(BitMask32.bit(1))
         camera.node().setScene(self.panda3d.render)
         temp_node = NodePath(PandaNode("node "+name))
         #shader = self.panda3d.loader.loadShader(shader_path)

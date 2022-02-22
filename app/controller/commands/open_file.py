@@ -14,6 +14,8 @@ from tkinter import filedialog
 
 from typing import TYPE_CHECKING
 
+from app.model.transaction import Transaction
+
 if TYPE_CHECKING:
     # Imports only for IDE type hints
     pass
@@ -60,6 +62,9 @@ def save():
     with filename as f:
         content = f.read()
 
+    tr = Transaction()
+    tr.start("Open file")
     model.from_JSON(content)
+    tr.commit()
 
 

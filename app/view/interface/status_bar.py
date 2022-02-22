@@ -99,7 +99,7 @@ class StatusBar(DirectObject):
                             color = draw.get_color(draw.C_NEPHRITIS,
                                                    color_format="rgba",
                                                    alpha=1)
-                            geom.setColorScale(0, 1, 0, 1)
+                            geom.setColorScale(color)
 
                             geom.setRenderModeFilled(1)
                         else:

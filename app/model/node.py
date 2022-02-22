@@ -6,6 +6,7 @@ from typing import List
 if TYPE_CHECKING:
     # Imports only for IDE type hints
     from app.model import *
+from . import unit_manager
 
 class Node(Entity):
 
@@ -27,11 +28,14 @@ class Node(Entity):
             ent.fixed_rx = obj.get("fixed_rx")
             ent.fixed_ry = obj.get("fixed_ry")
             ent.fixed_rz = obj.get("fixed_rz")
+            ent.plane_z = obj.get("plane_z")
 
 
 
     def __init__(self, x, y, z=0, name="", set_id=None):
         super().__init__(set_id)
+        self._plane_z = None
+
         self.x: float = x
         self.y: float = y
         self.z: float = z
@@ -51,11 +55,18 @@ class Node(Entity):
 
         self.loads: List[Load] = []
 
+
+
         self.show_properties("fixed_ux", "fixed_uz", "fixed_ry")
 
         self.bind_to_model("x", "y", "z", "fixed_ry", "fixed_ux", "fixed_uz")
 
         self.set_temp_properties("position_str", "position")
+
+        self.show_properties("plane_z")
+        self.bind_to_model("plane_z")
+        self.set_prop_name(plane_z="Plano Z")
+
 
         register(self)
         self.create_model()
@@ -66,6 +77,33 @@ class Node(Entity):
         y = round(self.position[1], 2)
         z = round(self.position[2], 2)
         return "Nodo {} ({}, {}, {})".format(name, x, y, z)
+
+    @property
+    def plane_z(self):
+        return str(self._plane_z)
+
+    @plane_z.setter
+    def plane_z(self, value):
+
+        if value == "" and self._plane_z:
+            self._plane_z.remove_child_model(self)
+            self._plane_z = None
+            self.unset_read_only("z")
+
+        # Obtenemos el registro del modelo
+        entities = app.model_reg.find_entities("Level")
+
+        for ent in entities:
+            if ent.name == value:
+                self._plane_z = ent
+                self._plane_z.add_child_model(self)
+                self.set_read_only("z")
+
+
+
+
+
+
 
     def add_load(self, new_load):
         self.loads.append(new_load)
@@ -146,13 +184,27 @@ class Node(Entity):
     def y(self, val):
         self.__y = round(float(val), 2)
 
-    @property
+    '''@property
     def z(self):
         return self.__z
 
     @z.setter
     def z(self, val):
-        self.__z = round(float(val), 2)
+        self.__z = round(float(val), 2)'''
+
+    @property
+    def z(self):
+        if self._plane_z:
+            self.__z = unit_manager.convert_to_m(self._plane_z.z)
+
+        return self.__z
+
+    @z.setter
+    def z(self, value):
+        if self._plane_z is None:
+            self.__z = round(float(value), 2)
+        else:
+            self.__z = unit_manager.convert_to_m(self._plane_z.z)
 
     @property
     def position(self):
