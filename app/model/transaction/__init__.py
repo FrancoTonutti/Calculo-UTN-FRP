@@ -69,6 +69,17 @@ class SetAttrAction(Action):
         setattr(self.obj, self.attr, self.new_value)
 
 
+class LoadModelAction(Action):
+    def __init__(self, nodepath):
+        super().__init__()
+        self.nodepath = nodepath
+
+    def undo(self):
+        self.nodepath.removeNode()
+
+    def redo(self):
+        pass
+
 class TransactionAction(Action):
     def __init__(self, transaction):
         super().__init__()
@@ -92,9 +103,19 @@ class Transaction:
         self._childs = list()
         self._commited = False
         self._actions = list()
+        self._enabled_register = True
 
     def is_commited(self):
         return self._commited
+
+    def disable_register(self):
+        self._enabled_register = False
+
+    def enable_register(self):
+        self._enabled_register = True
+
+    def is_register_enabled(self):
+        return self._enabled_register
 
     def start(self, name=None):
         root = TM.root_transaction
@@ -135,7 +156,8 @@ class Transaction:
             TM.root_transaction = None
 
     def register_action(self, action):
-        self._actions.append(action)
+        if self._enabled_register:
+            self._actions.append(action)
 
     def get_actions(self):
         return self._actions[::-1]

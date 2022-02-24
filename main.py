@@ -38,11 +38,20 @@ class MyProgram(ShowBase):
         #self.filters = CommonFilters(self.win, self.cam)
         #filterok = self.filters.setCartoonInk(separation=self.separation)
 
+    def __igLoop(self, state):
+        try:
+            print("asda")
+            super(MyProgram, self).__igLoop(state)
+        except:
+            print("FATAL ERROR")
+
 # Inicia el programa
 if __name__ == "__main__":
     program = MyProgram()
+    program
     try:
         program.run()
     except Exception as ex:
+
         messagebox.showerror(message='error: "{}" \nUbicación del error:\n{}'.format(ex, traceback.extract_tb(ex.__traceback__)))
 

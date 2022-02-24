@@ -23,7 +23,7 @@ INTERFACE = {
     _("Estructura"): {
         "Construir": {
             #"Muro de carga": {},
-            "Barra": {"command": "barra"},
+            "Barra": {"command": "create_bar"},
             "Pilar": {"command": "barra"},
             "Viga": {"command": "beam"},
             "Nivel": {"command": "create_level"},

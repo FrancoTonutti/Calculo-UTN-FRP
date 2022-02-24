@@ -1,4 +1,4 @@
-panda3d==1.10.10
+panda3d==1.10.11
 numpy>=1.19.2
 Pillow>=8.2.0
 

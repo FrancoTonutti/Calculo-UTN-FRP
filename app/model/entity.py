@@ -1,7 +1,8 @@
 from panda3d.core import GeomNode, CollisionSegment, CollisionNode
 
 from app import app
-from .transaction import TM, SetAttrAction, EntityCreationAction
+from .transaction import TM, SetAttrAction, EntityCreationAction, \
+    LoadModelAction
 import uuid
 
 
@@ -56,6 +57,7 @@ class Entity:
             self.ifc_entity = None
             self.enabled_save = True
             self._units = dict()
+            self.hidden = False
 
             self.register()
         else:
@@ -199,17 +201,25 @@ class Entity:
         return prop_name in self._read_only
 
     def load_model(self, model, set_id=True, parent=None):
-        if parent is None:
-            parent = app.base.render
 
-        node = app.base.loader.loadModel(model)
-        if set_id:
-            print("entity_type", self.__class__.__name__)
-            node.setTag('entity_type', self.__class__.__name__)
-            node.setTag('entity_id', self.entity_id)
+        active_transaction = TM.get_active_transaction()
+        if active_transaction:
+            if parent is None:
+                parent = app.base.render
 
-        node.reparentTo(parent)
-        return node
+            node = app.base.loader.loadModel(model)
+            action = LoadModelAction(node)
+            active_transaction.register_action(action)
+
+            if set_id:
+                print("entity_type", self.__class__.__name__)
+                node.setTag('entity_type', self.__class__.__name__)
+                node.setTag('entity_id', self.entity_id)
+
+            node.reparentTo(parent)
+            return node
+        else:
+            raise Exception("No existe una transacción activa")
 
     def draw_line_3d(self, x1, y1, z1, x2, y2, z2, w=1, color=None, parent=None, dynamic=False, set_id=True):
         result = draw.draw_line_3d(x1, y1, z1, x2, y2, z2, w, color, parent, dynamic)
@@ -294,8 +304,10 @@ class Entity:
 
                     super(Entity, self).__setattr__(name, new_value)
 
-                    action = SetAttrAction(self, name, old_value, new_value)
-                    active_transaction.register_action(action)
+                    if active_transaction.is_register_enabled():
+
+                        action = SetAttrAction(self, name, old_value, new_value)
+                        active_transaction.register_action(action)
 
                     if update:
                         self.update_tree()
@@ -356,6 +368,7 @@ class Entity:
 
     def delete(self):
         print("delete entity {}".format(self))
+        #raise Exception()
         self.delete_model()
         self.unregister()
 
@@ -368,6 +381,21 @@ class Entity:
         print("intentando crear desde objeto")
         pass
 
+    def hide(self):
+        self.hidden = True
+        if self.geom:
+            for geom in self.geom:
+                if geom:
+                    geom.hide()
+
+    def show(self):
+        self.hidden = False
+        if self.geom:
+            for geom in self.geom:
+                if geom:
+                    geom.show()
+
+        self.update_model()
 
 def register(entity):
     return None

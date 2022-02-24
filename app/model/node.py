@@ -212,11 +212,10 @@ class Node(Entity):
 
     @position.setter
     def position(self, value: list):
-        if isinstance(value, list) and len(value) == 3:
-            x, y, z = value
-            self.x = x
-            self.y = y
-            self.z = z
+        x, y, z = value
+        self.x = x
+        self.y = y
+        self.z = z
 
     @property
     def position_str(self):

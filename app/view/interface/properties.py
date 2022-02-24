@@ -106,7 +106,7 @@ class PropertiesEditor(DirectObject):
         if entities is None or len(entities) is 0:
             tr = Transaction("Create")
             tr.start("Create View")
-            View()
+            #View()
             tr.commit()
 
         entities = app.model_reg.get("View")

@@ -39,6 +39,9 @@ class Bar(Entity):
     def __init__(self, start, end, section, material=None, set_id=None):
         super().__init__(set_id)
         self.name = ""
+        self._start = start
+        self._end = end
+
         self.start: Node = start
         self.end: Node = end
         self.section: Section = section
@@ -84,13 +87,39 @@ class Bar(Entity):
         #self.show_properties("max_moment", "min_moment")
         #self.set_prop_name(max_moment="Momento Máx.", min_moment="Momento Min.")
 
-        self.bind_to_model("width", "height", "loads")
+        self.bind_to_model("width", "height", "loads", "start", "end")
 
         self.rebar_sets = list()
 
 
 
         self.create_model()
+
+    @property
+    def start(self):
+        return self._start
+
+    @start.setter
+    def start(self, value):
+        if self.start:
+            self.start.remove_child_model(self)
+
+        self._start = value
+        if value:
+            self.start.add_child_model(self)
+
+    @property
+    def end(self):
+        return self._end
+
+    @end.setter
+    def end(self, value):
+        if self.end:
+            self.end.remove_child_model(self)
+
+        self._end = value
+        if value:
+            self.end.add_child_model(self)
 
     @property
     def behavior(self):
@@ -262,6 +291,7 @@ class Bar(Entity):
         z = z1 - z0
         vector = [x, y, z]
         norm = np.linalg.norm(vector)
+        norm = max(norm, 0.001)
         geom.setScale(b, norm, h)
         geom.setShaderInput("showborders", self.borders, self.borders, self.borders, self.borders)
 
@@ -274,20 +304,24 @@ class Bar(Entity):
             line = self.geom[1]
             if line is not None:
                 line.removeNode()
-            line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, 3, "C_BLUE")
+            if not self.hidden:
+                line = self.draw_line_3d(x0, y0, z0, x1, y1, z1, 3, "C_BLUE")
 
-            line.setDepthOffset(1)
-            self.geom[1] = line
-            print("!!!!!!!!!!!!!!!!!!!!!!line")
-            print(line)
-            #line.setLight(panda3d.plight_node)
+                line.setDepthOffset(1)
+                self.geom[1] = line
 
         else:
-            geom.show()
+            if not self.hidden:
+                geom.show()
+
             line = self.geom[1]
             if line is not None:
                 line.removeNode()
                 self.geom[1] = None
+
+    def show(self):
+        self.hidden = False
+        self.update_model()
 
     def generate_ifc(self, ifc_file):
         owner_history = ifc_file.by_type("IfcOwnerHistory")[0]

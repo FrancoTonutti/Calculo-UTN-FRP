@@ -35,6 +35,8 @@ def new_file():
 
     model.clear()
 
+    View()
+
     concrete = MaterialGroup("Hormigón")
 
     types = [15, 20, 25, 30, 35, 40, 45, 50, 60]

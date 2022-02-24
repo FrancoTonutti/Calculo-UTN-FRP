@@ -1,6 +1,6 @@
 from app.controller.commands import bar, calculate, render, regen_ui, wireframe_toggle, load, matricial, save_ifc, \
     material_editor, save, open_file, new_file, load_combinations_ui, analysis_results_ui, remove_diagrams, \
-    section_editor_ui, material_editor_ui, beam, structure_design_ui, create_level
+    section_editor_ui, material_editor_ui, beam, structure_design_ui, create_level, create_bar
 
 """import importlib
 import os

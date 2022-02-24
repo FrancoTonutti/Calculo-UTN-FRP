@@ -15,7 +15,7 @@ from app.view.interface.properties import PropEditorModes
 
 
 @command(name="create_level")
-def add_load():
+def create_level():
     print("create_level")
     #tr = TM.get_active_transaction()
     #print(tr)

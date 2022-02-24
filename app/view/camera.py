@@ -63,7 +63,7 @@ class CameraControl(DirectObject):
         self.min_zoom = 0.1
         
         # Creamos la tarea de control de la camara
-        self.panda3d.task_mgr.add(self.camera_control_task, "camera_control")
+        self.panda3d.task_mgr.add(self.camera_control_task, "camera_control", sort=0, priority=1000)
 
         # El movimiento de la rueda del mouse controla el zoom
         self.panda3d.accept("wheel_up", self.zoom_in)
@@ -528,16 +528,21 @@ class CameraControl(DirectObject):
 
                             # print(entity)
                             #if btn.isButtonDown("mouse1"):
-                            if self.mouse1_btn_released():
-                                entity.on_click()
-                                if entity.is_editable:
-                                    prop_editor = app.main_ui.prop_editor
-                                    prop_editor.add_to_selection(entity)
-                            elif entity.is_selectable:
-                                status_bar = app.main_ui.status_bar
-                                status_bar.entity_read(entity)
+                            if entity:
+                                if self.mouse1_btn_released():
+                                    entity.on_click()
+                                    if entity.is_editable and entity.is_selectable:
+                                        prop_editor = app.main_ui.prop_editor
+                                        prop_editor.add_to_selection(entity)
+                                        break
+                                elif entity.is_selectable:
+                                    status_bar = app.main_ui.status_bar
+                                    status_bar.entity_read(entity)
+                                    break
+                            else:
+                                print("Geom not deleted?")
 
-                            break
+
                 else:
                     status_bar = app.main_ui.status_bar
                     status_bar.entity_read()
@@ -550,10 +555,12 @@ class CameraControl(DirectObject):
                     if entities is None or len(entities) is 0:
                         tr = Transaction("Create")
                         tr.start("Create View")
-                        View()
+                        #View()
                         tr.commit()
 
-                    entities = app.model_reg.get("View")
+                    #entities = app.model_reg.get("View")
+                    app.model_reg.find_entities("View")
+
                     entity = list(entities.values())[0]
                     prop_editor = app.main_ui.prop_editor
 
