@@ -31,5 +31,7 @@ class Beam(Bar):
         bar = Bar(start, end, sec, mat, entity_id)
         bar.name = name
 
+        return bar
+
     def __init__(self, start, end, section, material=None, set_id=None):
         super().__init__(start, end, section, material, set_id)

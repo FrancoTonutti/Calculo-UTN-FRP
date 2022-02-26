@@ -24,8 +24,7 @@ class Level(Entity):
 
         name = obj.get("name")
 
-        with Node(z, name, entity_id) as ent:
-            pass
+        return Level(z, name, entity_id)
 
     def __init__(self, z, name="Nivel", set_id=None):
         super().__init__(set_id)

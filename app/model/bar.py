@@ -35,6 +35,8 @@ class Bar(Entity):
         bar.name = name
         bar.behavior = obj.get("behavior")
 
+        return bar
+
 
     def __init__(self, start, end, section, material=None, set_id=None):
         super().__init__(set_id)

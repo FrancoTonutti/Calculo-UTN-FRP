@@ -163,8 +163,6 @@ class CameraControl(DirectObject):
             lens = OrthographicLens()
             lens.setFilmSize(width / 100, height / 100)
 
-        print("new lens {}: {} {}".format(lens_type, width / 100, height / 100))
-        print(lens)
         self.panda3d.cam.node().setLens(lens)
 
         shader_control = self.panda3d.shader_control
@@ -414,10 +412,6 @@ class CameraControl(DirectObject):
 
         #self.corner.setPos(width / 2 - 10 * scale, 5, height / 2 - 28 * scale)
         self.corner.setPos(width / 2-1, 5, height / 2 - 2.4)
-
-        print("DEBUG SHOW VIEW CUBE")
-        print(height)
-        print(height / 2 - 28 * scale)
 
         # Dibujar por encima de todos los objetos
 

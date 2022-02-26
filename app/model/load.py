@@ -30,10 +30,10 @@ class Load(Entity):
         load_type = obj.get("load_type")
 
         if parent is None:
-            print(app.model_reg.entity_register)
+            #print(app.model_reg.entity_register)
             raise Exception("Parent is None : {}".format(obj.get("parent")))
 
-        Load(parent, value, angle, load_type, entity_id)
+        return Load(parent, value, angle, load_type, entity_id)
 
     def __init__(self, parent, value, angle=90, load_type=None, set_id=None):
         super().__init__(set_id)
@@ -106,7 +106,6 @@ class Load(Entity):
 
             # Rotate points
             angle = np.deg2rad(self.angle)
-            print("ANGLE", angle)
 
             x1 = x * np.cos(angle) - y * np.sin(angle)
             z1 = x * np.sin(angle) + z * np.cos(angle)
@@ -114,7 +113,6 @@ class Load(Entity):
             x1 = x0 + x1
             y1 = 0
             z1 = z0 + z1
-            print(x0, y0, z0, x1, y1, z1)
             model = self.geom[0]
 
             model.setPos(x0, y0, z0)

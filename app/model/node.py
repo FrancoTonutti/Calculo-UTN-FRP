@@ -20,17 +20,17 @@ class Node(Entity):
 
         name = obj.get("name")
 
-        with Node(x, y, z, name, entity_id) as ent:
+        new_node = Node(x, y, z, name, entity_id)
 
-            ent.fixed_ux = obj.get("fixed_ux")
-            ent.fixed_uy = obj.get("fixed_uy")
-            ent.fixed_uz = obj.get("fixed_uz")
-            ent.fixed_rx = obj.get("fixed_rx")
-            ent.fixed_ry = obj.get("fixed_ry")
-            ent.fixed_rz = obj.get("fixed_rz")
-            ent.plane_z = obj.get("plane_z")
+        new_node.fixed_ux = obj.get("fixed_ux")
+        new_node.fixed_uy = obj.get("fixed_uy")
+        new_node.fixed_uz = obj.get("fixed_uz")
+        new_node.fixed_rx = obj.get("fixed_rx")
+        new_node.fixed_ry = obj.get("fixed_ry")
+        new_node.fixed_rz = obj.get("fixed_rz")
+        new_node.plane_z = obj.get("plane_z")
 
-
+        return new_node
 
     def __init__(self, x, y, z=0, name="", set_id=None):
         super().__init__(set_id)

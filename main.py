@@ -1,7 +1,11 @@
+import ctypes
+
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import loadPrcFile, AntialiasAttrib
 
 from app import app
+from app.model import Entity
+from app.model.transaction import Transaction
 from app.view.ui import MainUI
 from app.view import camera, shaders
 from tkinter import messagebox
@@ -48,7 +52,6 @@ class MyProgram(ShowBase):
 # Inicia el programa
 if __name__ == "__main__":
     program = MyProgram()
-    program
     try:
         program.run()
     except Exception as ex:

@@ -27,7 +27,9 @@ class Material(Entity):
 
         is_default_material = obj.get("is_default_material")
 
-        with Material(name, group, entity_id) as ent:
+        mat = Material(name, group, entity_id)
+
+        with mat as ent:
             if is_default_material:
                 ent.set_default_material()
 
@@ -35,6 +37,8 @@ class Material(Entity):
             ent.char_resistance = app.ureg(obj.get("char_resistance"))
             if obj.get("specific_weight"):
                 ent.specific_weight = app.ureg(obj.get("specific_weight"))
+
+        return mat
 
     def __init__(self, name, group, set_id=None):
         super().__init__(set_id)

@@ -9,9 +9,11 @@ from app.controller.console import command, execute
 import pint
 
 from app.model import unit_manager
+from app.model.events import EventListener
 from app.model.level import Level
 from app.model.transaction import TM, Transaction
 from app.view.interface.properties import PropEditorModes
+
 
 
 @command(name="create_bar")
@@ -48,12 +50,19 @@ def create_bar():
 
     handler = MouseEventHandler()
 
-    cache = {"handler": handler, "new_bar": new_bar, "start": node_start, "end": node_end, "step": 0}
+    events = EventListener()
+    cache = {"handler": handler, "new_bar": new_bar, "start": node_start, "end": node_end, "step": 0, "events": events}
 
-    app.console.start_command(add_level_task, "Crear barra", cache)
+    events.add_listener("onselect", on_select)
+
+    app.console.start_command(add_bar_task, "Crear barra", cache)
+
+def on_select(cache, selection=None):
+    print("on_select()", selection)
 
 
-def add_level_task(task, cache: dict):
+
+def add_bar_task(task, cache: dict):
 
     tr = TM.get_root_transaction()
     active_tr = TM.get_active_transaction()
@@ -63,11 +72,12 @@ def add_level_task(task, cache: dict):
         new_bar: Bar = cache.get("new_bar")
         start: Node = cache.get("start")
         end: Node = cache.get("end")
+        events: EventListener = cache.get("events")
 
         panda3d = app.get_show_base()
         watcher = panda3d.mouseWatcherNode
         prop_editor = app.main_ui.prop_editor
-        #new_level = prop_editor.entity
+        status_bar = app.main_ui.status_bar
 
 
 
@@ -101,17 +111,13 @@ def add_level_task(task, cache: dict):
                 x, y, z = app.work_plane_mouse
 
                 end.position = x, y, z
-                print("selection", prop_editor.selection)
 
-                for entity in prop_editor.selection:
-                    print(entity)
-                    if isinstance(entity, Node):
-                        end.delete()
+                if isinstance(status_bar.entity_info, Node):
+                    end.delete()
 
-                        new_bar.end = entity
-                        end = entity
-                        cache.update({"end": end})
-                        break
+                    new_bar.end = status_bar.entity_info
+                    end = status_bar.entity_info
+                    cache.update({"end": end})
 
                 cache.update({"step": 2})
 
@@ -124,6 +130,7 @@ def add_level_task(task, cache: dict):
                 prop_editor.update_selection()
 
                 tr.commit()
+                events.close_listener()
                 return task.done
 
             #new_level.z = round(float(z), 2)
@@ -138,17 +145,18 @@ def add_level_task(task, cache: dict):
         if watcher.has_mouse() and (watcher.isButtonDown("escape") or watcher.isButtonDown("mouse3")):
             print("-------ROLLBACK----------------")
             tr.rollback()
-            status_bar = app.main_ui.status_bar
-            status_bar.set_status_hint("")
-            prop_editor.set_mode(PropEditorModes.EDIT)
-            prop_editor.deselect_all()
-            return task.done
+            events.close_listener()
+            return add_bar_end(task)
 
         return task.cont
     else:
         print("ROOT TRANSACTION ERROR")
-        status_bar = app.main_ui.status_bar
-        status_bar.set_status_hint("")
-        prop_editor = app.main_ui.prop_editor
-        prop_editor.set_mode(PropEditorModes.EDIT)
-        return task.done
+        return add_bar_end(task)
+
+
+def add_bar_end(task):
+    status_bar = app.main_ui.status_bar
+    status_bar.set_status_hint("")
+    prop_editor = app.main_ui.prop_editor
+    prop_editor.set_mode(PropEditorModes.EDIT)
+    return task.done

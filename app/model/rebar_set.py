@@ -43,41 +43,42 @@ class RebarSet(Entity):
 
         location = obj.get("location")
 
-        with RebarSet(parent, name, location, entity_id) as ent:
-            # ent.fixed_ux = obj.get("fixed_ux")
-            ent.start = app.ureg(obj.get("start").replace("%", "percent"))
-            ent.end = app.ureg(obj.get("end").replace("%", "percent"))
-            ent.shape_code = obj.get("shape_code")
-            if obj.get("layer_spacing"):
-                ent.layer_spacing = unit_manager.ureg(obj.get("layer_spacing"))
+        ent = RebarSet(parent, name, location, entity_id)
+        # ent.fixed_ux = obj.get("fixed_ux")
+        ent.start = app.ureg(obj.get("start").replace("%", "percent"))
+        ent.end = app.ureg(obj.get("end").replace("%", "percent"))
+        ent.shape_code = obj.get("shape_code")
+        if obj.get("layer_spacing"):
+            ent.layer_spacing = unit_manager.ureg(obj.get("layer_spacing"))
 
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
 
-            print(obj.get("start"))
-            print(obj.get("start").replace("%", "percent"))
-            print(app.ureg(obj.get("start").replace("%", "percent")))
+        print(obj.get("start"))
+        print(obj.get("start").replace("%", "percent"))
+        print(app.ureg(obj.get("start").replace("%", "percent")))
 
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
 
-            layers = obj.get("layers")
-            if layers:
-                layers = int(layers)
-                ent.layers = layers
+        layers = obj.get("layers")
+        if layers:
+            layers = int(layers)
+            ent.layers = layers
 
-                #ent.layer1.delete()
+            #ent.layer1.delete()
 
-                for i in range(layers):
-                    layer = ent.get_layer(i + 1)
-                    layer_name = "layer%s" % (i + 1)
-                    print(layer_name)
-                    layer.delete()
+            for i in range(layers):
+                layer = ent.get_layer(i + 1)
+                layer_name = "layer%s" % (i + 1)
+                print(layer_name)
+                layer.delete()
 
-                    layer_entity = get(layer_name)
+                layer_entity = get(layer_name)
 
-                    layer_entity.parent = ent
+                layer_entity.parent = ent
 
-                    setattr(ent, layer_name, layer_entity)
+                setattr(ent, layer_name, layer_entity)
 
+        return ent
 
     def __init__(self, parent, name, location, set_id=None):
         super().__init__(set_id)

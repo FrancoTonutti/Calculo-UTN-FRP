@@ -15,8 +15,11 @@ class View(Entity):
         view.work_plane_height = work_plane_height
         view.work_plane_vect = work_plane_vect
 
+        return view
+
     def __init__(self, set_id=None):
         super().__init__(set_id)
+        self.count_memory_references()
 
         #self.set_prop_name(work_plane_vect="Plano de Trabajo", worl_plane_height="Altura")
         #self.show_properties("work_plane_vect", "work_plane_height")
@@ -33,13 +36,13 @@ class View(Entity):
         self.show_properties("show_moment", "show_shear", "show_normal")
         self.set_prop_name(show_moment="Momento", show_shear="Corte", show_normal="Normal")
 
-        register(self)
+        #entities = app.model_reg.get("View")
+        #entity = list(entities.values())[0]
+        #prop_editor = app.main_ui.prop_editor
 
-        entities = app.model_reg.get("View")
-        entity = list(entities.values())[0]
-        prop_editor = app.main_ui.prop_editor
+        #prop_editor.entity_read(entity, update=True)
 
-        prop_editor.entity_read(entity, update=True)
+        self.count_memory_references()
 
     @property
     def scale(self):

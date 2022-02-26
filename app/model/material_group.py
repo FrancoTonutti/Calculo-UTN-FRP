@@ -8,7 +8,7 @@ class MaterialGroup(Entity):
         entity_id = obj.get("entity_id")
         name = obj.get("name")
 
-        MaterialGroup(name, entity_id)
+        return MaterialGroup(name, entity_id)
 
     def __init__(self, name, set_id=None):
         super().__init__(set_id)
@@ -16,9 +16,6 @@ class MaterialGroup(Entity):
         self._name = "None"
         self.name = name
         self._materials = []
-
-    def __str__(self):
-        return "<class 'app.model.core.MaterialGroup'> :%s" % (self.name,)
 
     def add_material(self, material):
         if material not in self._materials:

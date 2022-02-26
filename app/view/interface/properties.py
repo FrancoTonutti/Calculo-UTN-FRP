@@ -1,6 +1,7 @@
 from enum import Enum
 
 import pint
+from direct.showbase.MessengerGlobal import messenger
 
 from app import app
 from .layout_controller import Layout
@@ -17,6 +18,7 @@ from direct.gui.DirectScrolledFrame import *
 
 from .tools import create_label, PropEditor
 from ...model import View
+from ...model.entity_reference import EntityReference
 from ...model.transaction import Transaction
 
 from app.view.interface.color_scheme import *
@@ -104,10 +106,11 @@ class PropertiesEditor(DirectObject):
         entities = app.model_reg.get("View", {})
 
         if entities is None or len(entities) is 0:
-            tr = Transaction("Create")
-            tr.start("Create View")
+            pass
+            #tr = Transaction("Create")
+            #tr.start("Create View")
             #View()
-            tr.commit()
+            # tr.commit()
 
         entities = app.model_reg.get("View")
         entity = list(entities.values())[0]
@@ -117,6 +120,8 @@ class PropertiesEditor(DirectObject):
 
     def add_to_selection(self, entity):
         print("add_to_selection", entity)
+
+        entity = EntityReference(entity)
 
         if entity not in self.selection:
 
@@ -132,6 +137,8 @@ class PropertiesEditor(DirectObject):
                 self.entity_read(self.selection[0])
             else:
                 self.update_selection()
+
+            messenger.send('onselect', self.selection)
 
     def deselect(self, entity):
         if entity:

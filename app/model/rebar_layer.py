@@ -29,14 +29,15 @@ class RebarLayer(Entity):
         diam2 = obj.get("diam2")
         count2 = obj.get("count2")
 
-        with RebarLayer(entity_id) as ent:
-            # ent.fixed_ux = obj.get("fixed_ux")
+        ent = RebarLayer(entity_id)
 
-            ent.diam1 = diam1
-            ent.count1 = count1
-            ent.diam2 = diam2
-            ent.count2 = count2
-            ent.parent = get("parent")
+        ent.diam1 = diam1
+        ent.count1 = count1
+        ent.diam2 = diam2
+        ent.count2 = count2
+        ent.parent = get("parent")
+
+        return ent
 
     def __init__(self, set_id=None):
         super().__init__(set_id)

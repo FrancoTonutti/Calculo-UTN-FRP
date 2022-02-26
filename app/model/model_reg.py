@@ -15,10 +15,17 @@ def is_primitive(thing):
 
 
 class ModelReg(dict):
+    #global class_register
+
     def __init__(self):
         super().__init__()
 
         self.entity_register = dict()
+        #print("CREATE MODELREG")
+        #self.class_register = class_register
+
+    def get_class_register(self):
+        return class_register
 
     def get_all_bars(self):
         return self.get("Bar", {})
@@ -71,6 +78,30 @@ class ModelReg(dict):
         else:
             return entity_id
 
+    @staticmethod
+    def serialize_entity(entity):
+        if not entity.enabled_save:
+            return None
+
+        entity_dict = dict()
+
+        entity_attrs = [a for a in dir(entity) if not a.startswith('_') and not callable(getattr(entity, a)) and not entity.is_temp_property(a)]
+
+        exclude_attrs = ["geom", "_geom", "is_editable", "is_selectable",
+                         "is_selected", "ifc_entity", "enabled_save"]
+
+        for attr in entity_attrs:
+            if attr in exclude_attrs:
+                continue
+
+            value = getattr(entity, attr)
+
+            value = convert_value(value)
+
+            entity_dict.update({attr: value})
+
+        return entity_dict
+
     def toJSON(self):
         dict_data = dict()
 
@@ -105,6 +136,14 @@ class ModelReg(dict):
                 subdict_data.update({model_id: entity_dict})
 
         return json.dumps(dict_data, sort_keys=True, indent=4)
+
+    @staticmethod
+    def deserialize_enity(entity_class, entity_data):
+        class_obj = class_register.get(entity_class)
+        if class_obj is None:
+            raise Exception(class_obj)
+        else:
+            return class_obj.create_from_object(entity_data)
 
 
     def from_JSON(self, json_string: str):

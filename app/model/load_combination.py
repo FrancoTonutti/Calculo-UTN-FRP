@@ -20,7 +20,7 @@ class LoadCombination(Entity):
         index = obj.get("index")
         factors = obj.get("factors")
 
-        LoadCombination(name, entity_id, index, factors)
+        return LoadCombination(name, entity_id, index, factors)
 
     def __init__(self, name, set_id=None, index=None, factors=None):
         super().__init__(set_id)

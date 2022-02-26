@@ -21,7 +21,7 @@ class LoadType(Entity):
         index = obj.get("index")
         own_weight = obj.get("own_weight")
 
-        LoadType(name, load_code, entity_id, index, own_weight)
+        return LoadType(name, load_code, entity_id, index, own_weight)
 
     def __init__(self, name, load_code="D", set_id=None, index=None, own_weight=False):
         super().__init__(set_id)

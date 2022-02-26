@@ -8,7 +8,7 @@ class Section(Entity):
         entity_id = obj.get("entity_id")
         width, height = obj.get("size")
 
-        Section(width, height, entity_id)
+        return Section(width, height, entity_id)
 
     def __init__(self, width, height, set_id=None):
         super().__init__(set_id)

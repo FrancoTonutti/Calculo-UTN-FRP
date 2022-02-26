@@ -37,7 +37,7 @@ class Diagram(Entity):
         print("VALUES!!!",type(values))
         print("VALUES[0]!!!", type(values[0]))
 
-        Diagram(parent, combination, values, entity_id)
+        return Diagram(parent, combination, values, entity_id)
 
     def __init__(self, parent, combination, diagram_type, values, set_id=None):
         super().__init__(set_id)

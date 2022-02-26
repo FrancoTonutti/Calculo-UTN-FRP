@@ -56,16 +56,13 @@ class ConsoleUI(DirectObject):
             self._activecommand = value
             data = app.commands.get(value, None)
             if data is not None:
-                print("data", data)
                 args = data.get("args")
                 if args is not None:
 
                     self.entry.hide()
-                    print("entry hide", self.entry.get_value())
 
                     total_width = (self.args_size * self.font_size) * len(args) + 40 * (len(args) - 1)
                     x0 = -total_width / 2
-                    print("x0", x0)
                     for arg in args:
                         x0 += self.args_size * self.font_size / 2
                         entry = self.create_input(self.args_size, arg, x0,

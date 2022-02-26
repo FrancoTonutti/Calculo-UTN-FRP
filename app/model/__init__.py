@@ -1,4 +1,4 @@
-from app.model.entity import Entity
+from app.model.entity import Entity, Test2
 from app.model.node import Node
 from app.model.bar import Bar
 from app.model.beam import Beam
@@ -44,8 +44,13 @@ model_reg.class_register = {
     "ProfileSectionI": ProfileSectionI,
     "CodeCheckCIRSOC201": CodeCheckCIRSOC201,
     "RebarLayer": RebarLayer,
-    "RebarSet": RebarSet
+    "RebarSet": RebarSet,
+    "Test2": Test2
 }
+
+#model_reg.ModelReg.class_register = model_reg.class_register
+
+print("CLASS REGISTER CREATED")
 
 model_reg.keys_priority = ["View", "Level", "Node", "Section", "MaterialGroup", "Material", "Bar", "RebarLayer", "RebarSet", "LoadType", "Load", "Diagram"]
 

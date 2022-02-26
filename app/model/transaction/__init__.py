@@ -1,3 +1,7 @@
+from app import app
+from app.model.entity_reference import EntityReference, create_entity_reference
+
+
 class TransactionManager:
     def __init__(self):
         self.root_transaction = None
@@ -40,11 +44,29 @@ class Action:
     def redo(self):
         pass
 
+    def __setattr__(self, key, value):
+        #value = create_entity_reference(value)
+
+        class_reference = app.model_reg.get_class_register().get("Entity")
+
+        if not class_reference:
+            print("class_reference error, value:", key, "=", value)
+            print(app.model_reg.class_register)
+
+        if class_reference and isinstance(value, class_reference):
+            value = EntityReference(value)
+
+
+        super(Action, self).__setattr__(key, value)
+
 class EntityCreationAction(Action):
     def __init__(self, obj, args=None):
         super().__init__()
-        self.obj = obj
+        self.obj = EntityReference(obj)
         self.args = args
+        print("EntityCreationAction")
+        print(self.obj)
+        print(self.obj.__reference__)
 
     def undo(self):
         print("EntityCreationAction undo")
@@ -54,10 +76,26 @@ class EntityCreationAction(Action):
     def redo(self):
         pass
 
+
+class EntityDeleteAction(Action):
+    def __init__(self, obj):
+        super().__init__()
+        self.obj = EntityReference(obj)
+        self.entity_data = app.model_reg.serialize_entity(obj)
+        self.entity_class = obj.category_name
+
+    def undo(self):
+        print("EntityDeleteAction undo")
+        self.obj = app.model_reg.deserialize_enity(self.entity_class, self.entity_data)
+
+    def redo(self):
+        self.obj.delete()
+
+
 class SetAttrAction(Action):
     def __init__(self, obj, attr, old_value, new_value):
         super().__init__()
-        self.obj = obj
+        self.obj = EntityReference(obj)
         self.attr = attr
         self.old_value = old_value
         self.new_value = new_value
@@ -149,14 +187,18 @@ class Transaction:
                 "Las transacciones hijas no se finalizaron correctamente")
 
     def rollback(self):
+        self.disable_register()
+
         for action in self.get_actions():
             action.undo()
         self._commited = True
         if not self.parent:
             TM.root_transaction = None
 
+        self.enable_register()
+
     def register_action(self, action):
-        if self._enabled_register:
+        if self.is_register_enabled():
             self._actions.append(action)
 
     def get_actions(self):
