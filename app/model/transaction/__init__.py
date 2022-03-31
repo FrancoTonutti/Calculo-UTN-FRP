@@ -65,12 +65,12 @@ class EntityCreationAction(Action):
         self.obj = EntityReference(obj)
         self.args = args
         print("EntityCreationAction")
-        print(self.obj)
-        print(self.obj.__reference__)
+        #print(self.obj)
+        #print(self.obj.__reference__)
 
     def undo(self):
         print("EntityCreationAction undo")
-        print(self)
+        #print(self)
         self.obj.delete()
 
     def redo(self):
@@ -80,16 +80,19 @@ class EntityCreationAction(Action):
 class EntityDeleteAction(Action):
     def __init__(self, obj):
         super().__init__()
-        self.obj = EntityReference(obj)
+        self.obj = None#EntityReference(obj)
         self.entity_data = app.model_reg.serialize_entity(obj)
         self.entity_class = obj.category_name
 
     def undo(self):
         print("EntityDeleteAction undo")
-        self.obj = app.model_reg.deserialize_enity(self.entity_class, self.entity_data)
+        obj = app.model_reg.deserialize_enity(self.entity_class, self.entity_data)
+        self.obj = EntityReference(obj)
 
     def redo(self):
-        self.obj.delete()
+        if self.obj:
+            self.obj.delete()
+            self.obj = None
 
 
 class SetAttrAction(Action):

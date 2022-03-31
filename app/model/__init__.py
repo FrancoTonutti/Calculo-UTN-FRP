@@ -1,4 +1,4 @@
-from app.model.entity import Entity, Test2
+from app.model.entity import Entity
 from app.model.node import Node
 from app.model.bar import Bar
 from app.model.beam import Beam
@@ -44,8 +44,7 @@ model_reg.class_register = {
     "ProfileSectionI": ProfileSectionI,
     "CodeCheckCIRSOC201": CodeCheckCIRSOC201,
     "RebarLayer": RebarLayer,
-    "RebarSet": RebarSet,
-    "Test2": Test2
+    "RebarSet": RebarSet
 }
 
 #model_reg.ModelReg.class_register = model_reg.class_register

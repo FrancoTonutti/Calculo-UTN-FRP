@@ -67,7 +67,7 @@ class Material(Entity):
 
 
     def __str__(self):
-        if self.material_group:
+        if hasattr(self, "material_group") and self.material_group:
             return "{}: {}".format(self.material_group.name, self.name)
         else:
             return "No group: {}".format(self.name)
