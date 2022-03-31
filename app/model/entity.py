@@ -72,6 +72,7 @@ class Entity:
             self.enabled_save = True
             self._units = dict()
             self.hidden = False
+            self._combo_box_properties = []
 
 
             self.register()
@@ -212,6 +213,14 @@ class Entity:
 
     def is_temp_property(self, prop):
         return prop in self._temp_properties
+
+    def set_combo_box_properties(self, *args):
+        for prop in args:
+            if prop not in self._combo_box_properties:
+                self._combo_box_properties.append(prop)
+
+    def is_combo_box_property(self, prop):
+        return prop in self._combo_box_properties
 
     def get_properties(self):
         for prop in self._editor_properties:

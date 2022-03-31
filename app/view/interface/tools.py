@@ -11,6 +11,8 @@ from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
 
 from app.view import simpleui
 from app.controller.console import command, execute
+from app.view.simpleui.simple_combo_box import SimpleComboBox
+
 
 def create_label_fullsize(text, parent, padding=None, margin=None, alpha=0):
     #font_panda3d, font_pil = draw.draw_get_font()
@@ -239,26 +241,48 @@ class Table:
             if entity.is_read_only(prop):
                 entry = create_label(str(value), self.canvas)
             else:
-                entry = SimpleEntry(
-                    text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
-                    orginH="center",
-                    position=[0, 0],
-                    text_scale=(12, 12),
-                    width=20,
-                    align="left",
-                    textCenterX=False,
-                    command=self.entity_set_prop,
-                    extraArgs=[entity, prop],
-                    focusOutCommand=self.entity_set_prop,
-                    focusOutExtraArgs=[entity, prop],
-                    parent=self.canvas,
-                    size=[None, 20],
-                    padding=[15, 0, 0, 0],
-                    sizeHint=[1, None],
-                    frameColor="C_WHITE",
-                    alpha=0,
-                    initialText=str(value)
-                )
+                if entity.is_combo_box_property(prop):
+                    entry = SimpleComboBox(
+                        text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+                        orginH="center",
+                        position=[0, 0],
+                        text_scale=(12, 12),
+                        width=20,
+                        align="left",
+                        textCenterX=False,
+                        command=self.entity_set_prop,
+                        extraArgs=[entity, prop],
+                        focusOutCommand=self.entity_set_prop,
+                        focusOutExtraArgs=[entity, prop],
+                        parent=self.canvas,
+                        size=[None, 20],
+                        padding=[15, 0, 0, 0],
+                        sizeHint=[1, None],
+                        frameColor="C_WHITE",
+                        alpha=0,
+                        initialText=str(value)
+                    )
+                else:
+                    entry = SimpleEntry(
+                        text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+                        orginH="center",
+                        position=[0, 0],
+                        text_scale=(12, 12),
+                        width=20,
+                        align="left",
+                        textCenterX=False,
+                        command=self.entity_set_prop,
+                        extraArgs=[entity, prop],
+                        focusOutCommand=self.entity_set_prop,
+                        focusOutExtraArgs=[entity, prop],
+                        parent=self.canvas,
+                        size=[None, 20],
+                        padding=[15, 0, 0, 0],
+                        sizeHint=[1, None],
+                        frameColor="C_WHITE",
+                        alpha=0,
+                        initialText=str(value)
+                    )
         return entry
 
 
@@ -384,28 +408,53 @@ class PropEditor:
                     initial_value = str(value.value)
                     value_unit = " ({})".format(value.name)
 
-                entry = SimpleEntry(
-                    text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
-                    orginH="center",
-                    position=[0, 0],
-                    text_scale=(12, 12),
-                    width=20,
-                    align="left",
-                    textCenterX=False,
-                    command=self.entity_set_prop,
-                    extraArgs=[prop],
-                    focusOutCommand=self.entity_set_prop,
-                    focusOutExtraArgs=[prop],
-                    parent=self.frame.getCanvas(),
-                    size=[None, 20],
-                    sizeHint=[0.50, None],
-                    frameColor="C_WHITE",
-                    initialText=initial_value,
-                    alpha=0,
-                    padding=[10, 0, -3, 3],
-                    suffix=value_unit
+                if self.entity.is_combo_box_property(prop):
+                    entry = SimpleComboBox(
+                        text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+                        orginH="center",
+                        position=[0, 0],
+                        text_scale=(12, 12),
+                        width=20,
+                        align="left",
+                        textCenterX=False,
+                        command=self.entity_set_prop,
+                        extraArgs=[prop],
+                        focusOutCommand=self.entity_set_prop,
+                        focusOutExtraArgs=[prop],
+                        parent=self.frame.getCanvas(),
+                        size=[None, 20],
+                        sizeHint=[0.50, None],
+                        frameColor="C_WHITE",
+                        initialText=initial_value,
+                        alpha=0,
+                        padding=[10, 0, -3, 3],
+                        suffix=value_unit
 
-                )
+                    )
+                else:
+
+                    entry = SimpleEntry(
+                        text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
+                        orginH="center",
+                        position=[0, 0],
+                        text_scale=(12, 12),
+                        width=20,
+                        align="left",
+                        textCenterX=False,
+                        command=self.entity_set_prop,
+                        extraArgs=[prop],
+                        focusOutCommand=self.entity_set_prop,
+                        focusOutExtraArgs=[prop],
+                        parent=self.frame.getCanvas(),
+                        size=[None, 20],
+                        sizeHint=[0.50, None],
+                        frameColor="C_WHITE",
+                        initialText=initial_value,
+                        alpha=0,
+                        padding=[10, 0, -3, 3],
+                        suffix=value_unit
+
+                    )
         self.fields.append([label, entry])
 
     def entity_set_prop(self, new_value: any, name: str):

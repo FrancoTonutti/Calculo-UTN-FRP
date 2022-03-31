@@ -67,6 +67,7 @@ class Node(Entity):
         self.bind_to_model("plane_z")
         self.set_prop_name(plane_z="Plano Z")
 
+        self.set_combo_box_properties("plane_z")
 
         register(self)
         self.create_model()
