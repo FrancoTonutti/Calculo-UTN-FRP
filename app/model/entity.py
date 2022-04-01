@@ -222,6 +222,13 @@ class Entity:
     def is_combo_box_property(self, prop):
         return prop in self._combo_box_properties
 
+    def get_combo_box_values(self, prop):
+        if self.is_combo_box_property(prop) and hasattr(self, "valid_values_"+prop):
+            method = getattr(self, "valid_values_"+prop)
+            return method()
+        else:
+            return [None]
+
     def get_properties(self):
         for prop in self._editor_properties:
             yield prop

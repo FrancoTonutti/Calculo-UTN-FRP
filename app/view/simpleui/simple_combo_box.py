@@ -58,7 +58,7 @@ class SimpleComboBox(SimpleEntry):
             OnscreenText,
             (), parent=self.stateNodePath[0],
             text='◄', scale=12, mayChange=1,
-            sort=100,
+            sort=0,
             pos=(w - 20, -h / 2 - 4),
             fg=(1, 1, 1, 1)
         )
@@ -84,7 +84,9 @@ class SimpleComboBox(SimpleEntry):
                                           padding=[1, 0, 0, 0],
                                           alpha=1,
                                           layout="BoxLayout",
-                                          layoutDir="Y")
+                                          layoutDir="Y",
+                                          sortOrder=1000
+                                          )
 
 
 
@@ -151,12 +153,13 @@ class SimpleComboBox(SimpleEntry):
 
         else:
             if self.dropdown_frame:
-                pass
-                #self.dropdown_frame.hide()
+
+                self.dropdown_frame.hide()
 
     def on_focus(self, event=None):
 
         self.btn_rollover = False
+        self.dropdown_frame.show()
         super(SimpleComboBox, self).on_focus(event)
 
 
@@ -169,4 +172,13 @@ class SimpleComboBox(SimpleEntry):
             self.btn_rollover.on_leave(None)
         print(type(self.dropdown_frame))
         #self.dropdown_frame.hide()
+
+    def focusOutCommandFunc(self):
+        for btn in self.btn_list:
+
+            if btn.is_rollover:
+                self.btn_rollover = btn
+                break
+        else:
+            super(SimpleComboBox, self).focusOutCommandFunc()
 

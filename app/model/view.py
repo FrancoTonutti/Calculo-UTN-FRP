@@ -36,6 +36,8 @@ class View(Entity):
         self.show_properties("show_moment", "show_shear", "show_normal")
         self.set_prop_name(show_moment="Momento", show_shear="Corte", show_normal="Normal")
 
+        self.set_combo_box_properties("show_load", "show_combination")
+
         #entities = app.model_reg.get("View")
         #entity = list(entities.values())[0]
         #prop_editor = app.main_ui.prop_editor

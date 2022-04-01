@@ -86,7 +86,7 @@ class Node(Entity):
     @plane_z.setter
     def plane_z(self, value):
 
-        if value == "" and self._plane_z:
+        if (not value) and self._plane_z:
             self._plane_z.remove_child_model(self)
             self._plane_z = None
             self.unset_read_only("z")
@@ -100,11 +100,17 @@ class Node(Entity):
                 self._plane_z.add_child_model(self)
                 self.set_read_only("z")
 
+    @staticmethod
+    def valid_values_plane_z():
+        # Obtenemos el registro del modelo
+        entities = app.model_reg.find_entities("Level")
 
+        values = [None]
 
+        for ent in entities:
+            values.append(ent.name)
 
-
-
+        return values
 
     def add_load(self, new_load):
         self.loads.append(new_load)

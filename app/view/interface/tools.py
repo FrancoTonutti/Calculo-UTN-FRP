@@ -416,6 +416,7 @@ class PropEditor:
                           COLOR_MAIN_LIGHT]
 
                 if self.entity.is_combo_box_property(prop):
+                    list_values = self.entity.get_combo_box_values(prop)
                     entry = SimpleComboBox(
                         text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
                         orginH="center",
@@ -437,7 +438,7 @@ class PropEditor:
                         padding=[10, 0, -3, 3],
                         suffix=value_unit,
                         dropdownColor=scheme_rgba(COLOR_MAIN_DARK),
-                        options=[None,"PB", "PA"],
+                        options=list_values,
                         colorList=colors
 
                     )

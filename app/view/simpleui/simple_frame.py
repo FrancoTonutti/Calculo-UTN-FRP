@@ -97,9 +97,9 @@ class SimpleFrame(DirectFrame):
         self.set_position()
         size = self['frameSize']
         if size is not None:
-            self.setPos(-size[0], 0, -size[3])
+            self.setPos(-size[0], self["sortOrder"], -size[3])
         else:
-            self.setPos(0, 0, 0)
+            self.setPos(0, self["sortOrder"], 0)
         self.flattenLight()
         self.set_position()
         self.parent_width, self.parent_height = self.get_parent_size()
@@ -230,7 +230,7 @@ class SimpleFrame(DirectFrame):
         padding = self["padding"]
         margin = self["margin"]
 
-        self.setPos(x0 + x + margin[0], 0, y0 - y - margin[3])
+        self.setPos(x0 + x + margin[0], -self["sortOrder"], y0 - y - margin[3])
         self.update_text_pos()
 
     def apply_box_layout(self):
