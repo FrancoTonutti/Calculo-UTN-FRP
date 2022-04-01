@@ -242,6 +242,8 @@ class Table:
                 entry = create_label(str(value), self.canvas)
             else:
                 if entity.is_combo_box_property(prop):
+
+
                     entry = SimpleComboBox(
                         text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
                         orginH="center",
@@ -408,6 +410,11 @@ class PropEditor:
                     initial_value = str(value.value)
                     value_unit = " ({})".format(value.name)
 
+                col_rollover = draw.merge_color(COLOR_SEC_DARK,
+                                                COLOR_HIGHLIGHT, 0.8)
+                colors = [COLOR_MAIN_DARK, COLOR_HIGHLIGHT, col_rollover,
+                          COLOR_MAIN_LIGHT]
+
                 if self.entity.is_combo_box_property(prop):
                     entry = SimpleComboBox(
                         text_fg=scheme_rgba(COLOR_TEXT_LIGHT),
@@ -428,7 +435,10 @@ class PropEditor:
                         initialText=initial_value,
                         alpha=0,
                         padding=[10, 0, -3, 3],
-                        suffix=value_unit
+                        suffix=value_unit,
+                        dropdownColor=scheme_rgba(COLOR_MAIN_DARK),
+                        options=[None,"PB", "PA"],
+                        colorList=colors
 
                     )
                 else:

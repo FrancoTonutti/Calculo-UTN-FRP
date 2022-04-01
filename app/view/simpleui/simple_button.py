@@ -19,6 +19,7 @@ class SimpleButton(DirectButton, SimpleFrame):
     def __init__(self, parent=None, override_default=True, **kw):
         self.textures = ()
         self.initialized = False
+        self.is_rollover = False
         optiondefs = (
             # Define type of DirectGuiWidget
             ('relief', DGG.FLAT, None),
@@ -62,11 +63,16 @@ class SimpleButton(DirectButton, SimpleFrame):
         #draw.change_cursor("/d/Bibliotecas/Documentos/Python 3/UTN/Calculo-UTN-FRP/data/cursors/cursor-link.cur")
         #draw.change_cursor("data/cursors/link.cur")
         window.set_cursor(window.cr_link)
+        self.is_rollover = True
 
     def on_leave(self, event):
         #draw.change_cursor("/c/Windows/Cursors/aero_arrow.cur")
         #draw.change_cursor("/d/Bibliotecas/Documentos/Python 3/UTN/Calculo-UTN-FRP/data/cursors/arrow.cur")
         window.set_cursor(window.cr_arrow)
+        self.is_rollover = False
+
+    def get_extra_args(self):
+        return self["extraArgs"]
 
     def setColorNames(self):
         if self["colorList"] is not None:

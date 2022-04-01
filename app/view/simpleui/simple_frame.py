@@ -416,7 +416,14 @@ class SimpleFrame(DirectFrame):
 
             frame_pos += size[orientation]
 
+    def update_layout(self):
+        self.set_size()
+        for obj in self.children:
+            # print("getPythonTag", obj.getPythonTag("simple_gui"))
+            if obj.hasPythonTag('simple_gui'):
+                gui_obj = obj.getPythonTag("simple_gui")
 
+                gui_obj.update_layout()
 
     def setFrameColor(self):
         # this might be a single color or a list of colors
