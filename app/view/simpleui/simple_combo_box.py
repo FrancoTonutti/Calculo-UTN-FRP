@@ -24,7 +24,8 @@ class SimpleComboBox(SimpleEntry):
             # Define type of DirectGuiWidget
             ('options', [], self.update_options),
             ('dropdownColor', (1, 1, 1, 1), None),
-            ('colorList', None, None)
+            ('colorList', None, None),
+            ('dropdownSymbolColor', (1, 1, 1, 1), None)
         )
         # Merge keyword options with default options
         self.defineoptions(kw, optiondefs)
@@ -60,7 +61,7 @@ class SimpleComboBox(SimpleEntry):
             text='◄', scale=12, mayChange=1,
             sort=0,
             pos=(w - 20, -h / 2 - 4),
-            fg=(1, 1, 1, 1)
+            fg=self["dropdownSymbolColor"]
         )
 
         '''geom = loader.loadModel("data/geom/square.egg")
@@ -72,21 +73,9 @@ class SimpleComboBox(SimpleEntry):
             geom=geom, scale=(w, 1, -170), pos=(w/2, 0, -170/2-h),
             sort=DGG.GEOM_SORT_INDEX)'''
 
-        if self["options"]:
-            n = len(self["options"])
-        else:
-            n = 1
 
-        self.dropdown_frame = SimpleFrame(position=[2, h + 2],
-                                          size=[w - 4, h*n],
-                                          parent=self,#.stateNodePath[0],
-                                          frameColor=self["dropdownColor"],
-                                          padding=[1, 0, 0, 0],
-                                          alpha=1,
-                                          layout="BoxLayout",
-                                          layoutDir="Y",
-                                          sortOrder=1000
-                                          )
+
+        self.dropdown_frame = None
 
 
 
@@ -97,14 +86,14 @@ class SimpleComboBox(SimpleEntry):
             text='▼', scale=12, mayChange=1,
             sort=100,
             pos=(w - 20, -h / 2 - 4),
-            fg=(1, 1, 1, 1)
+            fg=self["dropdownSymbolColor"]
         )
         self.btn_list = list()
         self.combo_box_init = True
         self.set_size()
-        self.update_options()
+        #self.update_options()
 
-        self.dropdown_frame.hide()
+        #self.dropdown_frame.hide()
 
 
     def set_size(self):
@@ -119,9 +108,9 @@ class SimpleComboBox(SimpleEntry):
     def update_options(self):
         if self.combo_box_init:
             options = self["options"]
-            w, h = self.box_size()
             text_comp = self.component("text")
             fg = text_comp.textNode.getTextColor()
+            w, h = self.box_size()
             for option in options:
                 new_btn = SimpleButton(text=str(option),
                                        text_scale=(12, 12),
@@ -159,9 +148,31 @@ class SimpleComboBox(SimpleEntry):
     def on_focus(self, event=None):
 
         self.btn_rollover = False
-        self.dropdown_frame.show()
-        super(SimpleComboBox, self).on_focus(event)
 
+        super(SimpleComboBox, self).on_focus(event)
+        w, h = self.box_size()
+
+        if self["options"]:
+            n = len(self["options"])
+        else:
+            n = 1
+
+        if self.dropdown_frame is None:
+            self.dropdown_frame = SimpleFrame(position=[2, h + 2],
+                                              size=[w - 4, h * n],
+                                              parent=self,  # .stateNodePath[0],
+                                              frameColor=self["dropdownColor"],
+                                              padding=[1, 0, 0, 0],
+                                              alpha=1,
+                                              layout="BoxLayout",
+                                              layoutDir="Y",
+                                              )
+            self.dropdown_frame.setBin("gui-popup", 50)
+            #self.dropdown_frame.wrtReparentTo(pixel2d)
+
+            self.update_options()
+        else:
+            self.dropdown_frame.show()
 
     def set_option(self, value):
         print("SET_OPTION", value)

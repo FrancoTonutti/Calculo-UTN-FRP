@@ -164,8 +164,8 @@ class SimpleFrame(DirectFrame):
 
     def get_parent_size(self):
         if self.parent == pixel2d:
-            parent_width = app.get_show_base().win.getXSize()
-            parent_height = app.get_show_base().win.getYSize()
+            parent_width = base.win.getXSize()
+            parent_height = base.win.getYSize()
         else:
 
             if self.parent_gui is not None:

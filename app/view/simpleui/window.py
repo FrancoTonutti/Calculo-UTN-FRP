@@ -44,7 +44,7 @@ def set_cursor(cursor: str):
     winprops = WindowProperties()
     winprops.setCursorFilename(cursor_filename)
 
-    base = app.get_show_base()
+    #base = app.get_show_base()
     base.win.requestProperties(winprops)
 
 

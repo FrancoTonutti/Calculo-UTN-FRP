@@ -45,7 +45,7 @@ Type[DynamicTextFont], Type[ImageFont.FreeTypeFont]):
         font_size = fonts.get("_size")
 
     if font_name not in fonts:
-        loader = app.get_show_base().loader
+        #loader = app.get_show_base().loader
         font_panda3d = loader.loadFont("data/fonts/{}.ttf".format(font_name))
         font_panda3d.setPixelSize(30)
         font_pil = ImageFont.truetype("data/fonts/{}.ttf".format(font_name), font_size)

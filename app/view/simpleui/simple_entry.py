@@ -36,6 +36,9 @@ class SimpleEntry(DirectEntry, SimpleFrame):
 
         )
         # Merge keyword options with default options
+
+        if not "text_scale" in kw.keys():
+            kw.update({"text_scale": (12, 12)})
         self.defineoptions(kw, optiondefs)
 
         if parent is None:
@@ -131,11 +134,11 @@ class SimpleEntry(DirectEntry, SimpleFrame):
                     self.enterText("{}{}{}".format(prefix, txt, suffix))
 
     def focus_task(self, task):
-        panda3d = app.get_show_base()
-        btn = panda3d.mouseWatcherNode
+        #panda3d = app.get_show_base()
+        btn = base.mouseWatcherNode
 
         if btn.isButtonDown("mouse1"):
-            mouse_data = panda3d.win.getPointer(0)
+            mouse_data = base.win.getPointer(0)
             mouse_x, mouse_y = mouse_data.getX(), mouse_data.getY()
 
             if str(self) == "**removed**":

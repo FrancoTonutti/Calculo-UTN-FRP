@@ -412,7 +412,7 @@ class PropEditor:
 
                 col_rollover = draw.merge_color(COLOR_SEC_DARK,
                                                 COLOR_HIGHLIGHT, 0.8)
-                colors = [COLOR_MAIN_DARK, COLOR_HIGHLIGHT, col_rollover,
+                colors = [COLOR_MAIN_LIGHT, COLOR_HIGHLIGHT, col_rollover,
                           COLOR_MAIN_LIGHT]
 
                 if self.entity.is_combo_box_property(prop):
@@ -437,7 +437,8 @@ class PropEditor:
                         alpha=0,
                         padding=[10, 0, -3, 3],
                         suffix=value_unit,
-                        dropdownColor=scheme_rgba(COLOR_MAIN_DARK),
+                        dropdownColor=scheme_rgba(COLOR_MAIN_LIGHT),
+                        dropdownSymbolColor=scheme_rgba(COLOR_TEXT_LIGHT_FADE),
                         options=list_values,
                         colorList=colors
 
