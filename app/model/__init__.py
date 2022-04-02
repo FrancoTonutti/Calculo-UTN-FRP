@@ -10,7 +10,7 @@ from app.model.model_reg import ModelReg
 from app.model.material_group import MaterialGroup
 from app.model.material import Material
 from app.model.view_gizmo import ViewGizmoZone
-from app.model.load_type import LoadType
+from app.model.load_case import LoadCase
 from app.model.load_combination import LoadCombination
 from app.model.code_check import CodeCheck
 from app.model.profile_sections import ProfileSection
@@ -37,7 +37,7 @@ model_reg.class_register = {
     "Material": Material,
     "MaterialGroup": MaterialGroup,
     "ViewGizmoZone": ViewGizmoZone,
-    "LoadType": LoadType,
+    "LoadCase": LoadCase,
     "LoadCombination": LoadCombination,
     "CodeCheck": CodeCheck,
     "ProfileSection": ProfileSection,
@@ -51,6 +51,6 @@ model_reg.class_register = {
 
 print("CLASS REGISTER CREATED")
 
-model_reg.keys_priority = ["View", "Level", "Node", "Section", "MaterialGroup", "Material", "Bar", "RebarLayer", "RebarSet", "LoadType", "Load", "Diagram"]
+model_reg.keys_priority = ["View", "Level", "Node", "Section", "MaterialGroup", "Material", "Bar", "RebarLayer", "RebarSet", "LoadCase", "Load", "Diagram"]
 
 

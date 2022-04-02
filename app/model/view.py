@@ -65,6 +65,18 @@ class View(Entity):
         app.show_load = value
         execute("regen")
 
+    @staticmethod
+    def valid_values_show_load():
+        # Obtenemos el registro del modelo
+        entities = app.model_reg.find_entities("LoadCase")
+
+        values = [None]
+
+        for ent in entities:
+            values.append(ent.load_code)
+
+        return values
+
     @property
     def show_moment(self):
         return app.show_moment

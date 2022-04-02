@@ -3,7 +3,7 @@ from app.model import Bar, Node
 from app.view import draw
 import numpy as np
 from app import app
-from app.model.load_type import LoadType
+from app.model.load_case import LoadCase
 
 class LoadCombination(Entity):
     """
@@ -43,10 +43,10 @@ class LoadCombination(Entity):
 
         register(self)
 
-    def set_factor(self, load: LoadType, factor: float):
+    def set_factor(self, load: LoadCase, factor: float):
         self.factors.update({load.entity_id: factor})
 
-    def get_factor(self, load: LoadType):
+    def get_factor(self, load: LoadCase):
         return self.factors.get(load.entity_id, 0.0)
 
     @property
@@ -56,7 +56,7 @@ class LoadCombination(Entity):
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("LoadType")
+        entities = model_reg.find_entities("LoadCase")
 
         sorted_entities = []
         for entity in entities:
@@ -110,7 +110,7 @@ class LoadCombination(Entity):
             panda3d = app.get_show_base()
             # Obtenemos el registro del modelo
             model_reg = app.model_reg
-            entities = model_reg.find_entities("LoadType")
+            entities = model_reg.find_entities("LoadCase")
             for entity in entities:
                 if entity.load_code == key:
                     print("set_factor")
@@ -122,7 +122,7 @@ class LoadCombination(Entity):
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("LoadType")
+        entities = model_reg.find_entities("LoadCase")
         for entity in entities:
             if entity.load_code == name:
                 print("set_factor")
@@ -136,7 +136,7 @@ class LoadCombination(Entity):
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("LoadType")
+        entities = model_reg.find_entities("LoadCase")
         for entity in entities:
             if entity.load_code == key:
                 return self.get_factor(entity)

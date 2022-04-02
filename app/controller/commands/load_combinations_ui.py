@@ -13,7 +13,7 @@ from app.view.interface.color_scheme import *
 from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
     SimpleCheckBox, SimpleEntry
 
-from app.model.load_type import LoadType
+from app.model.load_case import LoadCase
 from app.view import simpleui
 
 def create_label(text, parent):
@@ -244,7 +244,7 @@ class UI:
         btn1 = new_button("Agregar Tipo", parent=frame,
                           command=self.create_load_type)
 
-        self.load_table = Table(["Nº", "Descripción", "Nombre", "Peso propio"], frame, "LoadType",
+        self.load_table = Table(["Nº", "Descripción", "Nombre", "Peso propio"], frame, "LoadCase",
                                 ["index", "name", "load_code", "own_weight"],
                                 ev_set_attr=self.update_load_types,
                                 ev_delete_entity=self.update_load_combinations)
@@ -263,9 +263,12 @@ class UI:
         execute("regen_ui")
 
     def create_load_type(self):
-        LoadType("Carga1", "D")
+        tr = Transaction()
+        tr.start("Create Load Case")
+        LoadCase("Carga1", "D")
         self.load_table.update_table()
         self.update_load_combinations()
+        tr.commit()
 
     def create_load_combination(self):
         LoadCombination("12-1")
@@ -285,7 +288,7 @@ class UI:
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("LoadType")
+        entities = model_reg.find_entities("LoadCase")
         for entity in entities:
             titles.append(entity.load_code)
             params.append(entity.load_code)

@@ -25,7 +25,7 @@ def start_analysis():
     # Obtenemos el registro del modelo
     model = app.model_reg
     load_combinations = model.find_entities("LoadCombination")
-    load_types = model.find_entities("LoadType")
+    load_types = model.find_entities("LoadCase")
 
     sorted_entities = []
 

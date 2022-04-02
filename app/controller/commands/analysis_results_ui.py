@@ -11,7 +11,7 @@ from app.view.interface.color_scheme import *
 from app.view.simpleui import SimpleScrolledFrame, SimpleLabel, SimpleButton, \
     SimpleCheckBox, SimpleEntry, SimpleFrame
 
-from app.model.load_type import LoadType
+from app.model.load_case import LoadCase
 from app.view import simpleui
 
 from app.view.interface.tools import *

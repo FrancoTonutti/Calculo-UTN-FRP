@@ -5,7 +5,7 @@ import numpy as np
 from app import app
 
 
-class LoadType(Entity):
+class LoadCase(Entity):
     """
     bar: parent bar
     load_type: string  = "D", "L", "W", "S" etc.
@@ -21,7 +21,7 @@ class LoadType(Entity):
         index = obj.get("index")
         own_weight = obj.get("own_weight")
 
-        return LoadType(name, load_code, entity_id, index, own_weight)
+        return LoadCase(name, load_code, entity_id, index, own_weight)
 
     def __init__(self, name, load_code="D", set_id=None, index=None, own_weight=False):
         super().__init__(set_id)
@@ -29,7 +29,7 @@ class LoadType(Entity):
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("LoadType")
+        entities = model_reg.find_entities("LoadCase")
 
         if index:
             self._index = index
@@ -57,7 +57,7 @@ class LoadType(Entity):
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("LoadType")
+        entities = model_reg.find_entities("LoadCase")
 
         sorted_entities = []
         for entity in entities:
@@ -89,7 +89,7 @@ class LoadType(Entity):
             if self.entity_id in entity.factors.keys():
                 entity.factors.pop(self.entity_id)
 
-        return super(LoadType, self).delete()
+        return super(LoadCase, self).delete()
 
     @property
     def load_code(self):
@@ -101,7 +101,7 @@ class LoadType(Entity):
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("LoadType")
+        entities = model_reg.find_entities("LoadCase")
 
         iterate = False
 
