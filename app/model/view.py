@@ -38,14 +38,6 @@ class View(Entity):
 
         self.set_combo_box_properties("show_load", "show_combination")
 
-        #entities = app.model_reg.get("View")
-        #entity = list(entities.values())[0]
-        #prop_editor = app.main_ui.prop_editor
-
-        #prop_editor.entity_read(entity, update=True)
-
-        self.count_memory_references()
-
     @property
     def scale(self):
         return round(app.diagram_scale, 2)
@@ -112,6 +104,18 @@ class View(Entity):
     def show_combination(self, value: str):
         app.show_combination = value
         execute("regen")
+
+    @staticmethod
+    def valid_values_show_combination():
+        # Obtenemos el registro del modelo
+        entities = app.model_reg.find_entities("LoadCombination")
+
+        values = [None]
+
+        for ent in entities:
+            values.append(ent.equation)
+
+        return values
 
     @property
     def work_plane_vect(self):
