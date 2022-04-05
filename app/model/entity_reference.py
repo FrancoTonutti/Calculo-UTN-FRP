@@ -81,6 +81,22 @@ class EntityReference:
             else:
                 self.__reference__ = None
 
+    def __str__(self):
+        if self.__reference__:
+            if not self.__reference__.__is_deleted__:
+                return self.__reference__.__str__()
+            else:
+                self.__reference__ = "Referencia eliminada"
+                return None
+        else:
+            return "Referencia eliminada"
+
+    def __eq__(self, other):
+        if isinstance(other, EntityReference):
+            return self.__reference__ == other.__reference__
+        else:
+            return self.__reference__ == other
+
 
 def create_entity_reference(value):
     return value
