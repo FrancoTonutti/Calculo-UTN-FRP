@@ -16,14 +16,14 @@ class LoadCase(Entity):
     def create_from_object(obj):
 
         entity_id = obj.get("entity_id")
-        name = obj.get("name")
+        description = obj.get("description")
         load_code = obj.get("load_code")
         index = obj.get("index")
         own_weight = obj.get("own_weight")
 
-        return LoadCase(name, load_code, entity_id, index, own_weight)
+        return LoadCase(load_code, description, entity_id, index, own_weight)
 
-    def __init__(self, name, load_code="D", set_id=None, index=None, own_weight=False):
+    def __init__(self,  load_code="D", description="", set_id=None, index=None, own_weight=False):
         super().__init__(set_id)
 
         panda3d = app.get_show_base()
@@ -34,12 +34,13 @@ class LoadCase(Entity):
         if index:
             self._index = index
         else:
-            self._index = 100
+            self._index = 1
             self.index = 100
 
-        self._load_code = load_code
+        #self._load_code = load_code
+        self.load_code = load_code
 
-        self.name = name
+        self.description = description
         self.load_code = load_code
         self.own_weight = own_weight
 

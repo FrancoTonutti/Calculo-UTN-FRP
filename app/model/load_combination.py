@@ -28,7 +28,6 @@ class LoadCombination(Entity):
         if index:
             self._index = index
         else:
-            self._index = 100
             self.index = 100
 
         self.name = name

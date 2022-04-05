@@ -85,7 +85,10 @@ class Bar(Entity):
         self.cc = 2 * unit_manager.ureg("cm")
         self.set_prop_name(cc="Recubrimiento")
         self.show_properties("cc")
-
+        self.show_properties("lenght")
+        self.set_prop_name(lenght="Longitud")
+        self.set_read_only("lenght")
+        self.set_units(lenght="m")
         #self.show_properties("max_moment", "min_moment")
         #self.set_prop_name(max_moment="Momento Máx.", min_moment="Momento Min.")
 
@@ -93,6 +96,7 @@ class Bar(Entity):
 
         self.rebar_sets = list()
 
+        self.set_combo_box_properties("behavior", "material")
 
 
         self.create_model()
@@ -123,6 +127,10 @@ class Bar(Entity):
         if value:
             self.end.add_child_model(self)
 
+    @staticmethod
+    def valid_values_behavior():
+        return ["Barra", "Viga", "Columna"]
+
     @property
     def behavior(self):
         return self._behavior
@@ -132,9 +140,16 @@ class Bar(Entity):
         if value in ["Barra", "Viga", "Columna"]:
             self._behavior = value
 
+    @staticmethod
+    def valid_values_material():
+        groups = app.model_reg.find_entities("MaterialGroup") #type: List[MaterialGroup]
+        values = [None]
+        for group in groups:
+            mats = group.get_materials() #type: List[Material]
+            for mat in mats:
+                values.append("{}: {}".format(group.name, mat.name))
 
-
-
+        return values
 
     @property
     def material(self):
@@ -194,6 +209,10 @@ class Bar(Entity):
     def get_loads(self):
         for load_entity in self.loads:
             yield load_entity
+
+    @property
+    def lenght(self):
+        return self.longitude()
 
     def longitude(self):
         start = self.start.position[0], self.start.position[1], self.start.position[2]

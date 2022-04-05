@@ -56,6 +56,40 @@ def new_file():
     #w80 = ProfileSectionI(80, 46, 5.2, 3.8, 5)
     #print("Ix: {}".format(w80.inertia_x()))
 
+    case_D = LoadCase("D", "Carga muerta", own_weight=True)
+    case_L = LoadCase("L", "Sobrecarga de uso")
+    case_Lr = LoadCase("Lr", "Sobrecarga de mantenimiento")
+    case_W = LoadCase("W", "Viento")
+
+    load_comb_1 = LoadCombination("A.4.1")
+    load_comb_1.set_factor(case_D, 1.4)
+
+    load_comb_2 = LoadCombination("A.4.2")
+    load_comb_2.set_factor(case_D, 1.2)
+    load_comb_2.set_factor(case_L, 1.6)
+    load_comb_2.set_factor(case_Lr, 0.5)
+
+    load_comb_3a = LoadCombination("A.4.3.a")
+    load_comb_3a.set_factor(case_D, 1.2)
+    load_comb_3a.set_factor(case_Lr, 1.6)
+    load_comb_3a.set_factor(case_L, 0.5)
+
+    load_comb_3b = LoadCombination("A.4.3.b")
+    load_comb_3b.set_factor(case_D, 1.2)
+    load_comb_3b.set_factor(case_Lr, 1.6)
+    load_comb_3b.set_factor(case_W, 0.8)
+
+    load_comb_4 = LoadCombination("A.4.4")
+    load_comb_4.set_factor(case_D, 1.2)
+    load_comb_4.set_factor(case_W, 1.6)
+    load_comb_4.set_factor(case_L, 0.5)
+    load_comb_4.set_factor(case_Lr, 0.5)
+
+    load_comb_6 = LoadCombination("A.4.6")
+    load_comb_6.set_factor(case_D, 0.8)
+    load_comb_6.set_factor(case_W, 1.6)
+
+
     tr.commit()
 
     execute("regen")

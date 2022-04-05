@@ -230,6 +230,7 @@ class UI:
         self.update_list()
 
     def open_group(self, group: MaterialGroup, btn):
+        print("open_group")
 
         if self.selected_group_btn:
             self.selected_group_btn["colorList"] = self.default_colors
@@ -250,8 +251,15 @@ class UI:
 
         model_reg = app.model_reg
         entities = model_reg.find_entities("Material")
+        print(entities)
+        for ent in entities:
+            print(ent.material_group is self.selected_group)
+            print(type(ent.material_group))
+            print(type(self.selected_group))
+
         entities = filter(lambda x: x.material_group == self.selected_group, entities)
         entities = sorted(entities, key=lambda x: x.name)
+        print(entities)
 
         for subtype in entities:
 
@@ -303,12 +311,18 @@ class UI:
             execute("regen_ui")
 
     def create_material_group(self):
+        tr = Transaction()
+        tr.start("Create MaterialGroup")
         mg = MaterialGroup("Material")
+        tr.commit()
 
         self.update_list()
 
     def create_material_subtype(self):
+        tr = Transaction()
+        tr.start("Create Material")
         mat = Material("Subtipo", self.selected_group)
+        tr.commit()
 
         self.update_list()
 

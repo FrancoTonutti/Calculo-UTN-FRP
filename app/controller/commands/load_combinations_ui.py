@@ -244,8 +244,8 @@ class UI:
         btn1 = new_button("Agregar Tipo", parent=frame,
                           command=self.create_load_type)
 
-        self.load_table = Table(["Nº", "Descripción", "Nombre", "Peso propio"], frame, "LoadCase",
-                                ["index", "name", "load_code", "own_weight"],
+        self.load_table = Table(["Nº", "Nombre", "Descripción                                    ",  "Peso propio"], frame, "LoadCase",
+                                ["index", "load_code", "description",  "own_weight"],
                                 ev_set_attr=self.update_load_types,
                                 ev_delete_entity=self.update_load_combinations)
 
@@ -265,15 +265,18 @@ class UI:
     def create_load_type(self):
         tr = Transaction()
         tr.start("Create Load Case")
-        LoadCase("Carga1", "D")
+        LoadCase( "D", "Carga1")
         self.load_table.update_table()
         self.update_load_combinations()
         tr.commit()
 
     def create_load_combination(self):
+        tr = Transaction()
+        tr.start("Create Load Combinatiom")
         LoadCombination("12-1")
         self.combination_table.update_table()
         self.update_load_combinations()
+        tr.commit()
 
     def update_load_types(self):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_load_types")
