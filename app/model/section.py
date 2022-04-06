@@ -1,4 +1,5 @@
 from app.model.entity import Entity, register
+from app.model.section_type import SectionType
 
 
 class Section(Entity):
@@ -10,10 +11,49 @@ class Section(Entity):
 
         return Section(width, height, entity_id)
 
-    def __init__(self, width, height, set_id=None):
+    def __init__(self, name: str, section_type: SectionType, geometry: dict, set_id=None):
         super().__init__(set_id)
+        width = 0
+        height = 0
+        self.name = name
         self.size = [width, height]
+        self._geometry = None
+        self._section_type = None
+        self.section_type = section_type
+        self.set_geometry(geometry)
+
+        self.show_properties("name")
+
         register(self)
+
+    def set_geometry(self, geometry):
+        self._geometry = geometry
+
+    @property
+    def section_type(self):
+        return self._section_type
+
+    @section_type.setter
+    def section_type(self, value):
+        if not value or isinstance(value, str):
+            print("Material section_type: {}".format(value))
+            raise Exception("check this")
+        else:
+            reset_name = False
+            if self._section_type:
+                reset_name = True
+                self._section_type.remove_section(self)
+
+            value.add_section(self)
+            self._section_type = value
+            '''if reset_name:
+                self.name = self._name'''
+
+    def delete(self):
+        if self._section_type:
+            self._section_type.remove_section(self)
+
+        super(Section, self).delete()
 
     def inertia_x(self):
         b = self.size[0]
