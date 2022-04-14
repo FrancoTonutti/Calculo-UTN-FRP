@@ -32,6 +32,8 @@ def create_bar():
     status_bar.set_status_hint("Haga click en el punto inicial")
 
     section = Section.last_section
+
+    print("SECCION----{}".format(section.__str__()))
     node_start = Node(0, 0)
     node_start.hide()
     node_end = Node(1, 0)

@@ -14,6 +14,8 @@ from app.model import *
 from app.model.profile_sections.profile_section_I import ProfileSectionI
 import pint
 
+from app.model.profile_shapes import ProfileShapeFillRect
+from app.model.section_type import SectionType
 from app.model.transaction import Transaction
 
 from typing import TYPE_CHECKING
@@ -88,6 +90,15 @@ def new_file():
     load_comb_6 = LoadCombination("A.4.6")
     load_comb_6.set_factor(case_D, 0.8)
     load_comb_6.set_factor(case_W, 1.6)
+
+    sec_type = SectionType("Rectangular")
+    shapes = sec_type.valid_values_shape()
+    for shape in shapes:
+        if isinstance(shape, ProfileShapeFillRect):
+            sec_type.shape = shape
+
+    Section("20/30", sec_type, {"bw": "20 cm", "h": "30 cm"})
+
 
 
     tr.commit()

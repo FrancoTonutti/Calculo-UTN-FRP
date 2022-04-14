@@ -46,6 +46,9 @@ class SectionType(Entity):
         self.set_prop_name(name="Nombre", shape="Forma")
         self.set_combo_box_properties("shape")
 
+    def __str__(self):
+        return self.name
+
     def valid_values_shape(self):
         values = [None]
 
@@ -157,3 +160,6 @@ class SectionType(Entity):
                 material.delete()
 
         return super(SectionType, self).delete()
+
+    def get_contour_points(self, **kwargs):
+        return self.shape.get_contour_points(**kwargs)

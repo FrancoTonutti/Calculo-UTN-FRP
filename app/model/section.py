@@ -32,6 +32,15 @@ class Section(Entity):
     def set_geometry(self, geometry):
         self._geometry = geometry
 
+        for attr, value in geometry.items():
+            if isinstance(value, str):
+                setattr(self, attr, app.ureg(value))
+            else:
+                setattr(self, attr, value*app.ureg("cm"))
+
+    def __str__(self):
+        return self.name
+
     @property
     def section_type(self):
         return self._section_type
@@ -87,5 +96,12 @@ class Section(Entity):
     def area(self):
         return self.size[0] * self.size[1]
 
-    def __str__(self):
-        return "<class 'app.model.core.Section'>"
+    def get_contour_points(self):
+
+        geometry = {}
+
+        for attr in self.section_type.shape.params:
+            value = getattr(self, attr)
+            geometry.update({attr: value})
+
+        return self.section_type.get_contour_points(**geometry)

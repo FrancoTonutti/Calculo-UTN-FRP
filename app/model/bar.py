@@ -77,6 +77,15 @@ class Bar(Entity):
         self.show_properties("end_x", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
 
+        self.section_type = section.section_type
+        self.show_properties("section_type")
+        self.set_prop_name(section_type="Catálogo")
+        self.set_combo_box_properties("section_type")
+
+        self.show_properties("section")
+        self.set_prop_name(section="Sección")
+        #self.set_combo_box_properties("section")
+
         self.show_properties("material")
         self.set_prop_name(material="Material")
 
@@ -127,6 +136,14 @@ class Bar(Entity):
         self._end = value
         if value:
             self.end.add_child_model(self)
+
+    @staticmethod
+    def valid_values_section_type():
+        values = [None]
+        for section_type in app.model_reg.find_entities("SectionType"):
+            values.append(section_type)
+
+        return values
 
     @staticmethod
     def valid_values_behavior():
@@ -302,6 +319,7 @@ class Bar(Entity):
         self.update_model()
 
     def update_model(self):
+        return None
         geom = self.geom[0]
         x0, y0, z0 = self.start.position
         x1, y1, z1 = self.end.position

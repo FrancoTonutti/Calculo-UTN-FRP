@@ -1,4 +1,4 @@
-from app.model import Entity
+from app.model import Entity, unit_manager
 
 
 class ProfileShapeFillRect(Entity):
@@ -16,3 +16,17 @@ class ProfileShapeFillRect(Entity):
     def __str__(self):
         return self.name
 
+    @staticmethod
+    def get_contour_points(bw, h):
+        bw = unit_manager.convert_to_m(bw)
+        h = unit_manager.convert_to_m(h)
+
+        x0 = -bw/2
+        y0 = -h
+        points = [[x0, y0],
+                  [x0+bw, y0],
+                  [x0+bw, y0+h],
+                  [x0, y0+h],
+                  [x0, y0]]
+
+        return points
