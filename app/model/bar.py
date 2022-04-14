@@ -64,7 +64,8 @@ class Bar(Entity):
         self.max_moment = 0
         self.min_moment = 0
 
-        self.show_properties("name", "width", "height")
+        self.show_properties("name")
+        #self.show_properties("width", "height")
         self.set_temp_properties("start_x", "start_y", "start_z")
         self.set_temp_properties("end_x", "end_y", "end_z")
         self.set_temp_properties("borders", "height","width", "max_moment", "min_moment")
@@ -227,7 +228,7 @@ class Bar(Entity):
         return long
 
 
-    @property
+    '''@property
     def width(self):
         return self.section.size[0]
 
@@ -243,7 +244,7 @@ class Bar(Entity):
     @height.setter
     def height(self, value):
         print("setter height")
-        self.section.size[1] = value
+        self.section.size[1] = value'''
 
     @property
     def start_x(self):
@@ -306,7 +307,13 @@ class Bar(Entity):
         x1, y1, z1 = self.end.position
         geom.setPos(x0, y0, z0)
 
-        b, h = self.section.size
+
+        if self.section:
+            b, h = self.section.size
+        else:
+            b = 0.05
+            h = 0.05
+
         x = x1 - x0
         y = y1 - y0
         z = z1 - z0

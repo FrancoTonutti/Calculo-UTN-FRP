@@ -1,5 +1,9 @@
 from app.model.entity import Entity
 from app import app
+from .profile_shapes import ProfileShapeFillRect
+
+from .profile_shapes.profile_shape_I import ProfileShapeI
+from .transaction import Transaction
 
 shape_codes = {"1": "Ángulo",
                "2": "Ángulo lados desiguales",
@@ -17,6 +21,9 @@ shape_codes = {"1": "Ángulo",
                "14": "Rectangular",
                "15": "Circular"}
 
+section_shapes = {"ProfileShapeI": ProfileShapeI,
+                  "ProfileShapeFillRect": ProfileShapeFillRect}
+
 class SectionType(Entity):
     global shape_codes
 
@@ -32,7 +39,7 @@ class SectionType(Entity):
 
         self._name = "None"
         self.name = name
-        self.shape = "Ángulo"
+        self.shape = None
         self._sections = []
 
         self.show_properties("name", "shape")
@@ -42,10 +49,47 @@ class SectionType(Entity):
     def valid_values_shape(self):
         values = [None]
 
-        for shape in shape_codes.values():
+        '''for shape in shape_codes.values():
+            values.append(shape)'''
+
+        for name, shape_class in section_shapes.items():
+
+            shapes = app.model_reg.find_entities(name)
+
+            if not shapes:
+                tr = Transaction()
+                tr.start("Init section Shapes")
+                shape = shape_class.create_from_object({})
+                tr.commit()
+            else:
+                shape = list(shapes)[0]
+
             values.append(shape)
 
         return values
+
+    @property
+    def shape(self):
+        return self._shape
+
+    @shape.setter
+    def shape(self, value):
+        if isinstance(value, str):
+
+            for name in section_shapes.keys():
+                shape = app.model_reg.find_entities(name)
+                shape = list(shape)
+                if shape and shape[0].name == value:
+                    value = shape[0]
+
+                break
+            else:
+                return
+
+        if isinstance(value, str):
+            raise Exception("Shape is str")
+
+        self._shape = value
 
     def add_section(self, section):
         if section not in self._sections:

@@ -1,8 +1,9 @@
 from app.model.entity import Entity, register
 from app.model.section_type import SectionType
-
+from app import app
 
 class Section(Entity):
+    last_section = None
 
     @staticmethod
     def create_from_object(obj):
@@ -16,15 +17,17 @@ class Section(Entity):
         width = 0
         height = 0
         self.name = name
+        self.show_properties("name")
         self.size = [width, height]
         self._geometry = None
         self._section_type = None
         self.section_type = section_type
         self.set_geometry(geometry)
 
-        self.show_properties("name")
+
 
         register(self)
+        Section.last_section = self
 
     def set_geometry(self, geometry):
         self._geometry = geometry
@@ -46,6 +49,22 @@ class Section(Entity):
 
             value.add_section(self)
             self._section_type = value
+
+            shape = value.shape
+
+            #for param in shape.params:
+
+
+
+            for param in shape.params:
+                self.set_units(**{param: "mm"})
+                setattr(self, param, 0*app.ureg("mm"))
+
+
+
+
+
+            self.show_properties(*shape.params)
             '''if reset_name:
                 self.name = self._name'''
 

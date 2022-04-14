@@ -3,6 +3,8 @@ from enum import Enum
 import pint
 
 from app import app
+from app.model import Entity
+from app.model.entity_reference import EntityReference
 from app.model.transaction import Transaction
 
 from app.view.interface.color_scheme import *
@@ -426,9 +428,9 @@ class PropEditor:
                         align="left",
                         textCenterX=False,
                         command=self.entity_set_prop,
-                        extraArgs=[prop],
+                        extraArgs=[prop, list_values],
                         focusOutCommand=self.entity_set_prop,
-                        focusOutExtraArgs=[prop],
+                        focusOutExtraArgs=[prop, list_values],
                         parent=self.frame.getCanvas(),
                         size=[None, 20],
                         sizeHint=[0.50, None],
@@ -469,9 +471,14 @@ class PropEditor:
                     )
         self.fields.append([label, entry])
 
-    def entity_set_prop(self, new_value: any, name: str):
+    def entity_set_prop(self, new_value: any, name: str, combobox_values=None):
         old_value = getattr(self.entity, name, None)
         force_set = False
+
+        if combobox_values:
+            for value in combobox_values:
+                if new_value == str(value):
+                    new_value = value
 
         if isinstance(old_value, bool):
 
@@ -500,7 +507,20 @@ class PropEditor:
         if old_value == new_value and not force_set:
             return None
 
-        if type(old_value) is type(new_value):
+        enable_set = False
+
+        if old_value is None:
+            enable_set = True
+
+        if isinstance(old_value, EntityReference):
+            if isinstance(new_value, str):
+                enable_set = True
+            elif isinstance(new_value, Entity):
+                enable_set = True
+            elif new_value is None:
+                enable_set = True
+
+        if type(old_value) is type(new_value) or enable_set:
             if self.entity is not None:
                 print(
                     "atributo establecido {}: {}".format(name, new_value))

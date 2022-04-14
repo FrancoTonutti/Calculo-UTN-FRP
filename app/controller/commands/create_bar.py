@@ -31,7 +31,7 @@ def create_bar():
     status_bar = app.main_ui.status_bar
     status_bar.set_status_hint("Haga click en el punto inicial")
 
-    section = Section(0.2, 0.3)
+    section = Section.last_section
     node_start = Node(0, 0)
     node_start.hide()
     node_end = Node(1, 0)

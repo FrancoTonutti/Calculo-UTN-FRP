@@ -1,3 +1,5 @@
+from direct.gui import DirectGuiGlobals as DGG
+
 from app.controller.console import command, execute
 from app.controller.commands import render
 from app import app
@@ -70,8 +72,9 @@ class UI:
 
         btn1 = new_button("Agregar Perfil", parent=btn_container,
                           command=self.create_section_type)
-        btn2 = new_button("Agregar Sección", parent=btn_container,
+        self.btn2 = new_button("Agregar Sección", parent=btn_container,
                           command=self.create_section, margin=[10, 0, 0, 0])
+        self.btn2['state'] = DGG.DISABLED
 
         #btn2['state'] = DGG.DISABLED
 
@@ -219,6 +222,7 @@ class UI:
             self.update_list()
 
     def update_list(self):
+        self.btn2['state'] = DGG.DISABLED
 
         for btn in self.material_list_btns:
             btn.destroy()
@@ -248,6 +252,11 @@ class UI:
 
             self.material_list_btns.append(btn)
             self.material_list_btns.append(del_btn)
+
+            if self.selected_section_type.shape:
+                self.btn2['state'] = DGG.NORMAL
+            else:
+                self.btn2['state'] = DGG.DISABLED
 
 
 
@@ -308,6 +317,8 @@ class UI:
 
         self.entity_read_section_type()
 
+
+
         execute("regen_ui")
 
     def delete_section(self, material: Section):
@@ -350,6 +361,11 @@ class UI:
 
     def entity_read_section_type(self):
         self.prop_editor_section_type.entity_read(self.selected_section_type)
+
+        if self.selected_section_type.shape:
+            self.btn2['state'] = DGG.NORMAL
+        else:
+            self.btn2['state'] = DGG.DISABLED
 
     def entity_read_section(self):
         self.prop_editor_section.entity_read(self.selected_section)
