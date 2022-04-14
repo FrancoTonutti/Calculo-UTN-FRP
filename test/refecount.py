@@ -11,7 +11,7 @@ import uuid
 from typing import TYPE_CHECKING
 from typing import List
 
-from app.model.entity import Test2
+from app.model.entity import Entity2
 from app.model.transaction import Transaction
 
 if TYPE_CHECKING:
@@ -45,8 +45,19 @@ class Test:
 
 tr = Transaction()
 tr.start("sadasd")
-a = Entity()
+a = Entity2()
+
 tr.commit()
+
+if True:
+    tr = Transaction()
+    tr.start("sadasd")
+    a.delete2()
+    tr.commit()
+else:
+    a.unregister()
+    a.remove_all_references()
+
 
 
 print(sys.getrefcount(a))
