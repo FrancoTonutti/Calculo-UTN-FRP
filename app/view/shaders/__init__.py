@@ -102,7 +102,9 @@ class ShaderControlGLSL:
                                      vertex=sha_outline_path + ".vert",
                                      fragment=sha_outline_path + ".frag")
 
+        # Comment the next line for show the normals in screen
         tex_normal.setShader(shader_outline)
+        ###
 
         width = self.panda3d.win.getXSize()
         height = self.panda3d.win.getYSize()

@@ -14,7 +14,7 @@ from app.view.interface.color_scheme import *
 
 from app.view.interface.tools import *
 
-__tab_title__ = "Editor de secciones"
+__tab_title__ = "Catálogo de secciones"
 
 from app.view.simpleui import SimpleFrame
 

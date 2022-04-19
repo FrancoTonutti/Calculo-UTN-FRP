@@ -1,4 +1,4 @@
-from app.model import Entity
+from app.model import Entity, unit_manager
 
 
 class ProfileShapeI(Entity):
@@ -15,4 +15,31 @@ class ProfileShapeI(Entity):
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def get_contour_points(d, bf, tf, hw, tw, r1, r2):
+        d = unit_manager.convert_to_m(d)
+        bf = unit_manager.convert_to_m(bf)
+        tf = unit_manager.convert_to_m(tf)
+        hw = unit_manager.convert_to_m(hw)
+        tw = unit_manager.convert_to_m(tw)
+
+        x0 = -bf / 2
+        y0 = -d / 2
+        # En sentido anti horario
+        points = [[x0, y0],
+                  [x0 + bf, y0],
+                  [x0 + bf, y0+tf],
+                  [x0 + (bf + tw)/2, y0 + tf],
+                  [x0 + (bf + tw) / 2, y0 + d - tf],
+                  [x0 + bf, y0 + d - tf],
+                  [x0 + bf, y0 + d],
+                  [x0, y0 + d],
+                  [x0, y0 + d - tf],
+                  [x0 + (bf - tw) / 2, y0 + d - tf],
+                  [x0 + (bf - tw) / 2, y0 + tf],
+                  [x0, y0 + tf]
+                  ]
+
+        return points
 

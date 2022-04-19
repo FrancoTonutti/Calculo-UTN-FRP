@@ -314,23 +314,28 @@ class Bar(Entity):
     def create_model(self):
         print("CREATE MODEL")
         self.geom = [None, None]
-        self.geom[0] = self.load_model("data/geom/beam")
+        if self.section:
+            self.geom[0] = self.section.get_geom()
+            self.geom[0].setTag('entity_type', self.__class__.__name__)
+            self.geom[0].setTag('entity_id', self.entity_id)
+
+        if not self.geom[0]:
+            self.geom[0] = self.load_model("data/geom/beam")
+
         #self.geom[0].set_two_sided(True)
         self.update_model()
 
     def update_model(self):
-        return None
         geom = self.geom[0]
         x0, y0, z0 = self.start.position
         x1, y1, z1 = self.end.position
         geom.setPos(x0, y0, z0)
 
-
         if self.section:
-            b, h = self.section.size
-        else:
-            b = 0.05
-            h = 0.05
+            points = self.section.get_contour_points()
+
+        b = 1
+        h = 1
 
         x = x1 - x0
         y = y1 - y0
@@ -342,6 +347,8 @@ class Bar(Entity):
         geom.setShaderInput("showborders", self.borders, self.borders, self.borders, self.borders)
 
         geom.lookAt(self.end.geom[0])
+
+
 
         if app.wireframe is True:
             geom.hide()

@@ -22,11 +22,13 @@ class ProfileShapeFillRect(Entity):
         h = unit_manager.convert_to_m(h)
 
         x0 = -bw/2
-        y0 = -h
+        y0 = -h/2
         points = [[x0, y0],
                   [x0+bw, y0],
                   [x0+bw, y0+h],
+                  #[x0 + bw/2, y0 + h/2],
                   [x0, y0+h],
-                  [x0, y0]]
+                  #[x0, y0]
+                  ]
 
         return points
