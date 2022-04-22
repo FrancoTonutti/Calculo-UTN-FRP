@@ -14,7 +14,7 @@ from app.model import *
 from app.model.profile_sections.profile_section_I import ProfileSectionI
 import pint
 
-from app.model.profile_shapes import ProfileShapeFillRect
+from app.model.profile_shapes import ProfileShapeFillRect, ProfileShapeI
 from app.model.section_type import SectionType
 from app.model.transaction import Transaction
 
@@ -98,6 +98,20 @@ def new_file():
             sec_type.shape = shape
 
     Section("20/30", sec_type, {"bw": "20 cm", "h": "30 cm"})
+
+    sec_type = SectionType("IPN")
+    shapes = sec_type.valid_values_shape()
+    for shape in shapes:
+        if isinstance(shape, ProfileShapeI):
+            sec_type.shape = shape
+
+    Section("IPN 300", sec_type, {"d": "300 mm",
+                                  "bf": "125 mm",
+                                  "tf": "16.2 mm",
+                                  "hw": "241 mm",
+                                  "tw": "10.8 mm",
+                                  "r1": "10.8 mm",
+                                  "r2": "6.5 mm"})
 
 
 

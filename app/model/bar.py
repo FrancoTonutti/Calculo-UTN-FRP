@@ -56,6 +56,7 @@ class Bar(Entity):
         self._height = 0.3
         self.borders = True
         self._behavior = "Barra"
+        self._section_vertex_data_id = None
 
         self.loads: List[Load] = []
 
@@ -315,9 +316,13 @@ class Bar(Entity):
         print("CREATE MODEL")
         self.geom = [None, None]
         if self.section:
-            self.geom[0] = self.section.get_geom()
+            self.geom[0] = self.section.generate_geom()
             self.geom[0].setTag('entity_type', self.__class__.__name__)
             self.geom[0].setTag('entity_id', self.entity_id)
+            self._section_vertex_data_id = id(self.section.get_vertex_data())
+            self.section.add_child_model(self)
+
+
 
         if not self.geom[0]:
             self.geom[0] = self.load_model("data/geom/beam")
@@ -326,13 +331,19 @@ class Bar(Entity):
         self.update_model()
 
     def update_model(self):
+        if self._section_vertex_data_id != id(self.section.get_vertex_data()):
+            self.geom[0].removeNode()
+
+            self.geom[0] = self.section.generate_geom()
+            self.geom[0].setTag('entity_type', self.__class__.__name__)
+            self.geom[0].setTag('entity_id', self.entity_id)
+            self._section_vertex_data_id = id(self.section.get_vertex_data())
+
+
         geom = self.geom[0]
         x0, y0, z0 = self.start.position
         x1, y1, z1 = self.end.position
         geom.setPos(x0, y0, z0)
-
-        if self.section:
-            points = self.section.get_contour_points()
 
         b = 1
         h = 1

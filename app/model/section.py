@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 from panda3d.core import GeomVertexFormat, GeomVertexData, Geom, \
     GeomVertexWriter, GeomTristrips, GeomNode, GeomTriangles
@@ -30,7 +32,8 @@ class Section(Entity):
         self.section_type = section_type
         self.set_geometry(geometry)
 
-
+        self._contour_points = None
+        self._vertex_data = None
 
         register(self)
         Section.last_section = self
@@ -76,10 +79,8 @@ class Section(Entity):
                 setattr(self, param, 0*app.ureg("mm"))
 
 
-
-
-
             self.show_properties(*shape.params)
+            self.bind_to_model(*shape.params)
             '''if reset_name:
                 self.name = self._name'''
 
@@ -88,6 +89,10 @@ class Section(Entity):
             self._section_type.remove_section(self)
 
         super(Section, self).delete()
+
+    def update_model(self):
+        self._contour_points = None
+        self._vertex_data = None
 
     def inertia_x(self):
         b = self.size[0]
@@ -110,9 +115,31 @@ class Section(Entity):
             value = getattr(self, attr)
             geometry.update({attr: value})
 
-        return self.section_type.get_contour_points(**geometry)
+        if self._contour_points is None:
+            self._contour_points = self.section_type.get_contour_points(**geometry)
 
-    def get_geom(self):
+        return self._contour_points
+
+    def get_vertex_data(self):
+        if self._vertex_data is None:
+            self._vertex_data = self.generate_vertex_data()
+
+        return self._vertex_data
+
+    def generate_geom(self):
+        vdata, prim = self.get_vertex_data()
+        section_geom = Geom(vdata)
+        section_geom.addPrimitive(prim)
+
+        node = GeomNode('gnode')
+        node.addGeom(section_geom)
+
+        nodePath = render.attachNewNode(node)
+        #nodePath.set_two_sided(True)
+
+        return nodePath
+
+    def generate_vertex_data(self):
         points = self.get_contour_points()
 
         vdata = GeomVertexData('name', Section.gformat, Geom.UHStatic)
@@ -127,8 +154,7 @@ class Section(Entity):
         #prim = GeomTristrips(Geom.UHStatic)
         prim = GeomTriangles(Geom.UHStatic)
 
-
-        triangles = triangulate(points.copy())
+        triangles = triangulate(points.copy(), self.section_type.shape.is_clockwise)
         print("-------------------------")
         print(points)
         print(triangles)
@@ -146,8 +172,10 @@ class Section(Entity):
             prim.closePrimitive()
 
         for triangle in triangles:
+
             for point in triangle[::-1]:
                 x, z = point
+
                 vertex.addData3(x, 1, z)
                 normal.addData3(0, 1, 0)
                 color.addData4(1, 1, 1, 1)
@@ -155,33 +183,8 @@ class Section(Entity):
                 i += 1
             prim.closePrimitive()
 
-        '''i = 0
-        for x, z in points:
-            vertex.addData3(x, 0.25, z)
-            normal.addData3(0, -1, 0)
-            color.addData4(1, 125 / 255, 0, 1)
-            prim.addVertex(i)
-            i += 1
-
-        prim.closePrimitive()
-
-        for x, z in points:
-            vertex.addData3(x, 0.75, z)
-            normal.addData3(0, 1, 0)
-            color.addData4(1, 125 / 255, 0, 1)
-            prim.addVertex(i)
-            i += 1
-
-        prim.closePrimitive()'''
-
-        '''i = 0
-        for x, z in points:
-            prim.addVertex(i)
-            prim.addVertex(i + len(points))
-            i += 1
-
-        prim.closePrimitive()'''
-
+        if self.section_type.shape.is_clockwise:
+            points = points[::-1]
 
         for i_point in range(n):
             i_start = i
@@ -224,32 +227,9 @@ class Section(Entity):
             prim.addVertex(i_start + 1)
             prim.closePrimitive()
 
-        '''i = 0
-        for x, z in points:
-
-            vertex.addData3(x, 0, z)
-            color.addData4(1, 125 / 255, 0, 1)
-            prim.addVertex(i)
-            i += 1
-
-            vertex.addData3(x, 1, z)
-            color.addData4(1, 125 / 255, 0, 1)
-            prim.addVertex(i)
-
-            i += 1'''
+        return vdata, prim
 
 
-
-        section_geom = Geom(vdata)
-        section_geom.addPrimitive(prim)
-
-        node = GeomNode('gnode')
-        node.addGeom(section_geom)
-
-        nodePath = render.attachNewNode(node)
-        #nodePath.set_two_sided(True)
-
-        return nodePath
 
 
 ############
@@ -261,24 +241,69 @@ def angle(p1, p2, p3):
     norm1 = np.linalg.norm(v1)
     norm2 = np.linalg.norm(v2)
 
+    if norm1 == 0 or norm2 == 0:
+        raise Exception("divide by 0")
+
     dot_product = np.dot(v1, v2)
     angle = np.arccos(dot_product / (norm1 * norm2))
 
     return angle
 
 
-def is_clockwise(p1, p2, p3):
-    x1, y1 = p1
-    x2, y2 = p2
-    x3, y3 = p3
+def merge_colinear_edges(points):
+    n = len(points)
+    i = 0
+    while i < n and n >= 3:
+        i0 = clamp_index(i - 1, 0, n - 1)
+        i2 = clamp_index(i + 1, 0, n - 1)
 
-    det = (x2 - x1) * (x3 - x1) - (x3 - x1) * (y2 - y1)
+        p0 = points[i0]
+        p1 = points[i]
+        p2 = points[i2]
 
-    return det < 0
+        if angle(p0, p1, p2) == 0:
+            points.pop(i)
+            n = len(points)
+        else:
+            i += 1
+
+    return points
+
+
+def get_internal_angles(points, poly_clockwise):
+    n = len(points)
+    angles = [0] * n
+    if n >= 3:
+        for i in range(n):
+            p1 = points[i]
+            p2 = points[(i + 1) % n]
+            p3 = points[(i + 2) % n]
+            print([i, (i + 1) % n, (i + 2) % n])
+            theta = angle(p1, p2, p3)
+            triangle_clockwise = is_clockwise(p1, p2, p3)
+
+            if triangle_clockwise != poly_clockwise:
+                theta = 2 * np.pi - theta
+
+            angles[(i + 1) % n] = theta
+
+    return angles
+
+
+def is_clockwise(p0, p, p2):
+    vec_to_p0 = [p0[0] - p[0], p0[1] - p[1]]
+    vec_to_p2 = [p2[0] - p[0], p2[1] - p[1]]
+
+    det = vec_to_p0[0] * vec_to_p2[1] - vec_to_p0[1] * vec_to_p2[0]
+
+    return det > 0
+
+
+def cross_product(vec_to_p0, vec_to_p2):
+    return vec_to_p0[0] * vec_to_p2[1] - vec_to_p0[1] * vec_to_p2[0]
 
 
 def clamp_index(x, a, b):
-
     if a <= x <= b:
         return x
     elif x > b:
@@ -287,87 +312,81 @@ def clamp_index(x, a, b):
         return b
 
 
-def triangulate(points):
+def point_in_triangle(p, p0, p1, p2):
+    # From https://stackoverflow.com/a/20861130
+    s = (p0[0] - p2[0]) * (p[1] - p2[1]) - (p0[1] - p2[1]) * (p[0] - p2[0])
+    t = (p1[0] - p0[0]) * (p[1] - p0[1]) - (p1[1] - p0[1]) * (p[0] - p0[0])
+
+    if (s < 0) != (t < 0) and s != 0 and t != 0:
+        return False
+
+    d = (p2[0] - p1[0]) * (p[1] - p1[1]) - (p2[1] - p1[1]) * (p[0] - p1[0])
+
+    return d == 0 or (d < 0) == (s + t <= 0)
+
+
+def get_first_valid_triangle(points, poly_clockwise):
     n = len(points)
-    m = n
+    indexs = list(range(n))
 
-    max_x = points[0][0]
-    j = 0
+    angles = get_internal_angles(points, poly_clockwise)
 
-    for i in range(n):
-        if points[i][0] > max_x:
-            max_x = points[i][0]
-            j = i
+    indexs_sorted = sorted(indexs, key=lambda index: angles[index])
 
-    i0 = clamp_index(j-1, 0, n-1)
-    i2 = clamp_index(j+1, 0, n-1)
+    for i in indexs_sorted:
+        i0 = clamp_index(i - 1, 0, n - 1)
+        i2 = clamp_index(i + 1, 0, n - 1)
 
-    p1 = points[i0]
-    p2 = points[j]
-    p3 = points[i2]
-
-    poly_clockwise = is_clockwise(p1, p2, p3)
-
-    angles = [0]*n
-
-    for i in range(n):
+        p0 = points[i0]
         p1 = points[i]
-        p2 = points[(i+1) % n]
-        p3 = points[(i+2) % n]
+        p2 = points[i2]
 
-        theta = angle(p1, p2, p3)
-        triangle_clockwise = is_clockwise(p1, p2, p3)
+        if is_valid_triangle(points, p0, p1, p2):
+            return i0, i, i2
 
-        if triangle_clockwise != poly_clockwise:
-            theta = 2*np.pi - theta
+    else:
+        print("All triangles are invalid")
+        i = indexs_sorted[0]
+        i0 = clamp_index(i - 1, 0, n - 1)
+        i2 = clamp_index(i + 1, 0, n - 1)
 
-        angles[(i+1) % n] = theta
+        return i0, i, i2
+
+
+def is_valid_triangle(points, p0, p1, p2):
+    triangle = [p0, p1, p2]
+    for point in points:
+        if point not in triangle:
+            if point_in_triangle(point, p0, p1, p2):
+                return False
+
+    return True
+
+
+def triangulate(points, poly_clockwise):
+    points = merge_colinear_edges(points)
+    n = len(points)
 
     triangles = []
 
-    for i in range(m-2):
-        min_ang = min(angles)
-        min_ang_index = angles.index(min_ang)
+    while n >= 3:
 
-        i0 = clamp_index(min_ang_index-1, 0, n-1)
-        i2 = clamp_index(min_ang_index+1, 0, n - 1)
+        i0, i, i2 = get_first_valid_triangle(points, poly_clockwise)
 
         p1 = points[i0]
-        p2 = points[min_ang_index]
+        p2 = points[i]
         p3 = points[i2]
 
         triangles.append([p1, p2, p3])
 
-        if p2 == p3:
-            raise Exception(str([i0, min_ang_index, i2]))
+        points.pop(i)
 
-        p1 = points[clamp_index(i0-1, 0, n-1)]
-        p2 = points[min_ang_index]
-        p3 = points[i2]
+        points = merge_colinear_edges(points)
 
-        theta = angle(p1, p2, p3)
-        triangle_clockwise = is_clockwise(p1, p2, p3)
+        n = len(points)
 
-        if triangle_clockwise != poly_clockwise:
-            theta = 2*np.pi - theta
-
-        angles[i0] = theta
-
-        p1 = points[i0]
-        p2 = points[i2]
-        p3 = points[clamp_index(i2+1, 0, n-1)]
-
-        triangle_clockwise = is_clockwise(p1, p2, p3)
-
-        if triangle_clockwise != poly_clockwise:
-            theta = 2 * np.pi - theta
-
-        angles[i2] = theta
-
-        points.pop(min_ang_index)
-        angles.pop(min_ang_index)
-
-        n -= 1
+        if n < 3:
+            break
 
     return triangles
 

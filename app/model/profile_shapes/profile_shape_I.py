@@ -12,6 +12,7 @@ class ProfileShapeI(Entity):
         super(ProfileShapeI, self).__init__(set_id)
         self.name = "Sección doble T"
         self.params = ["d", "bf", "tf", "hw", "tw", "r1", "r2"]
+        self.is_clockwise = False
 
     def __str__(self):
         return self.name
@@ -40,6 +41,8 @@ class ProfileShapeI(Entity):
                   [x0 + (bf - tw) / 2, y0 + tf],
                   [x0, y0 + tf]
                   ]
+
+        print("get_contour_points len {}".format(len(points)))
 
         return points
 
