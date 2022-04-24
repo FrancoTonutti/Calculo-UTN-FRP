@@ -51,8 +51,53 @@ class Section(Entity):
         return self.name
 
     @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+
+        panda3d = app.get_show_base()
+        # Obtenemos el registro del modelo
+        model_reg = app.model_reg
+        entities = model_reg.find_entities("Section")
+
+        entities = filter(lambda x: x.section_type == self.section_type, entities)
+
+        iterate = False
+
+        i = 2
+
+        for entity in entities:
+            if entity is not self:
+                if entity.name == value:
+                    iterate = True
+
+                    if not value[:-1].endswith("_copy"):
+                        value += "_copy1"
+                        i = 2
+                    else:
+                        i = int(value[-1]) + 1
+
+        while iterate:
+            iterate = False
+
+            for entity in entities:
+                if entity is not self:
+                    if entity.name == value:
+                        iterate = True
+                        value = value[:-len(str(i - 1))] + str(i)
+                        i += 1
+                        break
+
+        self._name = value
+
+    @property
     def section_type(self):
-        return self._section_type
+        if hasattr(self, "_section_type"):
+            return self._section_type
+        else:
+            return None
 
     @section_type.setter
     def section_type(self, value):
@@ -134,6 +179,7 @@ class Section(Entity):
         node = GeomNode('gnode')
         node.addGeom(section_geom)
 
+        # noinspection PyUnresolvedReferences
         nodePath = render.attachNewNode(node)
         #nodePath.set_two_sided(True)
 
@@ -151,14 +197,9 @@ class Section(Entity):
         vertex = GeomVertexWriter(vdata, 'vertex')
         normal = GeomVertexWriter(vdata, 'normal')
         color = GeomVertexWriter(vdata, 'color')
-        #prim = GeomTristrips(Geom.UHStatic)
         prim = GeomTriangles(Geom.UHStatic)
 
         triangles = triangulate(points.copy(), self.section_type.shape.is_clockwise)
-        print("-------------------------")
-        print(points)
-        print(triangles)
-        print("-------------------------")
 
         i = 0
         for triangle in triangles:
@@ -278,7 +319,6 @@ def get_internal_angles(points, poly_clockwise):
             p1 = points[i]
             p2 = points[(i + 1) % n]
             p3 = points[(i + 2) % n]
-            print([i, (i + 1) % n, (i + 2) % n])
             theta = angle(p1, p2, p3)
             triangle_clockwise = is_clockwise(p1, p2, p3)
 

@@ -1,7 +1,8 @@
 from app.model import Entity, unit_manager
+from app.model.profile_shapes.profile_shape import ProfileShape
 
 
-class ProfileShapeI(Entity):
+class ProfileShapeI(ProfileShape):
     @staticmethod
     def create_from_object(obj):
         entity_id = obj.get("entity_id")
@@ -11,14 +12,14 @@ class ProfileShapeI(Entity):
     def __init__(self, set_id=None):
         super(ProfileShapeI, self).__init__(set_id)
         self.name = "Sección doble T"
-        self.params = ["d", "bf", "tf", "hw", "tw", "r1", "r2"]
+        self.params = ["d", "bf", "tf", "hw", "tw", "r1", "r2", "alpha"]
         self.is_clockwise = False
 
     def __str__(self):
         return self.name
 
     @staticmethod
-    def get_contour_points(d, bf, tf, hw, tw, r1, r2):
+    def get_contour_points(d, bf, tf, hw, tw, r1, r2, alpha):
         d = unit_manager.convert_to_m(d)
         bf = unit_manager.convert_to_m(bf)
         tf = unit_manager.convert_to_m(tf)
@@ -41,8 +42,6 @@ class ProfileShapeI(Entity):
                   [x0 + (bf - tw) / 2, y0 + tf],
                   [x0, y0 + tf]
                   ]
-
-        print("get_contour_points len {}".format(len(points)))
 
         return points
 

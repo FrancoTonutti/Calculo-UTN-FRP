@@ -35,10 +35,6 @@ LANG = {
 class Entity:
     global TM
     def __init__(self, set_id=None):
-        print("Entity __init__")
-        self.count_memory_references()
-
-        #raise Exception("test")
 
         active_transaction = TM.get_active_transaction()
         if active_transaction:
@@ -51,8 +47,6 @@ class Entity:
 
             action = EntityCreationAction(self)
             active_transaction.register_action(action)
-            print("Post register action __init__")
-            self.count_memory_references()
 
 
 
@@ -363,7 +357,6 @@ class Entity:
         return type(self).__name__
 
     def register(self):
-        print("NEW REGISTER {}: {}".format(self.entity_id, self.category_name))
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
 
@@ -378,8 +371,6 @@ class Entity:
 
         # Agregamos el modelo al diccionario
         category_dict.update({self.entity_id: self})
-        print("register category_dict")
-        print(category_dict)
 
         if self.entity_id in model_reg.entity_register:
             raise Exception("ID duplicada")
@@ -391,9 +382,7 @@ class Entity:
 
         self.registered = True
 
-
     def unregister(self):
-        print("unregister entity {}".format(self.entity_id))
         model_reg = app.model_reg
         # Leemos el nombre de la clase
         name = type(self).__name__
@@ -406,8 +395,6 @@ class Entity:
         model_reg.entity_register.pop(self.entity_id)
 
     def delete(self):
-        print("delete entity {}".format(self))
-        self.count_memory_references()
 
         active_transaction = TM.get_active_transaction()
         if active_transaction:
@@ -424,16 +411,15 @@ class Entity:
 
         self.remove_all_references()
 
-        print("!!! Remaining references:", ctypes.c_long.from_address(id(self)).value)
+        print("!!! Remaining references after deleting:", ctypes.c_long.from_address(id(self)).value)
 
         return True
 
     def count_memory_references(self):
         try:
-
             print("!!! References to {}:".format(self),
                   ctypes.c_long.from_address(id(self)).value)
-        except:
+        except Exception as ex:
             print("!!! References to {}:".format(self.category_name),
                   ctypes.c_long.from_address(id(self)).value)
 

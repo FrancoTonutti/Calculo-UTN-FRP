@@ -174,7 +174,6 @@ def regen_old():
 
                 line.setDepthOffset(1)
                 bar.geom[1] = line
-            print("!!!!!!!!!!!!!!!!!!!!!!line")
             print(line)
             #line.setLight(panda3d.plight_node)
 

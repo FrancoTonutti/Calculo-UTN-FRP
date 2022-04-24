@@ -64,13 +64,8 @@ class EntityCreationAction(Action):
         super().__init__()
         self.obj = EntityReference(obj)
         self.args = args
-        print("EntityCreationAction")
-        #print(self.obj)
-        #print(self.obj.__reference__)
 
     def undo(self):
-        print("EntityCreationAction undo")
-        #print(self)
         self.obj.delete()
 
     def redo(self):

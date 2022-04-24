@@ -123,7 +123,6 @@ class TabManager:
         col_rollover = draw.merge_color(COLOR_MAIN_DARK, COLOR_MAIN_LIGHT, 0.2)
         btn["colorList"] = [COLOR_MAIN_DARK, COLOR_MAIN_LIGHT, col_rollover,
                             "C_CONCRETE"]'''
-        print("self.tabs", self.tabs)
 
         #frame = self.tabs[self.active_tab]
         self.active_tab.hide()

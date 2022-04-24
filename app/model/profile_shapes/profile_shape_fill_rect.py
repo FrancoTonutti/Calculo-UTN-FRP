@@ -1,7 +1,8 @@
 from app.model import Entity, unit_manager
+from app.model.profile_shapes.profile_shape import ProfileShape
 
 
-class ProfileShapeFillRect(Entity):
+class ProfileShapeFillRect(ProfileShape):
     @staticmethod
     def create_from_object(obj):
         entity_id = obj.get("entity_id")

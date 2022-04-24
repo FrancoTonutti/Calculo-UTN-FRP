@@ -170,9 +170,12 @@ class Node(Entity):
                     self.geom[1].removeNode()
                 self.geom[1] = self.load_model("data/geom/{}".format(model), parent=self.geom[0])
 
+        self.geom[0].setScale(0.50, 0.50, 0.50)
+
         if len(self.geom) is 2:
             self.geom[1].reparentTo(self.geom[0])
             self.geom[1].setPos(0, 0, -0.2)
+            self.geom[0].setScale(0.8, 0.80, 0.80)
             self.geom[1].setScale(0.20, 0.20, 0.20)
 
     @property

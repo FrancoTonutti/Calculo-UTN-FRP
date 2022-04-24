@@ -279,12 +279,10 @@ class UI:
         tr.commit()
 
     def update_load_types(self):
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_load_types")
         self.load_table.update_table()
         self.update_load_combinations()
 
     def update_load_combinations(self):
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!update_load_combinations")
         titles = ["Nº", "Designación"]
         params = ["index", "name"]
 

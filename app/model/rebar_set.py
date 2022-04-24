@@ -51,6 +51,7 @@ class RebarSet(Entity):
         if obj.get("layer_spacing"):
             ent.layer_spacing = unit_manager.ureg(obj.get("layer_spacing"))
 
+        '''
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
 
         print(obj.get("start"))
@@ -58,6 +59,8 @@ class RebarSet(Entity):
         print(app.ureg(obj.get("start").replace("%", "percent")))
 
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!percent")
+        '''
+
 
         layers = obj.get("layers")
         if layers:

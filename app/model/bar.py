@@ -46,7 +46,8 @@ class Bar(Entity):
 
         self.start: Node = start
         self.end: Node = end
-        self.section: Section = section
+        self._section: Section = section
+
         if material is None:
             #material = Material(20 * (10 ** 9))
             material = app.default_material
@@ -78,14 +79,15 @@ class Bar(Entity):
         self.show_properties("end_x", "end_z")
         self.set_prop_name(end_x="Fin x", end_y="Fin y", end_z="Fin z")
 
-        self.section_type = section.section_type
+        self.section_type = section.section_type # type: SectionType
         self.show_properties("section_type")
         self.set_prop_name(section_type="Catálogo")
         self.set_combo_box_properties("section_type")
 
         self.show_properties("section")
         self.set_prop_name(section="Sección")
-        #self.set_combo_box_properties("section")
+        self.set_combo_box_properties("section")
+        self.bind_to_model("section")
 
         self.show_properties("material")
         self.set_prop_name(material="Material")
@@ -159,6 +161,31 @@ class Bar(Entity):
         if value in ["Barra", "Viga", "Columna"]:
             self._behavior = value
 
+    def valid_values_section(self):
+        values = [None]
+
+        for sec in self.section_type.get_sections():
+            values.append(sec)
+
+        return values
+
+    @property
+    def section(self):
+        return self._section
+
+    @section.setter
+    def section(self, value):
+
+        if hasattr(self, "_section") and self._section:
+            old_sec = self._section # type: Section
+            old_sec.remove_child_model(self)
+
+        if type(value).__name__ == "EntityReference":
+            value.add_child_model(self)
+            self._section = value
+        else:
+            raise Exception(type(value).__name__)
+
     @staticmethod
     def valid_values_material():
         groups = app.model_reg.find_entities("MaterialGroup") #type: List[MaterialGroup]
@@ -181,23 +208,19 @@ class Bar(Entity):
 
         if ": " in value:
             group, mat_name = value.split(": ", 1)
-            print("{} : {}".format(group, mat_name))
             entities = app.model_reg.find_entities("MaterialGroup")
 
             for material_group in entities:
                 if material_group.name == group:
-                    print("material_group encontrado")
                     material_list = material_group.get_materials()
                     for material_elem in material_list:
                         if material_elem.name == mat_name:
-                            print("material_elem encontrado")
                             self._material = material_elem
                             break
-                        else:
-                            print("material_elem no encontrado '{}' != '{}'".format(mat_name, material_elem.name))
                     break
             else:
                 print("material_group no encontrado")
+
         elif value == "":
             self._material = app.default_material
 
@@ -313,16 +336,12 @@ class Bar(Entity):
         self.end.z = value
 
     def create_model(self):
-        print("CREATE MODEL")
         self.geom = [None, None]
         if self.section:
             self.geom[0] = self.section.generate_geom()
             self.geom[0].setTag('entity_type', self.__class__.__name__)
             self.geom[0].setTag('entity_id', self.entity_id)
             self._section_vertex_data_id = id(self.section.get_vertex_data())
-            self.section.add_child_model(self)
-
-
 
         if not self.geom[0]:
             self.geom[0] = self.load_model("data/geom/beam")

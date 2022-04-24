@@ -121,7 +121,7 @@ class SectionType(Entity):
         panda3d = app.get_show_base()
         # Obtenemos el registro del modelo
         model_reg = app.model_reg
-        entities = model_reg.find_entities("MaterialGroup")
+        entities = model_reg.find_entities("SectionType")
 
         iterate = False
 

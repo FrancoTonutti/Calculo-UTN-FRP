@@ -98,6 +98,7 @@ def new_file():
             sec_type.shape = shape
 
     Section("20/30", sec_type, {"bw": "20 cm", "h": "30 cm"})
+    Section("20/40", sec_type, {"bw": "20 cm", "h": "40 cm"})
 
     sec_type = SectionType("IPN")
     shapes = sec_type.valid_values_shape()
@@ -105,13 +106,23 @@ def new_file():
         if isinstance(shape, ProfileShapeI):
             sec_type.shape = shape
 
+    Section("IPN 120", sec_type, {"d": "120 mm",
+                                  "bf": "58 mm",
+                                  "tf": "7.7 mm",
+                                  "hw": "92 mm",
+                                  "tw": "5.1 mm",
+                                  "r1": "5.1 mm",
+                                  "r2": "3.1 mm",
+                                  "alpha": "14 %"})
+
     Section("IPN 300", sec_type, {"d": "300 mm",
                                   "bf": "125 mm",
                                   "tf": "16.2 mm",
                                   "hw": "241 mm",
                                   "tw": "10.8 mm",
                                   "r1": "10.8 mm",
-                                  "r2": "6.5 mm"})
+                                  "r2": "6.5 mm",
+                                  "alpha": "14 %"})
 
 
 

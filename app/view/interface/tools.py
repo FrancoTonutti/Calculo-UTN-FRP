@@ -522,8 +522,7 @@ class PropEditor:
 
         if type(old_value) is type(new_value) or enable_set:
             if self.entity is not None:
-                print(
-                    "atributo establecido {}: {}".format(name, new_value))
+                print("atributo establecido {}: {}".format(name, new_value))
                 tr = Transaction()
                 tr.start("Edit propery")
                 setattr(self.entity, name, new_value)
