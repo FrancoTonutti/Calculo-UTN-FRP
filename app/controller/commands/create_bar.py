@@ -9,6 +9,7 @@ from app.controller.console import command, execute
 import pint
 
 from app.model import unit_manager
+from app.model.entity_reference import EntityReference
 from app.model.events import EventListener
 from app.model.level import Level
 from app.model.transaction import TM, Transaction
@@ -18,10 +19,6 @@ from app.view.interface.properties import PropEditorModes
 
 @command(name="create_bar")
 def create_bar():
-    print("create_level")
-    #tr = TM.get_active_transaction()
-    #print(tr)
-    # Agrega una tarea al TaskManager para agregar una carga
 
     tr = Transaction()
     tr.start("Create bar")
@@ -53,18 +50,19 @@ def create_bar():
     handler = MouseEventHandler()
 
     events = EventListener()
-    cache = {"handler": handler, "new_bar": new_bar, "start": node_start, "end": node_end, "step": 0, "events": events}
+    cache = {"handler": handler, "new_bar": new_bar, "start": node_start, "end": node_end, "step": 0, "events": events, "on_select": None}
 
-    events.add_listener("onselect", on_select)
+    events.add_listener("onselect", on_select, args=[cache])
 
     app.console.start_command(add_bar_task, "Crear barra", cache)
 
-def on_select(cache, selection=None):
+def on_select(cache, selection):
     print("on_select()", selection)
 
 
 
 def add_bar_task(task, cache: dict):
+
 
     tr = TM.get_root_transaction()
     active_tr = TM.get_active_transaction()
@@ -81,17 +79,17 @@ def add_bar_task(task, cache: dict):
         prop_editor = app.main_ui.prop_editor
         status_bar = app.main_ui.status_bar
 
-
-
         if handler.mouse1_btn_released():
             if step == 0:
                 x, y, z = app.work_plane_mouse
                 start.position = x, y, z
                 end.position = x, y, z
 
+                print("mouse1_btn_released start", prop_editor.selection)
                 for entity in prop_editor.selection:
+                    print(entity.__reference__)
+                    if isinstance(entity, EntityReference) and isinstance(entity.__reference__, Node):
 
-                    if isinstance(entity, Node):
                         start.delete()
 
                         new_bar.start = entity
@@ -113,13 +111,18 @@ def add_bar_task(task, cache: dict):
                 x, y, z = app.work_plane_mouse
 
                 end.position = x, y, z
+                print("mouse1_btn_released end", prop_editor.selection)
+                for entity in prop_editor.selection:
+                    print(entity.__reference__)
 
-                if isinstance(status_bar.entity_info, Node):
-                    end.delete()
+                    if isinstance(entity, EntityReference) and isinstance(
+                            entity.__reference__, Node):
+                        end.delete()
 
-                    new_bar.end = status_bar.entity_info
-                    end = status_bar.entity_info
-                    cache.update({"end": end})
+                        new_bar.end = entity
+                        end = entity
+                        cache.update({"end": end})
+                        break
 
                 cache.update({"step": 2})
 

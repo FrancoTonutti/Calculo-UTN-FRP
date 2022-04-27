@@ -9,6 +9,7 @@ import numpy as np
 from app.model import View
 from app.model.transaction import Transaction
 from app.model.view_gizmo import ViewGizmoZone
+from app.view.interface.properties import PropEditorModes
 
 """if os.name == 'nt':
     # Importar solo en windows
@@ -557,7 +558,7 @@ class CameraControl(DirectObject):
 
                     entity = list(entities.values())[0]
                     prop_editor = app.main_ui.prop_editor
-
+                    #if prop_editor.mode == PropEditorModes.EDIT:
                     prop_editor.add_to_selection(entity)
                 else:
                     status_bar = app.main_ui.status_bar

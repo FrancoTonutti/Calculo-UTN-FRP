@@ -121,7 +121,8 @@ class PropertiesEditor(DirectObject):
     def add_to_selection(self, entity):
         print("add_to_selection", entity)
 
-        entity = EntityReference(entity)
+        if not isinstance(entity, EntityReference):
+            entity = EntityReference(entity)
 
         if entity not in self.selection:
 
