@@ -139,7 +139,8 @@ class PropertiesEditor(DirectObject):
             else:
                 self.update_selection()
 
-            messenger.send('onselect', self.selection)
+        print("send event: onselect")
+        messenger.send('onselect', [self.selection])
 
     def deselect(self, entity):
         if entity:

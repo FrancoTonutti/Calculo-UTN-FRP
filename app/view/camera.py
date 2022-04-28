@@ -492,6 +492,9 @@ class CameraControl(DirectObject):
             # Assume for simplicity's sake that myHandler is a CollisionHandlerQueue.
             btn = self.panda3d.mouseWatcherNode
 
+            added_to_selection = False
+            mouse1_btn_released = self.mouse1_btn_released()
+
             if handler.getNumEntries() > 0:
                 # This is so we get the closest object.
                 handler.sortEntries()
@@ -524,12 +527,20 @@ class CameraControl(DirectObject):
                             # print(entity)
                             #if btn.isButtonDown("mouse1"):
                             if entity:
-                                if self.mouse1_btn_released():
+                                if mouse1_btn_released:
+                                    print("mouse1_btn_released")
                                     entity.on_click()
                                     if entity.is_editable and entity.is_selectable:
                                         prop_editor = app.main_ui.prop_editor
+                                        print("pre add_to_selection")
+                                        added_to_selection = True
                                         prop_editor.add_to_selection(entity)
+
                                         break
+                                    else:
+                                        print("entity.is_editable", entity.is_editable)
+                                        print("entity.is_selectable", entity.is_selectable)
+                                        print("added_to_selection", added_to_selection)
                                 elif entity.is_selectable:
                                     status_bar = app.main_ui.status_bar
                                     status_bar.entity_read(entity)
@@ -541,10 +552,10 @@ class CameraControl(DirectObject):
                 else:
                     status_bar = app.main_ui.status_bar
                     status_bar.entity_read()
-                    #print("Hay {} entidades sin geometria visible bajo el mouse".format(handler.getNumEntries()))
-            else:
-                #if btn.isButtonDown("mouse1"):
-                if self.mouse1_btn_released():
+
+            if handler.getNumEntries() == 0 or added_to_selection is False:
+                if mouse1_btn_released:
+                    print("mouse1_btn_released???", handler.getNumEntries() == 0)
                     entities = app.model_reg.get("View", {})
 
                     if entities is None or len(entities) is 0:
@@ -560,9 +571,10 @@ class CameraControl(DirectObject):
                     prop_editor = app.main_ui.prop_editor
                     #if prop_editor.mode == PropEditorModes.EDIT:
                     prop_editor.add_to_selection(entity)
-                else:
-                    status_bar = app.main_ui.status_bar
-                    status_bar.entity_read()
+
+            if handler.getNumEntries() == 0 and not mouse1_btn_released:
+                status_bar = app.main_ui.status_bar
+                status_bar.entity_read()
 
 
 

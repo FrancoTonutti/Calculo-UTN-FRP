@@ -56,14 +56,88 @@ def create_bar():
 
     app.console.start_command(add_bar_task, "Crear barra", cache)
 
+
 def on_select(cache, selection):
     print("on_select()", selection)
+    step = cache.get("step")
+    if step == 0:
+        step_1(cache, selection)
+    elif step == 1:
+        step_2(cache, selection)
 
+
+def step_1(cache, selection):
+
+    print("step_1", selection)
+
+    new_bar: Bar = cache.get("new_bar")
+    start: Node = cache.get("start")
+    end: Node = cache.get("end")
+    prop_editor = app.main_ui.prop_editor
+
+    x, y, z = app.work_plane_mouse
+    start.position = x, y, z
+    end.position = x, y, z
+
+    print("mouse1_btn_released start", selection)
+    for entity in selection:
+        if isinstance(entity, EntityReference):
+            entity = entity.__reference__
+
+        if isinstance(entity, Node):
+            start.delete()
+
+            new_bar.start = entity
+            start = entity
+            cache.update({"start": start})
+            prop_editor.deselect_all()
+            break
+        elif isinstance(entity, Level):
+            start.plane_z = entity
+
+            break
+
+    start.show()
+    end.show()
+
+    new_bar.show()
+
+    cache.update({"step": 1})
+
+
+def step_2(cache, selection):
+
+    print("step_2", selection)
+
+    new_bar: Bar = cache.get("new_bar")
+    start: Node = cache.get("start")
+    end: Node = cache.get("end")
+    prop_editor = app.main_ui.prop_editor
+
+    x, y, z = app.work_plane_mouse
+
+    end.position = x, y, z
+    print("mouse1_btn_released end", prop_editor.selection)
+    for entity in prop_editor.selection:
+        if isinstance(entity, EntityReference):
+            entity = entity.__reference__
+
+        if isinstance(entity, Node):
+            end.delete()
+
+            new_bar.end = entity
+            end = entity
+            cache.update({"end": end})
+            break
+        elif isinstance(entity, Level):
+            end.plane_z = entity
+
+            break
+
+    cache.update({"step": 2})
 
 
 def add_bar_task(task, cache: dict):
-
-
     tr = TM.get_root_transaction()
     active_tr = TM.get_active_transaction()
     if tr.name == "Create bar":
@@ -79,73 +153,25 @@ def add_bar_task(task, cache: dict):
         prop_editor = app.main_ui.prop_editor
         status_bar = app.main_ui.status_bar
 
-        if handler.mouse1_btn_released():
-            if step == 0:
-                x, y, z = app.work_plane_mouse
-                start.position = x, y, z
-                end.position = x, y, z
-
-                print("mouse1_btn_released start", prop_editor.selection)
-                for entity in prop_editor.selection:
-                    print(entity.__reference__)
-                    if isinstance(entity, EntityReference) and isinstance(entity.__reference__, Node):
-
-                        start.delete()
-
-                        new_bar.start = entity
-                        start = entity
-                        cache.update({"start": start})
-                        prop_editor.deselect_all()
-                        break
-
-
-                cache.update({"step": 1})
-
-                start.show()
-                end.show()
-
-                new_bar.show()
-
-
-            elif step == 1:
-                x, y, z = app.work_plane_mouse
-
-                end.position = x, y, z
-                print("mouse1_btn_released end", prop_editor.selection)
-                for entity in prop_editor.selection:
-                    print(entity.__reference__)
-
-                    if isinstance(entity, EntityReference) and isinstance(
-                            entity.__reference__, Node):
-                        end.delete()
-
-                        new_bar.end = entity
-                        end = entity
-                        cache.update({"end": end})
-                        break
-
-                cache.update({"step": 2})
-
-                start.is_selectable = True
-                end.is_selectable = True
-                new_bar.is_selectable = True
-
-                prop_editor.set_mode(PropEditorModes.EDIT)
-                prop_editor.add_to_selection(new_bar)
-                prop_editor.update_selection()
-
-                tr.commit()
-                events.close_listener()
-                return task.done
-
-            #new_level.z = round(float(z), 2)
-
         if step == 1:
             x, y, z = app.work_plane_mouse
 
             active_tr.disable_register()
             end.position = x, y, z
             active_tr.enable_register()
+
+        elif step == 2:
+            start.is_selectable = True
+            end.is_selectable = True
+            new_bar.is_selectable = True
+
+            prop_editor.set_mode(PropEditorModes.EDIT)
+            prop_editor.add_to_selection(new_bar)
+            prop_editor.update_selection()
+
+            tr.commit()
+            events.close_listener()
+            return task.done
 
         if watcher.has_mouse() and (watcher.isButtonDown("escape") or watcher.isButtonDown("mouse3")):
             print("-------ROLLBACK----------------")

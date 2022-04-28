@@ -3,6 +3,9 @@ from app import app
 
 from typing import TYPE_CHECKING
 from typing import List
+
+from .entity_reference import EntityReference
+
 if TYPE_CHECKING:
     # Imports only for IDE type hints
     from app.model import *
@@ -91,12 +94,21 @@ class Node(Entity):
             self._plane_z = None
             self.unset_read_only("z")
 
-        # Obtenemos el registro del modelo
-        entities = app.model_reg.find_entities("Level")
+        if isinstance(value, EntityReference):
+            value = value.__reference__
 
-        for ent in entities:
-            if ent.name == value:
-                self._plane_z = ent
+        # Obtenemos el registro del modelo
+        if isinstance(value, str):
+            entities = app.model_reg.find_entities("Level")
+
+            for ent in entities:
+                if ent.name == value:
+                    self._plane_z = ent
+                    self._plane_z.add_child_model(self)
+                    self.set_read_only("z")
+        elif isinstance(value, Entity):
+            if value.category_name == "Level":
+                self._plane_z = value
                 self._plane_z.add_child_model(self)
                 self.set_read_only("z")
 
