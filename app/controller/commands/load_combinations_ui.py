@@ -265,7 +265,7 @@ class UI:
     def create_load_type(self):
         tr = Transaction()
         tr.start("Create Load Case")
-        LoadCase( "D", "Carga1")
+        LoadCase("D", "Carga1")
         self.load_table.update_table()
         self.update_load_combinations()
         tr.commit()
