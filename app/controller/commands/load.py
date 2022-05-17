@@ -9,6 +9,8 @@ from app.controller.console import command, execute
 import pint
 
 from app.model import unit_manager
+from app.model.entity_reference import EntityReference
+from app.model.events import EventListener
 from app.model.transaction import TM, Transaction
 from app.view.interface.properties import PropEditorModes
 
@@ -37,28 +39,47 @@ def add_load():
     prop_editor.set_mode(PropEditorModes.CREATE)
     prop_editor.entity_read(new_load)
 
-    app.console.start_command(add_load_task, "Agregar carga")
+    events = EventListener()
+    cache = {"selected_bar": None, "events": events, "step": 0, "on_select": None, "load": new_load}
+    events.add_listener("onselect", on_select, args=[cache])
 
+    app.console.start_command(add_load_task, "Agregar carga", cache)
 
-def add_load_task(task):
+def on_select(cache, selection):
+    print("on_select()", selection)
+    step = cache.get("step")
+    if step == 0:
+        for entity in selection:
+            if isinstance(entity, EntityReference):
+                entity = entity.__reference__
+
+            if isinstance(entity, Bar):
+                cache.update({"selected_bar": entity})
+                cache.update({"step": 1})
+
+def add_load_task(task, cache: dict):
     tr = TM.get_root_transaction()
     if tr.name == "Create load":
         prop_editor = app.main_ui.prop_editor
-        load = prop_editor.entity
-        for entity in prop_editor.selection:
 
-            if isinstance(entity, Bar):
-                status_bar = app.main_ui.status_bar
-                status_bar.set_status_hint("")
-                load.set_parent(entity)
 
-                prop_editor.set_mode(PropEditorModes.EDIT)
-                prop_editor.add_to_selection(load)
-                prop_editor.update_selection()
+        step = cache.get("step")
+        if step == 1:
+            print("RUN!")
+            entity = cache.get("selected_bar")
+            load = cache.get("load")#prop_editor.entity
 
-                tr.commit()
+            status_bar = app.main_ui.status_bar
+            status_bar.set_status_hint("")
+            load.set_parent(entity)
 
-                return task.done
+            prop_editor.set_mode(PropEditorModes.EDIT)
+            prop_editor.add_to_selection(load)
+            prop_editor.update_selection()
+            cache.update({"step": 2})
+            tr.commit()
+
+            return task.done
 
         panda3d = app.get_show_base()
         watcher = panda3d.mouseWatcherNode
