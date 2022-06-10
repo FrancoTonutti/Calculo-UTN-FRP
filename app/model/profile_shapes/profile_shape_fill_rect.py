@@ -7,7 +7,9 @@ class ProfileShapeFillRect(ProfileShape):
     def create_from_object(obj):
         entity_id = obj.get("entity_id")
 
-        return ProfileShapeFillRect(entity_id)
+        shape = ProfileShapeFillRect(entity_id)
+
+        return shape
 
     def __init__(self, set_id=None):
         super(ProfileShapeFillRect, self).__init__(set_id)

@@ -29,10 +29,16 @@ class SectionType(Entity):
 
     @staticmethod
     def create_from_object(obj):
+        def entity_get(string):
+            return app.model_reg.get_entity(obj.get(string))
+
         entity_id = obj.get("entity_id")
         name = obj.get("name")
 
-        return SectionType(name, entity_id)
+        section_type = SectionType(name, entity_id)
+        section_type.shape = entity_get("shape")
+
+        return section_type
 
     def __init__(self, name, set_id=None):
         super().__init__(set_id)

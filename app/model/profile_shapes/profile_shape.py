@@ -1,3 +1,4 @@
+from app import app
 from app.model import Entity, unit_manager
 
 
@@ -6,7 +7,9 @@ class ProfileShape(Entity):
     def create_from_object(obj):
         entity_id = obj.get("entity_id")
 
-        return ProfileShape(entity_id)
+        shape = ProfileShape(entity_id)
+
+        return shape
 
     def __init__(self, set_id=None):
         super(ProfileShape, self).__init__(set_id)

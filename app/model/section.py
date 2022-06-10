@@ -16,9 +16,19 @@ class Section(Entity):
     @staticmethod
     def create_from_object(obj):
         entity_id = obj.get("entity_id")
-        width, height = obj.get("size")
 
-        return Section(width, height, entity_id)
+        def entity_get(string):
+            return app.model_reg.get_entity(obj.get(string))
+
+        name = obj.get("name")
+        section_type = entity_get("shape")
+        section_type.shape = entity_get("shape")
+
+        geometry = obj.get("geometry")
+
+        section = Section(name, section_type, geometry, set_id=entity_id)
+
+        return section
 
     def __init__(self, name: str, section_type: SectionType, geometry: dict, set_id=None):
         super().__init__(set_id)
@@ -49,6 +59,14 @@ class Section(Entity):
 
     def __str__(self):
         return self.name
+
+    @property
+    def geometry(self):
+        return self._geometry
+
+    @geometry.setter
+    def geometry(self, value):
+        self.set_geometry(value)
 
     @property
     def name(self):
@@ -117,7 +135,11 @@ class Section(Entity):
 
             #for param in shape.params:
 
-
+            print("shape {}")
+            print(type(shape))
+            print(type(shape.__reference__))
+            print(shape.__reference__.params)
+            print(shape.__reference__.__dict__)
 
             for param in shape.params:
                 self.set_units(**{param: "mm"})

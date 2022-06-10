@@ -7,7 +7,9 @@ class ProfileShapeI(ProfileShape):
     def create_from_object(obj):
         entity_id = obj.get("entity_id")
 
-        return ProfileShapeI(entity_id)
+        shape = ProfileShapeI(entity_id)
+
+        return shape
 
     def __init__(self, set_id=None):
         super(ProfileShapeI, self).__init__(set_id)
