@@ -34,6 +34,9 @@ register = EntityReferenceRegister()
 
 class EntityReference:
     def __init__(self, entity):
+        if isinstance(entity, EntityReference):
+            raise Exception("EntityReference to EntityReference is not allowed")
+
         self.__reference__ = entity
         self.__entity_id__ = None
         self.__updated__ = False

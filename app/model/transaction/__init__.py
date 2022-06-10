@@ -53,7 +53,7 @@ class Action:
             print("class_reference error, value:", key, "=", value)
             print(app.model_reg.class_register)
 
-        if class_reference and isinstance(value, class_reference):
+        if not isinstance(value, EntityReference) and class_reference and isinstance(value, class_reference):
             value = EntityReference(value)
 
 
@@ -62,7 +62,9 @@ class Action:
 class EntityCreationAction(Action):
     def __init__(self, obj, args=None):
         super().__init__()
-        self.obj = EntityReference(obj)
+        self.obj = obj
+        if not isinstance(obj, EntityReference):
+            self.obj = EntityReference(obj)
         self.args = args
 
     def undo(self):
@@ -93,7 +95,9 @@ class EntityDeleteAction(Action):
 class SetAttrAction(Action):
     def __init__(self, obj, attr, old_value, new_value):
         super().__init__()
-        self.obj = EntityReference(obj)
+        self.obj = obj
+        if not isinstance(obj, EntityReference):
+            self.obj = EntityReference(obj)
         self.attr = attr
         self.old_value = old_value
         self.new_value = new_value

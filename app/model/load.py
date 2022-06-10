@@ -68,7 +68,7 @@ class Load(Entity):
     def create_model(self):
 
         if self.parent:
-            if isinstance(self.parent.__reference__, Node):
+            if isinstance(self.parent, Node):
                 model = app.base.loader.loadModel("data/geom/beam")
 
                 model.setTag('entity_type', self.__class__.__name__)
@@ -76,32 +76,24 @@ class Load(Entity):
                 model.hide()
 
                 self.geom = [model, None]
-            elif isinstance(self.parent.__reference__, Bar):
+            elif isinstance(self.parent, Bar):
                 model = app.base.loader.loadModel("data/geom/plate")
                 model.set_two_sided(True)
                 model.setTag('entity_type', self.__class__.__name__)
                 model.setTag('entity_id', self.entity_id)
                 self.geom = [model]
-            else:
-                # Todo revisar por qué no se crea el modelo
-                print("type_parent", type(self.parent))
-                print("type_isinstance", isinstance(self.parent.__reference__, Bar))
-                raise Exception(self.parent)
 
 
             self.update_model()
 
     def update_model(self):
-        # Todo encontrar por que no se dibuja la carga
-        print("update load model", self.geom)
         if not self.geom:
             return None
 
         if app.show_load != self.load_type:
             for model in self.geom:
                 if model:
-                    pass
-                    #model.hide()
+                    model.hide()
 
         else:
             for model in self.geom:

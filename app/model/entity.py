@@ -32,7 +32,35 @@ LANG = {
     "name": "Nombre"
 }
 
-class Entity:
+
+class EntityMeta(type):
+    def __instancecheck__(cls, inst):
+        """Implement isinstance(inst, cls)."""
+
+        check = any(
+            cls.__subclasscheck__(c) for c in {type(inst), inst.__class__})
+
+        #print('hi Entity __instancecheck__ {}'.format(check))
+        #print('self {}'.format(cls))
+        #print('other {}'.format(inst))
+
+        if isinstance(inst, EntityReference):
+            return isinstance(inst.__reference__, cls)
+
+        return check
+
+    def __subclasscheck__(cls, sub):
+        """Implement issubclass(sub, cls)."""
+        candidates = cls.__dict__.get("__subclass__", set()) | {cls}
+        check = any(c in candidates for c in sub.mro())
+        #print('hi __subclasscheck__ {}'.format(check))
+        #print('self {}'.format(cls))
+        #print('other {}'.format(sub))
+
+        return check
+
+
+class Entity(metaclass=EntityMeta):
     global TM
     def __init__(self, set_id=None):
 
@@ -328,7 +356,7 @@ class Entity:
                     new_value = 0
                 new_value = new_value * app.ureg(unit)
 
-            if isinstance(new_value, Entity):
+            if not isinstance(new_value, EntityReference) and isinstance(new_value, Entity):
                 new_value = EntityReference(new_value)
 
             if old_value != new_value:
