@@ -128,7 +128,7 @@ class Load(Entity):
             line = draw.draw_line_3d(x0, y0, z0, x1, y1, z1, color="C_ORANGE")
 
             self.geom = [model, line]
-        elif isinstance(self.parent, Bar):
+        elif isinstance(self.parent.__reference__, Bar):
             x0, y0, z0 = self.parent.start.position
             x1, y1, z1 = self.parent.end.position
             model = self.geom[0]
