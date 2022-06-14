@@ -89,7 +89,7 @@ class EntityReference:
             if not self.__reference__.__is_deleted__:
                 return self.__reference__.__str__()
             else:
-                self.__reference__ = "Referencia eliminada"
+                self.__reference__ = None
                 return None
         else:
             return "Referencia eliminada"

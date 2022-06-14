@@ -280,6 +280,8 @@ def start_analysis():
             # Obtenemos las restricciones de vinculos
             restrictions = node_element.get_restrictions2d()
 
+            print("restrictions: {}".format(restrictions))
+
             i = 0
 
 

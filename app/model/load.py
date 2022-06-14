@@ -100,6 +100,12 @@ class Load(Entity):
                 if model:
                     model.showThrough()
 
+        try:
+            isinstance(self.parent.__reference__, Bar)
+        except Exception as ex:
+            print(self.parent)
+            print(type(self.parent))
+
         if isinstance(self.parent, Node):
             x0, y0, z0 = self.parent.position
             x = self.value * Load.scale

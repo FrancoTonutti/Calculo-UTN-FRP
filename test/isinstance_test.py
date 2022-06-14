@@ -36,9 +36,14 @@ class EntityReference(metaclass=EntityReferenceMeta):
 
 
 class Test:
-    pass
+
+    def __eq__(self, other):
+        print("__eq__")
+        super(Test, self).__eq__(other)
+
 
 
 a = Test()
-
-print(isinstance(50, EntityReference))
+b = Test()
+if a == b:
+    pass

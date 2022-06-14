@@ -21,8 +21,8 @@ class Section(Entity):
             return app.model_reg.get_entity(obj.get(string))
 
         name = obj.get("name")
-        section_type = entity_get("shape")
-        section_type.shape = entity_get("shape")
+        section_type = entity_get("section_type")
+        #section_type.shape = entity_get("shape")
 
         geometry = obj.get("geometry")
 
@@ -131,15 +131,19 @@ class Section(Entity):
             value.add_section(self)
             self._section_type = value
 
+
             shape = value.shape
+            if shape is None:
+                print("asdsadsa")
+                print(value)
 
             #for param in shape.params:
 
-            print("shape {}")
-            print(type(shape))
-            print(type(shape.__reference__))
-            print(shape.__reference__.params)
-            print(shape.__reference__.__dict__)
+            #print("shape {}")
+            #print(type(shape))
+            #print(type(shape.__reference__))
+            #print(shape.__reference__.params)
+            #print(shape.__reference__.__dict__)
 
             for param in shape.params:
                 self.set_units(**{param: "mm"})

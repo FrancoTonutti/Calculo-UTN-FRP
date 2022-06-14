@@ -120,12 +120,33 @@ class Bar(Entity):
 
     @start.setter
     def start(self, value):
-        if self.start:
-            self.start.remove_child_model(self)
+        print("--set start--")
+        print(type(self.start.__reference__))
+        print(self.start)
+        check = self.start and self.start.__reference__ != None
+
+        if self.start and self.start.__reference__ != None:
+            check2 = self.start and self.start.__reference__ != None
+            try:
+                self.start.remove_child_model(self)
+            except Exception as ex:
+                print("----")
+                print(self.start)
+                print(self.start.__reference__)
+                print(self.start.__reference__ is not None)
+                print(check)
+                print(check2)
+                check3 = self.start and self.start.__reference__ != None
+                print(check3)
+                print("----")
+                raise Exception(ex)
 
         self._start = value
+
         if value:
-            self.start.add_child_model(self)
+            self._start.add_child_model(self)
+
+
 
     @property
     def end(self):

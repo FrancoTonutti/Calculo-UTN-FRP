@@ -85,9 +85,11 @@ def step_1(cache, selection):
             entity = entity.__reference__
 
         if isinstance(entity, Node):
-            start.delete()
+            old_start = new_bar.start#start.delete()
 
             new_bar.start = entity
+            old_start.delete()
+
             start = entity
             cache.update({"start": start})
             prop_editor.deselect_all()
@@ -123,9 +125,9 @@ def step_2(cache, selection):
             entity = entity.__reference__
 
         if isinstance(entity, Node):
-            end.delete()
-
+            old_end = new_bar.end
             new_bar.end = entity
+            old_end.delete()
             end = entity
             cache.update({"end": end})
             break

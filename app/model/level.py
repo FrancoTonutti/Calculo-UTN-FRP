@@ -22,6 +22,11 @@ class Level(Entity):
         entity_id = obj.get("entity_id")
         z = obj.get("z")
 
+        if isinstance(z, str):
+            z = app.ureg(z)
+        else:
+            z = z * app.ureg("m")
+
         name = obj.get("name")
 
         return Level(z, name, entity_id)

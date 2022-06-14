@@ -20,6 +20,9 @@ from app.model.code_checks import CodeCheckCIRSOC201
 from .rebar_set import RebarSet
 from .rebar_layer import RebarLayer
 
+from .profile_shapes import ProfileShapeFillRect
+from .profile_shapes import ProfileShapeI
+
 from app.model import model_reg
 from app.model import unit_manager
 
@@ -44,6 +47,8 @@ model_reg.class_register = {
     "CodeCheck": CodeCheck,
     "ProfileSection": ProfileSection,
     "ProfileSectionI": ProfileSectionI,
+    "ProfileShapeI": ProfileShapeI,
+    "ProfileShapeFillRect": ProfileShapeFillRect,
     "CodeCheckCIRSOC201": CodeCheckCIRSOC201,
     "RebarLayer": RebarLayer,
     "RebarSet": RebarSet
@@ -53,6 +58,11 @@ model_reg.class_register = {
 
 print("CLASS REGISTER CREATED")
 
-model_reg.keys_priority = ["View", "Level", "Node","SectionType", "Section", "MaterialGroup", "Material", "Bar", "RebarLayer", "RebarSet", "LoadCase", "Load", "Diagram"]
+model_reg.keys_priority = ["View", "Level", "Node",
+                           "ProfileShapeI", "ProfileShapeFillRect",
+                           "SectionType", "Section",
+                           "MaterialGroup", "Material",
+                           "Bar", "RebarLayer", "RebarSet",
+                           "LoadCase", "Load", "Diagram"]
 
 

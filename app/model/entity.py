@@ -76,7 +76,7 @@ class Entity(metaclass=EntityMeta):
             action = EntityCreationAction(self)
             active_transaction.register_action(action)
 
-
+            self._units = dict()
 
             self._geom = None
             self._editor_properties = []
@@ -92,7 +92,7 @@ class Entity(metaclass=EntityMeta):
             #self.is_selected = False
             self.ifc_entity = None
             self.enabled_save = True
-            self._units = dict()
+
             self.hidden = False
             self._combo_box_properties = []
 
@@ -346,18 +346,18 @@ class Entity(metaclass=EntityMeta):
                 self._bind_model.append(prop)
 
     def __setattr__(self, name, new_value):
-        
-        if hasattr(self, name):
-            old_value = getattr(self, name)
-
+        if hasattr(self, "_units"):
             unit = self._units.get(name)
             if unit and (isinstance(new_value, float) or new_value is None):
                 if new_value is None:
                     new_value = 0
                 new_value = new_value * app.ureg(unit)
 
-            if not isinstance(new_value, EntityReference) and isinstance(new_value, Entity):
-                new_value = EntityReference(new_value)
+        if not isinstance(new_value, EntityReference) and isinstance(new_value, Entity):
+            new_value = EntityReference(new_value)
+        
+        if hasattr(self, name):
+            old_value = getattr(self, name)
 
             if old_value != new_value:
                 active_transaction = TM.get_active_transaction()
