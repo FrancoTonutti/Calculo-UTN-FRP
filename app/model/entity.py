@@ -1,5 +1,6 @@
 import ctypes
 import sys
+import gc
 
 from panda3d.core import GeomNode, CollisionSegment, CollisionNode
 
@@ -119,8 +120,11 @@ class Entity(metaclass=EntityMeta):
             self.__references__.remove(ref)
 
     def remove_all_references(self):
+        print("remove_all_references {}".format(len(self.__references__)))
         for ref in self.__references__:
             ref.__dispose__()
+
+        self.__references__.clear()
 
     @property
     def is_selected(self):
@@ -438,8 +442,44 @@ class Entity(metaclass=EntityMeta):
             _tr.commit()
 
         self.remove_all_references()
-
+        gc.collect()
         print("!!! Remaining references after deleting:", ctypes.c_long.from_address(id(self)).value)
+
+        refs = gc.get_referrers(self)
+        print(refs)
+        print(len(refs))
+        print(id(refs))
+
+        main_id = id(refs)
+        #TODO arreglar problema de liberación en  memoria
+
+        for ref in refs:
+            print(type(ref))
+            for refref in gc.get_referrers(ref):
+                if main_id != id(refref):
+                    print("--: {}".format(type(refref)))
+
+                    print("-- {}".format(refref)) # imprimir provoca la liberación de la referencia
+
+                    print("-- {}".format(id(refref)))
+                    if isinstance(refref, EntityReference):
+                        print("--- {}".format(refref.__reference__))
+                    elif isinstance(refref, dict):
+                        main_id_2 = id(refref)
+                        for refrefref in gc.get_referrers(refref):
+                            if main_id != id(refrefref) and main_id_2 != id(refrefref):
+                                print("---: {}".format(type(refrefref)))
+                                print("--- {}".format(refrefref)) # imprimir provoca la liberación de la referencia
+                                print("--- {}".format(id(refrefref)))
+                                if isinstance(refrefref, EntityReference):
+                                    print(
+                                        "---- {}".format(refrefref.__reference__))
+
+        print("!!! Remaining references after deleting:",
+              ctypes.c_long.from_address(id(self)).value)
+
+
+
 
         return True
 

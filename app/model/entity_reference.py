@@ -89,10 +89,10 @@ class EntityReference:
             if not self.__reference__.__is_deleted__:
                 return self.__reference__.__str__()
             else:
-                self.__reference__ = None
-                return None
+                self.__dispose__()
+                return super(EntityReference, self).__str__()
         else:
-            return "Referencia eliminada"
+            return super(EntityReference, self).__str__()
 
     def __eq__(self, other):
         if isinstance(other, EntityReference):

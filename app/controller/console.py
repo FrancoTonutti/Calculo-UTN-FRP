@@ -1,3 +1,5 @@
+from direct.task.Task import TaskManager
+
 from app import app
 
 
@@ -18,7 +20,9 @@ def execute(command_name: str):
     """Ejecuta el comando de consola indicado"""
     data = app.commands.get(command_name, None)
 
-    if data is not None:
+    tsk = TaskManager()
+
+    if data is not None and not tsk.hasTaskNamed("command_task"):
         function = data['function']
         app.console.active_command = command_name
         function()

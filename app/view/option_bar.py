@@ -24,9 +24,10 @@ INTERFACE = {
         "Construir": {
             #"Muro de carga": {},
             "Barra": {"command": "create_bar"},
-            "Pilar": {"command": "barra"},
-            "Viga": {"command": "beam"},
+            "Pilar": {"command": "create_bar"},
+            "Viga": {"command": "create_bar"},
             "Nivel": {"command": "create_level"},
+            "Eliminar": {"command": "delete"},
         },
         "Modelo": {
             "Agregar carga": {"command": "load"},

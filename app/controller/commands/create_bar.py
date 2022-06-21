@@ -158,6 +158,8 @@ def add_bar_task(task, cache: dict):
         if step == 1:
             x, y, z = app.work_plane_mouse
 
+            print("asdadsasda")
+
             active_tr.disable_register()
             end.position = x, y, z
             active_tr.enable_register()
@@ -172,10 +174,13 @@ def add_bar_task(task, cache: dict):
             prop_editor.update_selection()
 
             tr.commit()
+            cache.clear()
             events.close_listener()
             return task.done
 
         if watcher.has_mouse() and (watcher.isButtonDown("escape") or watcher.isButtonDown("mouse3")):
+
+            cache.clear()
             print("-------ROLLBACK----------------")
             tr.rollback()
             events.close_listener()
@@ -184,6 +189,7 @@ def add_bar_task(task, cache: dict):
         return task.cont
     else:
         print("ROOT TRANSACTION ERROR")
+        cache.clear()
         return add_bar_end(task)
 
 

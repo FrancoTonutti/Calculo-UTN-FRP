@@ -154,6 +154,8 @@ class ConsoleUI(DirectObject):
             self.tsk.add(task, name="command_task", uponDeath=self.command_ended, extraArgs=extra_args)
             self._command_name = name
             app.main_ui.status_bar.command_start(name)
+        else:
+            raise Exception("command already running")
 
     def close_command(self):
         print("close_command start")
