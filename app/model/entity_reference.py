@@ -57,6 +57,8 @@ class EntityReference:
             if check == 2:
                 self.__updated__ = True
 
+
+
     def __dispose__(self):
         if self.__reference__:
             self.__reference__.remove_reference(self)
@@ -87,12 +89,16 @@ class EntityReference:
     def __str__(self):
         if self.__reference__:
             if not self.__reference__.__is_deleted__:
+                pass
                 return self.__reference__.__str__()
             else:
+                pass
                 self.__dispose__()
                 return super(EntityReference, self).__str__()
         else:
             return super(EntityReference, self).__str__()
+
+        return ""
 
     def __eq__(self, other):
         if isinstance(other, EntityReference):

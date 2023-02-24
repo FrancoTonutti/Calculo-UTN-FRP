@@ -10,6 +10,7 @@ from panda3d.core import WindowProperties
 from direct.gui.DirectScrolledFrame import *
 from app.view.interface.color_scheme import *
 from .. import draw, simpleui
+from ...model.entity_reference import EntityReference
 
 
 def execute_console(cmd):
@@ -20,6 +21,7 @@ class StatusBar(DirectObject):
     def __init__(self, layout: Layout):
         super().__init__()
         self.frame = layout.status_bar_frame
+        self._entity_info = None
         self.entity_info = None
         self._status_hint = ""
 
@@ -45,6 +47,26 @@ class StatusBar(DirectObject):
                                       align="left",
                                       textCenterX=False,
                                       padding=[10,0,0,0],)
+
+    @property
+    def entity_info(self):
+        return self._entity_info
+
+    @entity_info.setter
+    def entity_info(self, value):
+
+        if value is None:
+            if isinstance(self._entity_info, EntityReference):
+                self._entity_info.__dispose__()
+                self._entity_info = None
+
+        elif isinstance(value, EntityReference):
+            self._entity_info = value
+        else:
+            ref = EntityReference(value)
+
+            self._entity_info = ref
+
 
     def command_start(self, name):
 

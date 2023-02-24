@@ -190,6 +190,12 @@ class Node(Entity):
             self.geom[0].setScale(0.8, 0.80, 0.80)
             self.geom[1].setScale(0.20, 0.20, 0.20)
 
+    def delete(self):
+        #TODO: Implementación para el borrado de nodos
+        #super(Node, self).delete()
+        raise Exception("El borrado de nodos no fue implementado")
+
+
     @property
     def x(self):
         return self.__x

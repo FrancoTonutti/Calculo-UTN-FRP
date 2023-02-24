@@ -9,8 +9,8 @@ from .entity_reference import EntityReference
 from .transaction import TM, SetAttrAction, EntityCreationAction, \
     LoadModelAction, EntityDeleteAction, Transaction
 import uuid
-
-
+from direct.directnotify.DirectNotify import DirectNotify
+notify = DirectNotify().newCategory("MyCategory")
 
 from typing import TYPE_CHECKING
 from typing import List
@@ -33,6 +33,28 @@ LANG = {
     "name": "Nombre"
 }
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+def print_bcolor(color, text):
+    print(
+        f"{color}{text}{bcolors.ENDC}")
+
+def print_warning(text):
+    print(
+        f"{bcolors.WARNING}WARNING: {text}{bcolors.ENDC}")
+
+def print_success(text):
+    print(
+        f"{bcolors.OKGREEN}WARNING: {text}{bcolors.ENDC}")
 
 class EntityMeta(type):
     def __instancecheck__(cls, inst):
@@ -117,6 +139,7 @@ class Entity(metaclass=EntityMeta):
 
     def remove_reference(self, ref):
         if ref in self.__references__:
+            #ref.__dispose__() provoca recursividad indefinida
             self.__references__.remove(ref)
 
     def remove_all_references(self):
@@ -338,9 +361,23 @@ class Entity(metaclass=EntityMeta):
             child.update_tree()
 
     def add_child_model(self, child):
-        self._child_models.append(child)
+        if not isinstance(child, EntityReference):
+            ref = EntityReference(child)
+        else:
+            ref = child
+
+        self._child_models.append(ref)
 
     def remove_child_model(self, child):
+        reference = None
+        for ref in self._child_models:
+            if isinstance(ref, EntityReference):
+                if ref.__reference__ is child:
+                    ref.__dispose__()
+
+        if reference in self._child_models:
+            self._child_models.remove(reference)
+
         if child in self._child_models:
             self._child_models.remove(child)
 
@@ -427,6 +464,7 @@ class Entity(metaclass=EntityMeta):
         model_reg.entity_register.pop(self.entity_id)
 
     def delete(self):
+        print("Start delete {}".format(self))
 
         active_transaction = TM.get_active_transaction()
         if active_transaction:
@@ -443,45 +481,66 @@ class Entity(metaclass=EntityMeta):
 
         self.remove_all_references()
         gc.collect()
-        print("!!! Remaining references after deleting:", ctypes.c_long.from_address(id(self)).value)
+        print_warning("1)!!! Remaining references after deleting: {}".format(
+            ctypes.c_long.from_address(id(self)).value))
 
+
+        #TODO arreglar problema de liberación en  memoria
+        self.print_references()
+
+
+        print_warning("2)!!! Remaining references after deleting: {}".format(
+            ctypes.c_long.from_address(id(self)).value))
+
+        self.print_references()
+
+        print_warning("3)!!! Remaining references after deleting: {}".format(
+            ctypes.c_long.from_address(id(self)).value))
+
+        #notify.warning("Put some informational text here.")
+
+
+        return True
+
+    def print_references(self):
         refs = gc.get_referrers(self)
         print(refs)
         print(len(refs))
         print(id(refs))
 
         main_id = id(refs)
-        #TODO arreglar problema de liberación en  memoria
-
+        i1 = 0
         for ref in refs:
             print(type(ref))
             for refref in gc.get_referrers(ref):
+
+                print("-({})-".format(i1))
                 if main_id != id(refref):
-                    print("--: {}".format(type(refref)))
+                    i1 += 1
+                    print("-({})-: {}".format(i1, type(refref)))
 
-                    print("-- {}".format(refref)) # imprimir provoca la liberación de la referencia
+                    if isinstance(refref, EntityReference):
+                        pass
+                        refref.__dispose__()
+                        #TODO: Hay entityReference que no se eliminan con remove_all_references()
+                        #print("-({})-libera {}".format(i1, refref))  # imprimir provoca la liberación de la referencia
+                    #print("-({})-libera {}".format(i1, refref))  # imprimir provoca la liberación de la referencia
 
-                    print("-- {}".format(id(refref)))
+                    print("-({})- {}".format(i1, id(refref)))
                     if isinstance(refref, EntityReference):
                         print("--- {}".format(refref.__reference__))
                     elif isinstance(refref, dict):
                         main_id_2 = id(refref)
                         for refrefref in gc.get_referrers(refref):
-                            if main_id != id(refrefref) and main_id_2 != id(refrefref):
+                            if main_id != id(refrefref) and main_id_2 != id(
+                                    refrefref):
                                 print("---: {}".format(type(refrefref)))
-                                print("--- {}".format(refrefref)) # imprimir provoca la liberación de la referencia
+                                #print("--- {}".format(refrefref))  # imprimir provoca la liberación de la referencia
                                 print("--- {}".format(id(refrefref)))
                                 if isinstance(refrefref, EntityReference):
                                     print(
-                                        "---- {}".format(refrefref.__reference__))
-
-        print("!!! Remaining references after deleting:",
-              ctypes.c_long.from_address(id(self)).value)
-
-
-
-
-        return True
+                                        "---- {}".format(
+                                            refrefref.__reference__))
 
     def count_memory_references(self):
         try:
@@ -492,7 +551,7 @@ class Entity(metaclass=EntityMeta):
                   ctypes.c_long.from_address(id(self)).value)
 
     def __del__(self):
-        print("Entidad liberada en memoria")
+        print_success("Entidad liberada en memoria")
 
 
     @staticmethod
