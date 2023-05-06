@@ -20,6 +20,15 @@ class TransactionManager:
         else:
             return None
 
+    def transaction_check(self, raise_exception=True):
+        active_transaction = self.get_active_transaction()
+        if active_transaction:
+            return True
+        else:
+            if raise_exception:
+                Exception("Se requiere una transacción activa")
+            return False
+
     def history_undo(self):
         transaction = self.history[self.history_position]
 

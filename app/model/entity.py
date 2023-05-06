@@ -54,7 +54,7 @@ def print_warning(text):
 
 def print_success(text):
     print(
-        f"{bcolors.OKGREEN}WARNING: {text}{bcolors.ENDC}")
+        f"{bcolors.OKGREEN}SUCCESS: {text}{bcolors.ENDC}")
 
 class EntityMeta(type):
     def __instancecheck__(cls, inst):
@@ -81,6 +81,13 @@ class EntityMeta(type):
         #print('other {}'.format(sub))
 
         return check
+
+
+class SafeDictEntityReference(dict):
+    def __setitem__(self, key, value):
+        if isinstance(value, Entity):
+            value = EntityReference(value)
+        super().__setitem__(key, value)
 
 
 class Entity(metaclass=EntityMeta):
@@ -381,6 +388,9 @@ class Entity(metaclass=EntityMeta):
         if child in self._child_models:
             self._child_models.remove(child)
 
+    def get_child_models(self):
+        return self._child_models
+
     def bind_to_model(self, *args):
         for prop in args:
             if prop not in self._bind_model:
@@ -435,7 +445,7 @@ class Entity(metaclass=EntityMeta):
         # Extraemos el diccionario con todos los elementos de la categoría, si no existe lo creamos
         category_dict = model_reg.get(name, None)
         if category_dict is None:
-            category_dict = dict()
+            category_dict = SafeDictEntityReference()
             model_reg.update({name: category_dict})
 
         # Agregamos el modelo al diccionario
@@ -463,14 +473,23 @@ class Entity(metaclass=EntityMeta):
         category_dict.pop(self.entity_id)
         model_reg.entity_register.pop(self.entity_id)
 
+    @staticmethod
+    def transaction_check(raise_exception=True):
+        active_transaction = TM.get_active_transaction()
+        if active_transaction:
+            return True
+        else:
+            if raise_exception:
+                Exception("Se requiere una transacción activa")
+            return False
+
     def delete(self):
         print("Start delete {}".format(self))
 
-        active_transaction = TM.get_active_transaction()
-        if active_transaction:
+        if self.transaction_check():
             self.delete_model()
             self.unregister()
-
+            active_transaction = TM.get_active_transaction()
             if active_transaction.is_register_enabled():
                 pass
             _tr = Transaction()
@@ -479,45 +498,47 @@ class Entity(metaclass=EntityMeta):
             self.__is_deleted__ = True
             _tr.commit()
 
-        self.remove_all_references()
-        gc.collect()
-        print_warning("1)!!! Remaining references after deleting: {}".format(
-            ctypes.c_long.from_address(id(self)).value))
+            self.remove_all_references()
+            gc.collect()
+            print_warning("1)!!! Remaining references after deleting: {}".format(
+                ctypes.c_long.from_address(id(self)).value))
 
 
-        #TODO arreglar problema de liberación en  memoria
-        self.print_references()
+            #TODO arreglar problema de liberación en  memoria
+            self.clean_references()
+            remaing = self.count_memory_references()
+            print_warning("2)!!! Remaining references after deleting: {}".format(remaing))
+
+            if remaing > 4:
+                self.clean_references(debug=True)
+
+            remaing = self.count_memory_references()
+            print_warning("3)!!! Remaining references after deleting: {}".format(remaing))
+
+            #notify.warning("Put some informational text here.")
 
 
-        print_warning("2)!!! Remaining references after deleting: {}".format(
-            ctypes.c_long.from_address(id(self)).value))
-
-        self.print_references()
-
-        print_warning("3)!!! Remaining references after deleting: {}".format(
-            ctypes.c_long.from_address(id(self)).value))
-
-        #notify.warning("Put some informational text here.")
+            return True
 
 
-        return True
-
-    def print_references(self):
+    def clean_references(self, debug=False):
         refs = gc.get_referrers(self)
-        print(refs)
-        print(len(refs))
-        print(id(refs))
+        if debug:
+            print(refs)
+            print(len(refs))
+            print(id(refs))
 
         main_id = id(refs)
         i1 = 0
         for ref in refs:
-            print(type(ref))
+            #print(type(ref))
             for refref in gc.get_referrers(ref):
 
-                print("-({})-".format(i1))
+                #print("-({})-".format(i1))
                 if main_id != id(refref):
                     i1 += 1
-                    print("-({})-: {}".format(i1, type(refref)))
+                    if debug:
+                        print("-({})-: {}".format(i1, type(refref)))
 
                     if isinstance(refref, EntityReference):
                         pass
@@ -526,29 +547,25 @@ class Entity(metaclass=EntityMeta):
                         #print("-({})-libera {}".format(i1, refref))  # imprimir provoca la liberación de la referencia
                     #print("-({})-libera {}".format(i1, refref))  # imprimir provoca la liberación de la referencia
 
-                    print("-({})- {}".format(i1, id(refref)))
+                    #print("-({})- {}".format(i1, id(refref)))
                     if isinstance(refref, EntityReference):
-                        print("--- {}".format(refref.__reference__))
+                        if debug:
+                            print("--- {}".format(refref.__reference__))
                     elif isinstance(refref, dict):
                         main_id_2 = id(refref)
                         for refrefref in gc.get_referrers(refref):
                             if main_id != id(refrefref) and main_id_2 != id(
                                     refrefref):
-                                print("---: {}".format(type(refrefref)))
-                                #print("--- {}".format(refrefref))  # imprimir provoca la liberación de la referencia
-                                print("--- {}".format(id(refrefref)))
+                                if debug:
+                                    print("---: {}".format(type(refrefref)))
+                                    print("--- {}".format(refrefref))  # imprimir provoca la liberación de la referencia
+                                    print("--- {}".format(id(refrefref)))
                                 if isinstance(refrefref, EntityReference):
-                                    print(
-                                        "---- {}".format(
-                                            refrefref.__reference__))
+                                    if debug:
+                                        print("---- {}".format(refrefref.__reference__))
 
     def count_memory_references(self):
-        try:
-            print("!!! References to {}:".format(self),
-                  ctypes.c_long.from_address(id(self)).value)
-        except Exception as ex:
-            print("!!! References to {}:".format(self.category_name),
-                  ctypes.c_long.from_address(id(self)).value)
+        return ctypes.c_long.from_address(id(self)).value
 
     def __del__(self):
         print_success("Entidad liberada en memoria")

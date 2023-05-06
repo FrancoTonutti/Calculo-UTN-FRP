@@ -191,9 +191,12 @@ class Node(Entity):
             self.geom[1].setScale(0.20, 0.20, 0.20)
 
     def delete(self):
-        #TODO: Implementación para el borrado de nodos
-        #super(Node, self).delete()
-        raise Exception("El borrado de nodos no fue implementado")
+        if self.transaction_check():
+            for child in self.get_child_models():
+                child.delete()
+
+            super(Node, self).delete()
+
 
 
     @property

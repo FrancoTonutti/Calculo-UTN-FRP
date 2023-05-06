@@ -2,6 +2,7 @@ from app.model.entity import Entity
 from typing import TYPE_CHECKING
 from typing import List
 from app import app
+from app.model.entity_reference import EntityReference
 
 if TYPE_CHECKING:
     # Imports only for IDE type hints
@@ -92,7 +93,9 @@ class Material(Entity):
                 self.name = self._name
 
     def set_default_material(self):
-        app.default_material = self
+        if app.default_material is not None:
+            app.default_material.__dispose__()
+        app.default_material = EntityReference(self)
 
     def delete(self, force_delete=False):
 

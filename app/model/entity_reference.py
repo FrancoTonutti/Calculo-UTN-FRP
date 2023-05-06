@@ -32,6 +32,8 @@ class EntityReferenceRegister:
 register = EntityReferenceRegister()
 
 
+
+
 class EntityReference:
     def __init__(self, entity):
         if isinstance(entity, EntityReference):

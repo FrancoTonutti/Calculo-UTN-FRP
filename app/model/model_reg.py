@@ -4,7 +4,7 @@ import pint
 
 from app import app
 import json
-from app.model.entity import Entity
+from app.model.entity import Entity, SafeDictEntityReference
 
 primitive = (int, str, bool, float)
 class_register = {}
@@ -14,13 +14,13 @@ def is_primitive(thing):
     return isinstance(thing, primitive)
 
 
-class ModelReg(dict):
+class ModelReg(SafeDictEntityReference):
     #global class_register
 
     def __init__(self):
         super().__init__()
 
-        self.entity_register = dict()
+        self.entity_register = SafeDictEntityReference()
         #print("CREATE MODELREG")
         #self.class_register = class_register
 

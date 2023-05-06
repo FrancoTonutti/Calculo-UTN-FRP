@@ -5,6 +5,7 @@ from panda3d.core import GeomVertexFormat, GeomVertexData, Geom, \
     GeomVertexWriter, GeomTristrips, GeomNode, GeomTriangles
 
 from app.model.entity import Entity, register
+from app.model.entity_reference import EntityReference
 from app.model.section_type import SectionType
 from app import app
 
@@ -46,7 +47,12 @@ class Section(Entity):
         self._vertex_data = None
 
         register(self)
-        Section.last_section = self
+        if Section.last_section is None:
+
+            Section.last_section = EntityReference(self)
+        else:
+            Section.last_section.__dispose__()
+            Section.last_section = EntityReference(self)
 
     def set_geometry(self, geometry):
         self._geometry = geometry
@@ -156,10 +162,11 @@ class Section(Entity):
                 self.name = self._name'''
 
     def delete(self):
-        if self._section_type:
-            self._section_type.remove_section(self)
+        if self.transaction_check():
+            if self._section_type:
+                self._section_type.remove_section(self)
 
-        super(Section, self).delete()
+            super(Section, self).delete()
 
     def update_model(self):
         self._contour_points = None
