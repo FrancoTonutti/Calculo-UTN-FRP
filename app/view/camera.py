@@ -421,9 +421,9 @@ class CameraControl(DirectObject):
             # gizmo_geom.setBin("fixed", 0)
 
             # gizmo_geom.set_two_sided(True)
-
+            # TODO: Fix camera gizmo
             """
-            Tarea pendiente:
+            TODO:
             
             Hay que corregir un error por el cual el indicador de ejes no se dubuja por encima de todos los objetos
             pudiendo intersectarse cona las geometrías del modelo
