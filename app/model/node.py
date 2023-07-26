@@ -193,7 +193,8 @@ class Node(Entity):
     def delete(self):
         if self.transaction_check():
             for child in self.get_child_models():
-                child.delete()
+                if child.__reference__ is not None:
+                    child.delete()
 
             super(Node, self).delete()
 
