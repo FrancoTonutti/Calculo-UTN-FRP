@@ -5,8 +5,20 @@ from app.model.entity_reference import EntityReference, create_entity_reference
 class TransactionManager:
     def __init__(self):
         self.root_transaction = None
-        self.history = list()
+        self._history = list()
         self.history_position = -1
+
+    def get_history(self):
+        return self._history
+
+    def add_to_history(self, transation):
+
+        if self.history_position != -1:
+            self._history = self._history[:(self.history_position + 1)]
+            self.history_position = -1
+
+        self._history.append(transation)
+
 
     def get_root_transaction(self):
         return self.root_transaction
@@ -30,7 +42,9 @@ class TransactionManager:
             return False
 
     def history_undo(self):
-        transaction = self.history[self.history_position]
+        transaction = self._history[self.history_position]
+
+        self.history_position -= 1
 
         tr = Transaction(register=False)
         tr.start()
@@ -129,6 +143,9 @@ class LoadModelAction(Action):
     def redo(self):
         pass
 
+    def __str__(self):
+        return "<app.model.transaction.LoadModelAction> ({})".format(self.nodepath)
+
 class TransactionAction(Action):
     def __init__(self, transaction):
         super().__init__()
@@ -152,7 +169,7 @@ class Transaction:
         self._childs = list()
         self._commited = False
         self._actions = list()
-        self._enabled_register = True
+        self._enabled_register = register
 
     def is_commited(self):
         return self._commited
@@ -191,7 +208,9 @@ class Transaction:
             self._commited = True
             if not self.parent:
                 TM.root_transaction = None
-                TM.history.append(self)
+
+                if len(self._actions) > 0:
+                    TM.add_to_history(self)
 
         else:
             raise Exception(

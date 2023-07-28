@@ -18,6 +18,10 @@ INTERFACE = {
             "Abrir": {"command": "open_file"},
             "Guardar": {"command": "save"},
             #"Exportar IFC": {"command": "save_ifc"},
+        },
+        "Edición": {
+            "Deshacer": {"command": "undo"},
+            "Rehacer": {"command": "redo"}
         }
     },
     _("Estructura"): {

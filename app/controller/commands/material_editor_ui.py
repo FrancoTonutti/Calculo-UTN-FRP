@@ -184,7 +184,10 @@ class UI:
 
     def update_material_name(self, new_value):
         if new_value != "":
+            tr = Transaction()
+            tr.start("Update material name")
             self.selected_group.name = new_value
+            tr.commit()
 
             self.update_list()
 
@@ -429,7 +432,10 @@ class UI:
         if type(old_value) is type(new_value):
             if self.selected_subtype is not None:
                 print("atributo establecido {}: {}".format(name, new_value))
+                tr = Transaction()
+                tr.start("Update material attribute")
                 setattr(self.selected_subtype, name, new_value)
+                tr.commit()
                 print("verif {}: {}".format(name, getattr(self.selected_subtype, name, "undefined")))
 
         else:

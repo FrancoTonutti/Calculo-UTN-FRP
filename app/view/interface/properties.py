@@ -144,7 +144,7 @@ class PropertiesEditor(DirectObject):
 
     def deselect(self, entity):
         if entity:
-            tr = Transaction()
+            tr = Transaction(register=False)
             tr.start("Deselect entity")
             entity.is_selected = False
             tr.commit()
@@ -165,7 +165,7 @@ class PropertiesEditor(DirectObject):
 
     def update_selection(self):
         for entity in self.selection:
-            tr = Transaction()
+            tr = Transaction(register=False)
             tr.start("Select entity")
             entity.is_selected = True
             tr.commit()
@@ -194,7 +194,7 @@ class PropertiesEditor(DirectObject):
         if entity != self.prop_editor.entity or update:
 
             if self.entity:
-                tr = Transaction()
+                tr = Transaction(register=False)
                 tr.start("Deselect entity")
                 self.entity.is_selected = False
                 tr.commit()
@@ -212,7 +212,7 @@ class PropertiesEditor(DirectObject):
             if entity:
                 self.entity = entity
                 if self.entity:
-                    tr = Transaction()
+                    tr = Transaction(register=False)
                     tr.start("Select entity")
                     self.entity.is_selected = True
                     tr.commit()
@@ -404,7 +404,7 @@ class PropertiesEditorOld(DirectObject):
                         entry.defocus()
 
             if self.entity:
-                tr = Transaction()
+                tr = Transaction(register=False)
                 tr.start("Deselect entity")
                 self.entity.is_selected = False
                 tr.commit()
@@ -422,7 +422,7 @@ class PropertiesEditorOld(DirectObject):
             if entity:
                 self.entity = entity
                 if self.entity:
-                    tr = Transaction()
+                    tr = Transaction(register=False)
                     tr.start("Select entity")
                     self.entity.is_selected = True
                     tr.commit()

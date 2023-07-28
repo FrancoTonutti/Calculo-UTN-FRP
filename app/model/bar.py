@@ -8,6 +8,9 @@ from . import unit_manager
 
 from typing import TYPE_CHECKING
 from typing import List
+
+from .transaction import LoadModelAction, TM
+
 if TYPE_CHECKING:
     # Imports only for IDE type hints
     from app.model import *
@@ -363,6 +366,10 @@ class Bar(Entity):
             self.geom[0].setTag('entity_type', self.__class__.__name__)
             self.geom[0].setTag('entity_id', self.entity_id)
             self._section_vertex_data_id = id(self.section.get_vertex_data())
+
+            active_transaction = TM.get_active_transaction()
+            action = LoadModelAction(self.geom[0])
+            active_transaction.register_action(action)
 
         if not self.geom[0]:
             self.geom[0] = self.load_model("data/geom/beam")
