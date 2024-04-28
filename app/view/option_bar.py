@@ -25,8 +25,10 @@ INTERFACE = {
         }
     },
     _("Estructura"): {
-        "Construir": {
+
+        "Elementos": {
             #"Muro de carga": {},
+            "Línea": {"command": "create_line"},
             "Barra": {"command": "create_bar"},
             "Pilar": {"command": "create_bar"},
             "Viga": {"command": "create_bar"},

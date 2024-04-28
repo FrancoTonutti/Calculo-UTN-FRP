@@ -182,6 +182,7 @@ class SimpleComboBox(SimpleEntry):
             pass
             self.btn_rollover.on_leave(None)
         print(type(self.dropdown_frame))
+        self.on_defocus()
         #self.dropdown_frame.hide()
 
     def focusOutCommandFunc(self):

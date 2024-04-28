@@ -1,5 +1,6 @@
 from app.model.entity import Entity
 from app.model.node import Node
+from app.model.line import Line
 from app.model.bar import Bar
 from app.model.beam import Beam
 from app.model.section_type import SectionType
@@ -33,6 +34,7 @@ model_reg.class_register = {
     "Entity": Entity,
     "Level": Level,
     "Node": Node,
+    "Line": Line,
     "Bar": Bar,
     "SectionType": SectionType,
     "Section": Section,
@@ -58,7 +60,7 @@ model_reg.class_register = {
 
 print("CLASS REGISTER CREATED")
 
-model_reg.keys_priority = ["View", "Level", "Node",
+model_reg.keys_priority = ["View", "Level", "Node", "Line",
                            "ProfileShapeI", "ProfileShapeFillRect",
                            "SectionType", "Section",
                            "MaterialGroup", "Material",
