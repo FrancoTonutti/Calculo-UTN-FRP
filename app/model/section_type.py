@@ -1,6 +1,6 @@
 from app.model.entity import Entity
 from app import app
-from .profile_shapes import ProfileShapeFillRect
+from .profile_shapes import ProfileShapeFillRect, ProfileShapeHollowRect
 
 from .profile_shapes.profile_shape_I import ProfileShapeI
 from .transaction import Transaction
@@ -22,7 +22,8 @@ shape_codes = {"1": "Ángulo",
                "15": "Circular"}
 
 section_shapes = {"ProfileShapeI": ProfileShapeI,
-                  "ProfileShapeFillRect": ProfileShapeFillRect}
+                  "ProfileShapeFillRect": ProfileShapeFillRect,
+                  "ProfileShapeHollowRect": ProfileShapeHollowRect}
 
 class SectionType(Entity):
     global shape_codes

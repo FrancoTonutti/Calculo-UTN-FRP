@@ -125,6 +125,7 @@ class Entity(metaclass=EntityMeta):
 
             self.hidden = False
             self._combo_box_properties = []
+            self._external_ids_mapping = dict()
 
 
             self.register()
@@ -175,6 +176,12 @@ class Entity(metaclass=EntityMeta):
 
     def on_deselect(self):
         pass
+
+    def set_external_id_mapping(self, software, id):
+        self._external_ids_mapping.update({software: id})
+
+    def get_external_id_mapping(self, software):
+        return self._external_ids_mapping.get(software)
 
     def set_analysis_results(self, load_combination, name, value):
 

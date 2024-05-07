@@ -17,7 +17,9 @@ INTERFACE = {
             "Nuevo": {"command": "new_file"},
             "Abrir": {"command": "open_file"},
             "Guardar": {"command": "save"},
+            "Importar RFEM": {"command": "sync_from_rfem"}
             #"Exportar IFC": {"command": "save_ifc"},
+
         },
         "Edición": {
             "Deshacer": {"command": "undo"},

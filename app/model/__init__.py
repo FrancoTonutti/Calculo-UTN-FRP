@@ -21,7 +21,7 @@ from app.model.code_checks import CodeCheckCIRSOC201
 from .rebar_set import RebarSet
 from .rebar_layer import RebarLayer
 
-from .profile_shapes import ProfileShapeFillRect
+from .profile_shapes import ProfileShapeFillRect, ProfileShapeHollowRect
 from .profile_shapes import ProfileShapeI
 
 from app.model import model_reg
@@ -51,6 +51,7 @@ model_reg.class_register = {
     "ProfileSectionI": ProfileSectionI,
     "ProfileShapeI": ProfileShapeI,
     "ProfileShapeFillRect": ProfileShapeFillRect,
+    "ProfileShapeHollowRect": ProfileShapeHollowRect,
     "CodeCheckCIRSOC201": CodeCheckCIRSOC201,
     "RebarLayer": RebarLayer,
     "RebarSet": RebarSet
@@ -62,6 +63,7 @@ print("CLASS REGISTER CREATED")
 
 model_reg.keys_priority = ["View", "Level", "Node", "Line",
                            "ProfileShapeI", "ProfileShapeFillRect",
+                           "ProfileShapeHollowRect",
                            "SectionType", "Section",
                            "MaterialGroup", "Material",
                            "Bar", "RebarLayer", "RebarSet",
